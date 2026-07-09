@@ -1,4 +1,4 @@
-
+/*
 import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db/connect";
 import { Video } from "@/models/Video";
@@ -45,9 +45,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return apiError("Failed to delete video", 500);
   }
 }
-
-
-/*
+*/
 
 
 import { NextRequest } from "next/server";
@@ -108,4 +106,3 @@ export async function DELETE(
     return apiError("Failed to delete video", 500);
   }
 }
-*/
