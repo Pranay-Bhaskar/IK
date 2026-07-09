@@ -39,17 +39,17 @@ export function BottomNav() {
   const { user } = useAuth();
 
   let NAV_ITEMS = EXPLORER_NAV;
-  let activeColor = "text-[#a78bfa]";
-  let inactiveColor = "text-[#555577]";
-  let bgClass = "bg-[#0d0d16]/96 border-[#2a2a3e]";
+  let activeColor = "text-white";
+  let inactiveColor = "text-zinc-500";
+  let bgClass = "bg-black/96 border-zinc-900";
 
   if (user?.role === "CREATOR") {
     NAV_ITEMS = CREATOR_NAV;
   } else if (user?.role === "ADMIN") {
     NAV_ITEMS = ADMIN_NAV;
-    activeColor = "text-[#60a5fa]";
-    inactiveColor = "text-[#334155]";
-    bgClass = "bg-[#08101f]/96 border-[#0f172a]";
+    activeColor = "text-white";
+    inactiveColor = "text-zinc-600";
+    bgClass = "bg-black/96 border-zinc-900";
   }
 
   return (
@@ -72,10 +72,10 @@ export function BottomNav() {
                   <div className={cn(
                     "w-[52px] h-[52px] rounded-[18px] flex items-center justify-center shadow-xl transition-all",
                     isActive
-                      ? "bg-[#7c3aed] shadow-[0_6px_24px_rgba(124,58,237,0.55)]"
-                      : "bg-[#7c3aed] shadow-[0_4px_18px_rgba(124,58,237,0.35)]"
+                      ? "bg-white shadow-[0_6px_24px_rgba(255,255,255,0.2)]"
+                      : "bg-white shadow-[0_4px_18px_rgba(255,255,255,0.1)]"
                   )}>
-                    <Icon className="w-6 h-6 text-white" />
+                    <Icon className="w-6 h-6 text-black" />
                   </div>
                   <span className={cn(
                     "text-[10px] font-bold",
@@ -91,7 +91,6 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                // add py-2.5 for admin, py-1 for creator, but pt-2 for explorer. we can just do py-2.
                 className="flex flex-col items-center justify-center gap-1 flex-1 py-2"
               >
                 <Icon className={cn(
