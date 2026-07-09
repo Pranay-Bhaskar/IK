@@ -1,4 +1,4 @@
-
+/*
 "use client";
 
 import { useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from "react";
@@ -288,7 +288,7 @@ export const MapView = forwardRef<MapViewHandle, MapViewProps>(function MapView(
 });
 
 
-/*
+*/
 
 
 "use client";
@@ -635,6 +635,3 @@ export const MapView = forwardRef<MapViewHandle, MapViewProps>(function MapView(
     />
   );
 });
-
-
-*/
