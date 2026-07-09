@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 interface UseGoogleMapsOptions {
   apiKey: string;
@@ -12,6 +12,13 @@ interface UseGoogleMapsResult {
   loadError: Error | null;
 }
 
+declare global {
+  interface Window {
+    __googleMapsInitCallback?: () => void;
+    google?: typeof google;
+  }
+}
+
 let loadPromise: Promise<void> | null = null;
 let isScriptAdded = false;
 
@@ -20,11 +27,15 @@ function loadScript(apiKey: string, libraries: string[]): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
 
   loadPromise = new Promise((resolve, reject) => {
+    if (window.google?.maps) {
+      resolve();
+      return;
+    }
+
     if (isScriptAdded) {
-      // Script already in DOM, wait for callback
-      const check = setInterval(() => {
+      const check = window.setInterval(() => {
         if (window.google?.maps) {
-          clearInterval(check);
+          window.clearInterval(check);
           resolve();
         }
       }, 50);
@@ -32,15 +43,24 @@ function loadScript(apiKey: string, libraries: string[]): Promise<void> {
     }
 
     isScriptAdded = true;
-    const callbackName = "__googleMapsInitCallback";
-    (window as Record<string, unknown>)[callbackName] = () => resolve();
+
+    window.__googleMapsInitCallback = () => {
+      resolve();
+      delete window.__googleMapsInitCallback;
+    };
 
     const script = document.createElement("script");
     const libs = libraries.join(",");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=${libs}&callback=${callbackName}&loading=async`;
+
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=${libs}&callback=__googleMapsInitCallback&loading=async`;
     script.async = true;
     script.defer = true;
-    script.onerror = () => reject(new Error("Google Maps failed to load"));
+
+    script.onerror = () => {
+      delete window.__googleMapsInitCallback;
+      reject(new Error("Google Maps failed to load"));
+    };
+
     document.head.appendChild(script);
   });
 
@@ -55,20 +75,29 @@ export function useGoogleMaps({
   const [loadError, setLoadError] = useState<Error | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!apiKey) {
       setLoadError(new Error("No Google Maps API key provided"));
       return;
     }
 
-    // Already loaded
     if (window.google?.maps) {
       setIsLoaded(true);
       return;
     }
 
     loadScript(apiKey, libraries)
-      .then(() => setIsLoaded(true))
-      .catch((err) => setLoadError(err));
+      .then(() => {
+        if (!cancelled) setIsLoaded(true);
+      })
+      .catch((err) => {
+        if (!cancelled) setLoadError(err instanceof Error ? err : new Error("Google Maps failed to load"));
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [apiKey, libraries]);
 
   return { isLoaded, loadError };
