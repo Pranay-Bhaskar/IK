@@ -110,24 +110,24 @@ export default function PlacePage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-[#0d0d16] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#7c3aed] animate-spin" />
+      <div className="min-h-dvh bg-black flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-white animate-spin" />
       </div>
     );
   }
 
   if (!video) {
     return (
-      <div className="min-h-dvh bg-[#0d0d16] flex flex-col items-center justify-center px-8 text-center">
+      <div className="min-h-dvh bg-black flex flex-col items-center justify-center px-8 text-center">
         <div className="text-5xl mb-4">😕</div>
         <h2 className="text-lg font-bold text-white mb-2">Place not found</h2>
-        <button onClick={() => router.back()} className="text-[#a78bfa] text-sm font-medium mt-2">Go back</button>
+        <button onClick={() => router.back()} className="text-zinc-400 text-sm font-medium mt-2">Go back</button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-[#0d0d16] pb-10">
+    <div className="min-h-dvh bg-black pb-10">
       {/* Hero video/thumbnail */}
       <div className="relative w-full aspect-[9/16] max-h-[65dvh] bg-black overflow-hidden">
         {playing ? (
@@ -142,8 +142,8 @@ export default function PlacePage() {
           <>
             {video.thumbnailUrl
               ? <img src={video.thumbnailUrl} alt={video.title} className="w-full h-full object-cover" />
-              : <div className="w-full h-full bg-gradient-to-b from-[#1e1e2e] to-[#0d0d16] flex items-center justify-center">
-                  <Play className="w-12 h-12 text-[#2a2a3e]" />
+              : <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                  <Play className="w-12 h-12 text-zinc-700" />
                 </div>
             }
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
@@ -172,10 +172,10 @@ export default function PlacePage() {
               onClick={handleSave}
               className={cn(
                 "w-9 h-9 rounded-full glass border flex items-center justify-center transition-all",
-                saved ? "border-[#a78bfa] bg-[#7c3aed]/30" : "border-white/20"
+                saved ? "border-white bg-white/20" : "border-white/20"
               )}
             >
-              <Bookmark className={cn("w-4 h-4 transition-all", saved ? "text-[#a78bfa] fill-[#a78bfa]" : "text-white")} />
+              <Bookmark className={cn("w-4 h-4 transition-all", saved ? "text-white fill-white" : "text-white")} />
             </button>
             <button
               onClick={handleShare}
@@ -209,20 +209,20 @@ export default function PlacePage() {
         {/* Title + Place */}
         <h1 className="text-xl font-bold text-white leading-snug mb-2">{video.title}</h1>
         <div className="flex items-center gap-2 mb-4">
-          <MapPin className="w-4 h-4 text-[#a78bfa] flex-shrink-0" />
-          <span className="text-sm text-[#9ca3af]">{video.placeName}, {video.district}</span>
+          <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+          <span className="text-sm text-zinc-400">{video.placeName}, {video.district}</span>
         </div>
 
         {/* Distance + Travel modes */}
         {distanceKm !== null && (
-          <div className="bg-[#161622] border border-[#2a2a3e] rounded-2xl p-4 mb-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Navigation className="w-4 h-4 text-[#a78bfa]" />
+                <Navigation className="w-4 h-4 text-zinc-400" />
                 <span className="text-sm font-bold text-white">{distanceKm} km from you</span>
               </div>
               {travelTime && (
-                <span className="text-sm font-semibold text-[#a78bfa]">
+                <span className="text-sm font-semibold text-zinc-400">
                   {selectedTravel.icon} {formatTime(travelTime)}
                 </span>
               )}
@@ -238,12 +238,12 @@ export default function PlacePage() {
                     onClick={() => setSelectedTravel(mode)}
                     className={cn(
                       "flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-all",
-                      isActive ? "bg-[#7c3aed] border-[#7c3aed]" : "bg-[#0d0d16] border-[#2a2a3e] hover:border-[#7c3aed]/40"
+                      isActive ? "bg-white border-white text-black" : "bg-black border-zinc-800 hover:border-zinc-700 text-white"
                     )}
                   >
-                    <ModeIcon className="w-4 h-4 text-white" />
-                    <span className="text-[9px] text-white font-medium">{mode.label}</span>
-                    <span className="text-[9px] text-white/50">{formatTime(mins)}</span>
+                    <ModeIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-white")} />
+                    <span className={cn("text-[9px] font-medium", isActive ? "text-black" : "text-white")}>{mode.label}</span>
+                    <span className={cn("text-[9px]", isActive ? "text-zinc-600" : "text-zinc-500")}>{formatTime(mins)}</span>
                   </button>
                 );
               })}
@@ -255,16 +255,16 @@ export default function PlacePage() {
         <div className="flex gap-3 mb-5">
           <button
             onClick={() => setShowItinerary(true)}
-            className="flex-1 bg-[#7c3aed] text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all"
+            className="flex-1 bg-white text-black font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all"
           >
             <CheckCircle2 className="w-4 h-4" />
             Add to trip
           </button>
           <button
             onClick={openMaps}
-            className="flex-1 bg-[#161622] border border-[#2a2a3e] text-white font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all hover:border-[#7c3aed]/40"
+            className="flex-1 bg-zinc-900 border border-zinc-800 text-white font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all hover:border-zinc-700"
           >
-            <Navigation className="w-4 h-4 text-[#a78bfa]" />
+            <Navigation className="w-4 h-4 text-zinc-400" />
             Get directions
           </button>
         </div>
@@ -275,46 +275,46 @@ export default function PlacePage() {
             onClick={() => setLiked(l => !l)}
             className={cn(
               "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all",
-              liked ? "bg-rose-500/10 border-rose-500/30 text-rose-400" : "bg-[#161622] border-[#2a2a3e] text-[#9ca3af]"
+              liked ? "bg-white border-white text-black" : "bg-zinc-900 border-zinc-800 text-zinc-400"
             )}
           >
-            <Heart className={cn("w-4 h-4", liked && "fill-rose-400")} />
+            <Heart className={cn("w-4 h-4", liked && "fill-black")} />
             <span className="text-sm font-semibold">{formatCount(video.likesCount + (liked ? 1 : 0))}</span>
           </button>
           <button
             onClick={handleSave}
             className={cn(
               "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all",
-              saved ? "bg-[#7c3aed]/10 border-[#7c3aed]/30 text-[#a78bfa]" : "bg-[#161622] border-[#2a2a3e] text-[#9ca3af]"
+              saved ? "bg-white border-white text-black" : "bg-zinc-900 border-zinc-800 text-zinc-400"
             )}
           >
-            <Bookmark className={cn("w-4 h-4", saved && "fill-[#a78bfa]")} />
+            <Bookmark className={cn("w-4 h-4", saved && "fill-black")} />
             <span className="text-sm font-semibold">{formatCount(video.savesCount + (saved ? 1 : 0))}</span>
           </button>
           <button
             onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#161622] border border-[#2a2a3e] text-[#9ca3af] transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 transition-all"
           >
             <Share2 className="w-4 h-4" />
             <span className="text-sm font-semibold">Share</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#161622] border border-[#2a2a3e] text-[#9ca3af]">
+          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400">
             <MessageCircle className="w-4 h-4" />
             <span className="text-sm font-semibold">{formatCount(video.commentsCount)}</span>
           </button>
         </div>
 
         {/* Description */}
-        <div className="bg-[#161622] border border-[#2a2a3e] rounded-2xl p-4 mb-4">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4">
           <h2 className="text-sm font-bold text-white mb-2">About this place</h2>
-          <p className="text-sm text-[#9ca3af] leading-relaxed">{video.description}</p>
+          <p className="text-sm text-zinc-400 leading-relaxed">{video.description}</p>
         </div>
 
         {/* Tags */}
         {video.tags?.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {video.tags.map(tag => (
-              <span key={tag} className="text-xs bg-[#161622] border border-[#2a2a3e] text-[#9ca3af] px-3 py-1.5 rounded-full">
+              <span key={tag} className="text-xs bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1.5 rounded-full">
                 #{tag}
               </span>
             ))}
@@ -323,34 +323,34 @@ export default function PlacePage() {
 
         {/* Creator card */}
         {creator && (
-          <div className="bg-[#161622] border border-[#2a2a3e] rounded-2xl p-4 mb-4">
-            <h2 className="text-xs font-bold text-[#555577] uppercase mb-3">Story by</h2>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4">
+            <h2 className="text-xs font-bold text-zinc-500 uppercase mb-3">Story by</h2>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#4c1d95] flex items-center justify-center text-lg font-bold text-white flex-shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center text-lg font-bold text-white flex-shrink-0 border border-zinc-700">
                 {creator.fullName?.[0] || "C"}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <p className="text-sm font-bold text-white">{creator.fullName}</p>
                   {creator.isVerified && (
-                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                      <span className="text-[7px] text-white font-bold">✓</span>
+                    <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center">
+                      <span className="text-[7px] text-black font-bold">✓</span>
                     </div>
                   )}
                 </div>
                 {creator.district && (
-                  <p className="text-xs text-[#555577] flex items-center gap-1 mt-0.5">
+                  <p className="text-xs text-zinc-500 flex items-center gap-1 mt-0.5">
                     <MapPin className="w-2.5 h-2.5" />{creator.district}
                   </p>
                 )}
-                {creator.bio && <p className="text-xs text-[#9ca3af] mt-1 line-clamp-2">{creator.bio}</p>}
+                {creator.bio && <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{creator.bio}</p>}
               </div>
             </div>
           </div>
         )}
 
         {/* Uploaded time */}
-        <p className="text-xs text-[#555577] text-center">{formatRelativeTime(video.createdAt)}</p>
+        <p className="text-xs text-zinc-500 text-center">{formatRelativeTime(video.createdAt)}</p>
       </div>
 
       {/* Add to itinerary sheet */}
