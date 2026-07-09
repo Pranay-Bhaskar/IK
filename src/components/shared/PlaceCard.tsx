@@ -9,8 +9,9 @@ interface Props {
   place: IPlace;
 }
 
+// Monochrome/Grayscale backgrounds
 const BG_COLORS = [
-  "#134e4a","#3b0764","#78350f","#0c4a6e","#1e1b4b","#14532d","#1c1917","#0f172a",
+  "#000000", "#09090b", "#18181b", "#27272a", "#111827", "#171717"
 ];
 
 export function PlaceCard({ place }: Props) {
@@ -26,7 +27,7 @@ export function PlaceCard({ place }: Props) {
   return (
     <button
       onClick={() => router.push(`/map?placeId=${place._id}`)}
-      className="flex-shrink-0 w-44 h-56 rounded-2xl overflow-hidden relative active:scale-[0.97] transition-all border border-white/10 group"
+      className="flex-shrink-0 w-44 h-56 rounded-2xl overflow-hidden relative active:scale-[0.97] transition-all border border-zinc-800 group"
       style={{ background: bg }}
     >
       {place.thumbnailUrl ? (
@@ -47,7 +48,7 @@ export function PlaceCard({ place }: Props) {
         {/* Top row */}
         <div className="flex justify-start">
           {catConfig && (
-            <span className="text-[10px] glass border border-white/15 rounded-full px-2.5 py-1 text-white font-bold tracking-wide">
+            <span className="text-[10px] glass border border-white/20 rounded-full px-2.5 py-1 text-white font-bold tracking-wide">
               {emoji} {catConfig.label}
             </span>
           )}
@@ -59,15 +60,15 @@ export function PlaceCard({ place }: Props) {
             {place.name}
           </h3>
           <div className="flex items-center gap-1.5">
-            <MapPin className="w-3 h-3 text-[#2dd4bf] flex-shrink-0" />
+            <MapPin className="w-3 h-3 text-zinc-400 flex-shrink-0" />
             <span className="text-xs text-white/70 truncate">
               {[place.city, place.district].filter(Boolean).join(", ")}
             </span>
           </div>
           {place.distanceKm != null && (
             <div className="flex items-center gap-1.5 mt-2">
-              <Navigation className="w-3 h-3 text-blue-400 flex-shrink-0" />
-              <p className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">
+              <Navigation className="w-3 h-3 text-zinc-400 flex-shrink-0" />
+              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
                 {place.distanceKm} km away
               </p>
             </div>
