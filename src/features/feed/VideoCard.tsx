@@ -1,4 +1,4 @@
-/*
+
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
@@ -120,10 +120,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
 
   return (
     <>
-      {/* Full-screen reel card *}
+      {/* Full-screen reel card */}
       <div className="relative w-full h-dvh bg-black overflow-hidden select-none">
 
-        {/* ── Video ── *}
+        {/* ── Video ── */}
         <video
           ref={videoRef}
           src={video.videoUrl}
@@ -133,13 +133,13 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           onClick={togglePlay}
         />
 
-        {/* ── Gradient overlays ── *}
+        {/* ── Gradient overlays ── */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/35" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
         </div>
 
-        {/* ── Play flash ── *}
+        {/* ── Play flash ── */}
         {flashPlay && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
             <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -151,7 +151,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           </div>
         )}
 
-        {/* ── TOP BAR: category badge + mute ── *}
+        {/* ── TOP BAR: category badge + mute ── */}
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12 z-10 pointer-events-none">
           {category && (
             <span className="glass border border-white/10 rounded-full px-3 py-1 text-xs font-bold text-white pointer-events-auto">
@@ -168,10 +168,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           </div>
         </div>
 
-        {/* ── RIGHT SIDE ACTION RAIL ── *}
+        {/* ── RIGHT SIDE ACTION RAIL ── */}
         <div className="absolute right-3 bottom-36 flex flex-col items-center gap-4 z-10">
 
-          {/* Creator avatar *}
+          {/* Creator avatar */}
           <div className="flex flex-col items-center mb-1">
             <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/70 bg-gradient-to-br from-purple-500 to-pink-500">
               {creator?.profileImage
@@ -188,7 +188,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             )}
           </div>
 
-          {/* Save *}
+          {/* Save */}
           <RailBtn
             onClick={handleSave}
             count={saveCount}
@@ -198,7 +198,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <Bookmark className={cn("w-[22px] h-[22px]", saved ? "text-[#a78bfa] fill-[#a78bfa]" : "text-white")} />
           </RailBtn>
 
-          {/* Add to trip *}
+          {/* Add to trip */}
           <RailBtn
             onClick={e => { e.stopPropagation(); setShowItinerary(true); }}
             label="Trip"
@@ -206,7 +206,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <Plus className="w-[22px] h-[22px] text-white" />
           </RailBtn>
 
-          {/* Open on Map *}
+          {/* Open on Map */}
           <RailBtn
             onClick={e => {
               e.stopPropagation();
@@ -224,13 +224,13 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <MapPin className="w-[22px] h-[22px] text-white" />
           </RailBtn>
 
-          {/* Share *}
+          {/* Share */}
           <RailBtn onClick={handleShare} label="Share">
             <Share2 className="w-[22px] h-[22px] text-white" />
           </RailBtn>
         </div>
 
-        {/* ── SCROLL DOTS ── *}
+        {/* ── SCROLL DOTS ── */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-10">
           {Array.from({ length: Math.min(totalCount, 5) }).map((_, i) => (
             <div key={i} className={cn(
@@ -242,10 +242,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           ))}
         </div>
 
-        {/* ── BOTTOM INFO ── *}
+        {/* ── BOTTOM INFO ── */}
         <div className="absolute bottom-0 left-0 right-14 px-4 pb-24 z-10">
 
-          {/* Creator row *}
+          {/* Creator row */}
           <div className="flex items-center gap-2 mb-2">
             <span className="text-white font-black text-sm">
               @{creator?.fullName?.replace(/\s+/g,"").toLowerCase() || "creator"}
@@ -260,12 +260,12 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             </button>
           </div>
 
-          {/* Title *}
+          {/* Title */}
           <h2 className="text-white font-black text-[18px] leading-snug mb-2.5 line-clamp-2">
             {video.title}
           </h2>
 
-          {/* Place pill *}
+          {/* Place pill */}
           <button
             onClick={e => { e.stopPropagation(); router.push(`/place/${video._id}`); }}
             className="flex items-center gap-1.5 glass border border-white/15 rounded-full px-3 py-1.5 mb-2 active:opacity-70"
@@ -274,7 +274,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <span className="text-xs text-white font-medium">{video.placeName}, {video.district}</span>
           </button>
 
-          {/* Weather + distance badge row *}
+          {/* Weather + distance badge row */}
           <div className="flex items-center gap-2 mb-3">
             {distKm !== null && (
               <button
@@ -291,14 +291,14 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
                 )}
               </button>
             )}
-            {/* Fake weather badge for UI *}
+            {/* Fake weather badge for UI */}
             <div className="flex items-center gap-1 glass border border-amber-400/20 rounded-full px-2.5 py-1.5 text-[10px]">
               <Sun className="w-3 h-3 text-amber-300" />
               <span className="text-amber-200 font-bold">28°C</span>
             </div>
           </div>
 
-          {/* Travel mode picker *}
+          {/* Travel mode picker */}
           {showTravel && distKm !== null && (
             <div className="glass border border-white/10 rounded-2xl p-2.5 grid grid-cols-4 gap-1.5 mb-3">
               {TRAVEL_MODES.map(mode => {
@@ -323,7 +323,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             </div>
           )}
 
-          {/* CTA row *}
+          {/* CTA row */}
           <div className="flex gap-2.5">
             <button
               onClick={e => { e.stopPropagation(); setShowItinerary(true); }}
@@ -355,7 +355,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
         </div>
       </div>
 
-      {/* Add to itinerary bottom sheet *}
+      {/* Add to itinerary bottom sheet */}
       <AddToItinerarySheet
         video={video}
         isOpen={showItinerary}
@@ -392,7 +392,9 @@ function RailBtn({
     </button>
   );
 }
-*/
+
+
+/*
 
 
 "use client";
@@ -520,10 +522,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
 
   return (
     <>
-      {/* Full-screen reel card */}
+      {/* Full-screen reel card *}
       <div className="relative w-full h-dvh bg-black overflow-hidden select-none">
 
-        {/* ── Video ── */}
+        {/* ── Video ── *}
         <video
           ref={videoRef}
           src={video.videoUrl}
@@ -533,13 +535,13 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           onClick={togglePlay}
         />
 
-        {/* ── Gradient overlays ── */}
+        {/* ── Gradient overlays ── *}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/35" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
         </div>
 
-        {/* ── Play flash ── */}
+        {/* ── Play flash ── *}
         {flashPlay && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
             <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -551,7 +553,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           </div>
         )}
 
-        {/* ── TOP BAR: category badge + mute ── */}
+        {/* ── TOP BAR: category badge + mute ── *}
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12 z-10 pointer-events-none">
           {category && (
             <span className="glass border border-white/10 rounded-full px-3 py-1 text-xs font-bold text-white pointer-events-auto">
@@ -568,10 +570,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           </div>
         </div>
 
-        {/* ── RIGHT SIDE ACTION RAIL ── */}
+        {/* ── RIGHT SIDE ACTION RAIL ── *}
         <div className="absolute right-3 bottom-36 flex flex-col items-center gap-4 z-10">
 
-          {/* Creator avatar */}
+          {/* Creator avatar *}
           <div className="flex flex-col items-center mb-1">
             <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/70 bg-gradient-to-br from-purple-500 to-pink-500">
               {creator?.profileImage
@@ -588,7 +590,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             )}
           </div>
 
-          {/* Save */}
+          {/* Save *}
           <RailBtn
             onClick={handleSave}
             count={saveCount}
@@ -598,7 +600,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <Bookmark className={cn("w-[22px] h-[22px]", saved ? "text-[#a78bfa] fill-[#a78bfa]" : "text-white")} />
           </RailBtn>
 
-          {/* Add to trip */}
+          {/* Add to trip *}
           <RailBtn
             onClick={e => { e.stopPropagation(); setShowItinerary(true); }}
             label="Trip"
@@ -606,7 +608,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <Plus className="w-[22px] h-[22px] text-white" />
           </RailBtn>
 
-          {/* Open on Map */}
+          {/* Open on Map *}
           <RailBtn
             onClick={e => {
               e.stopPropagation();
@@ -623,13 +625,13 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <MapPin className="w-[22px] h-[22px] text-white" />
           </RailBtn>
 
-          {/* Share */}
+          {/* Share *}
           <RailBtn onClick={handleShare} label="Share">
             <Share2 className="w-[22px] h-[22px] text-white" />
           </RailBtn>
         </div>
 
-        {/* ── SCROLL DOTS ── */}
+        {/* ── SCROLL DOTS ── *}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-10">
           {Array.from({ length: Math.min(totalCount, 5) }).map((_, i) => (
             <div key={i} className={cn(
@@ -641,10 +643,10 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           ))}
         </div>
 
-        {/* ── BOTTOM INFO ── */}
+        {/* ── BOTTOM INFO ── *}
         <div className="absolute bottom-0 left-0 right-14 px-4 pb-24 z-10">
 
-          {/* Creator row */}
+          {/* Creator row *}
           <div className="flex items-center gap-2 mb-2">
             <span className="text-white font-black text-sm">
               @{creator?.fullName?.replace(/\s+/g,"").toLowerCase() || "creator"}
@@ -659,12 +661,12 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             </button>
           </div>
 
-          {/* Title */}
+          {/* Title *}
           <h2 className="text-white font-black text-[18px] leading-snug mb-2.5 line-clamp-2">
             {video.title}
           </h2>
 
-          {/* Place pill */}
+          {/* Place pill *}
           <button
             // FIXED: Use pId instead of video._id
             onClick={e => { e.stopPropagation(); if (pId) router.push(`/place/${pId}`); }}
@@ -674,7 +676,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <span className="text-xs text-white font-medium">{video.placeName}, {video.district}</span>
           </button>
 
-          {/* Weather + distance badge row */}
+          {/* Weather + distance badge row *}
           <div className="flex items-center gap-2 mb-3">
             {distKm !== null && (
               <button
@@ -691,14 +693,14 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
                 )}
               </button>
             )}
-            {/* Fake weather badge for UI */}
+            {/* Fake weather badge for UI *}
             <div className="flex items-center gap-1 glass border border-amber-400/20 rounded-full px-2.5 py-1.5 text-[10px]">
               <Sun className="w-3 h-3 text-amber-300" />
               <span className="text-amber-200 font-bold">28°C</span>
             </div>
           </div>
 
-          {/* Travel mode picker */}
+          {/* Travel mode picker *}
           {showTravel && distKm !== null && (
             <div className="glass border border-white/10 rounded-2xl p-2.5 grid grid-cols-4 gap-1.5 mb-3">
               {TRAVEL_MODES.map(mode => {
@@ -723,7 +725,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             </div>
           )}
 
-          {/* CTA row */}
+          {/* CTA row *}
           <div className="flex gap-2.5">
             <button
               onClick={e => { e.stopPropagation(); setShowItinerary(true); }}
@@ -754,7 +756,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
         </div>
       </div>
 
-      {/* Add to itinerary bottom sheet */}
+      {/* Add to itinerary bottom sheet *}
       <AddToItinerarySheet
         video={video}
         isOpen={showItinerary}
@@ -791,3 +793,5 @@ function RailBtn({
     </button>
   );
 }
+
+*/
