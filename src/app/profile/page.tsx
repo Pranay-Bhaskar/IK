@@ -82,7 +82,7 @@ export default function ProfilePage() {
         <div className="flex items-start justify-between mb-5 relative">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-[68px] h-[68px] rounded-2xl bg-zinc-800 flex items-center justify-center text-2xl font-black text-white border-2 border-zinc-700">
+              <div className="w-[68px] h-[68px] rounded-2xl bg-zinc-800 flex items-center justify-center text-2xl font-bold text-white border-2 border-zinc-700">
                 {user.fullName.charAt(0).toUpperCase()}
               </div>
               {user.role === "CREATOR" && (
@@ -92,14 +92,14 @@ export default function ProfilePage() {
               )}
             </div>
             <div>
-              <h1 className="text-lg font-black text-white leading-tight">{user.fullName}</h1>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <h1 className="text-lg font-bold tracking-tight text-white leading-tight">{user.fullName}</h1>
+              <p className="text-xs text-zinc-500 mt-0.5 font-medium">
                 @{user.fullName.replace(/\s+/g, "").toLowerCase()}
               </p>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                 <RoleBadge role={user.role} />
                 {user.district && (
-                  <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-full">
+                  <span className="flex items-center gap-1 text-[10px] text-zinc-400 font-medium bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-full">
                     <MapPin className="w-2.5 h-2.5" />{user.district}
                   </span>
                 )}
@@ -110,13 +110,13 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center"
+              className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center transition-colors hover:bg-zinc-800"
               title="Sign out"
             >
               <LogOut className="w-4 h-4 text-zinc-400" />
             </button>
             <button
-              className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center"
+              className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center transition-colors hover:bg-zinc-800"
               title="Edit profile"
             >
               <Edit3 className="w-4 h-4 text-zinc-400" />
@@ -155,14 +155,14 @@ export default function ProfilePage() {
                 key={tab}
                 onClick={() => handleTabChange(tab)}
                 className={cn(
-                  "flex-1 py-2 rounded-xl text-[11px] font-black transition-all",
+                  "flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all",
                   activeTab === tab
                     ? "bg-white text-black"
-                    : "text-zinc-500"
+                    : "text-zinc-500 hover:text-zinc-400"
                 )}
               >
                 {TAB_LABELS[tab]}
-                <span className="ml-0.5 opacity-50">({counts[tab]})</span>
+                <span className="ml-0.5 opacity-50 font-medium">({counts[tab]})</span>
               </button>
             ))}
           </div>
@@ -190,7 +190,7 @@ export default function ProfilePage() {
           {/* Upload CTA */}
           <button
             onClick={() => router.push("/upload")}
-            className="w-full mt-4 flex items-center justify-center gap-2 border-2 border-dashed border-zinc-700 rounded-2xl py-4 text-sm font-black text-white bg-zinc-900 hover:bg-zinc-800 active:scale-[0.98] transition-all"
+            className="w-full mt-4 flex items-center justify-center gap-2 border-2 border-dashed border-zinc-700 rounded-2xl py-4 text-sm font-semibold text-white bg-zinc-900 hover:bg-zinc-800 active:scale-[0.98] transition-all"
           >
             <Camera className="w-4 h-4" />
             Upload new story
@@ -250,7 +250,7 @@ function RoleBadge({ role }: { role: string }) {
   const c = cfg[role];
   if (!c) return null;
   return (
-    <span className={cn("flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full border", c.cls)}>
+    <span className={cn("flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border", c.cls)}>
       <c.icon style={{ width: 10, height: 10 }} />
       {c.label}
     </span>
@@ -260,8 +260,8 @@ function RoleBadge({ role }: { role: string }) {
 function StatCard({ value, label, color, bg }: { value: number; label: string; color: string; bg: string }) {
   return (
     <div className={cn("rounded-2xl p-3 text-center border", bg)}>
-      <div className={cn("text-xl font-black", color)}>{value}</div>
-      <div className="text-[10px] text-zinc-500 mt-0.5 font-semibold">{label}</div>
+      <div className={cn("text-xl font-bold tracking-tight", color)}>{value}</div>
+      <div className="text-[10px] text-zinc-500 mt-0.5 font-medium tracking-wide uppercase">{label}</div>
     </div>
   );
 }
@@ -269,7 +269,7 @@ function StatCard({ value, label, color, bg }: { value: number; label: string; c
 function MenuSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-2">{title}</p>
+      <p className="text-[10px] font-semibold text-zinc-500 tracking-widest uppercase mb-2 ml-1">{title}</p>
       <div className="space-y-2">{children}</div>
     </div>
   );
@@ -285,8 +285,8 @@ function MenuItem({
     <button
       onClick={onClick}
       className={cn(
-        "w-full bg-zinc-900 rounded-2xl border px-4 py-3.5 flex items-center gap-3 active:opacity-70 transition-all text-left",
-        "border-zinc-800 hover:border-zinc-600"
+        "w-full bg-zinc-900 rounded-2xl border px-4 py-3.5 flex items-center gap-3 active:scale-[0.98] transition-all text-left",
+        "border-zinc-800 hover:border-zinc-700"
       )}
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-zinc-800">
@@ -296,7 +296,7 @@ function MenuItem({
         />
       </div>
       <div className="flex-1 min-w-0">
-        <p className={cn("text-sm font-bold", danger ? "text-zinc-400" : "text-white")}>{label}</p>
+        <p className={cn("text-sm font-semibold tracking-tight", danger ? "text-zinc-400" : "text-white")}>{label}</p>
         <p className="text-[11px] text-zinc-500 mt-0.5">{sub}</p>
       </div>
       {!danger && <ChevronRight className="w-4 h-4 text-zinc-700" />}
@@ -310,7 +310,6 @@ function VideoListCard({ video, onClick }: { video: IVideo; onClick: () => void 
     video.status === "APPROVED" ? CheckCircle2 :
     video.status === "REJECTED" ? XCircle : Clock;
     
-  // Dynamic monochrome status badge
   const statusCls = 
     video.status === "APPROVED" ? "bg-white text-black border-white" :
     video.status === "PENDING" ? "bg-zinc-900 text-zinc-400 border-zinc-700" :
@@ -324,7 +323,7 @@ function VideoListCard({ video, onClick }: { video: IVideo; onClick: () => void 
   return (
     <button
       onClick={onClick}
-      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden flex text-left active:opacity-70 transition-all hover:border-zinc-700"
+      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden flex text-left active:scale-[0.98] transition-all hover:border-zinc-700"
     >
       <div className="w-[72px] h-[88px] bg-zinc-800 flex-shrink-0 relative overflow-hidden">
         {video.thumbnailUrl ? (
@@ -337,26 +336,26 @@ function VideoListCard({ video, onClick }: { video: IVideo; onClick: () => void 
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
-      <div className="flex-1 p-3 min-w-0">
-        <p className="text-sm font-black text-white truncate leading-tight">{video.title}</p>
-        <div className="flex items-center gap-1 mt-1">
-          <MapPin className="w-3 h-3 text-zinc-500" />
-          <span className="text-[11px] text-zinc-500 truncate">
-            {video.placeName}, {video.district}
-          </span>
+      <div className="flex-1 p-3 min-w-0 flex flex-col justify-between">
+        <div>
+          <p className="text-sm font-semibold text-white truncate tracking-tight">{video.title}</p>
+          <div className="flex items-center gap-1 mt-0.5">
+            <MapPin className="w-3 h-3 text-zinc-500" />
+            <span className="text-[11px] text-zinc-400 truncate">
+              {video.placeName}, {video.district}
+            </span>
+          </div>
         </div>
-        {cat && (
-          <p className="text-[10px] text-zinc-500 mt-0.5">{cat.emoji} {cat.label}</p>
-        )}
+        
         <div className="flex items-center justify-between mt-2">
           <div className={cn(
-            "flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full border",
+            "flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border",
             statusCls
           )}>
             <StatusIcon style={{ width: 10, height: 10 }} />
             {statusLabel}
           </div>
-          <span className="text-[10px] text-zinc-500">
+          <span className="text-[10px] text-zinc-500 font-medium">
             {formatRelativeTime(video.createdAt)}
           </span>
         </div>
@@ -380,13 +379,13 @@ function EmptyVideos({ tab, onUpload }: { tab: VideoTab; onUpload: () => void })
   const m = msgs[tab];
   return (
     <div className="py-12 flex flex-col items-center text-center">
-      <div className="text-5xl mb-4">{m.emoji}</div>
-      <p className="text-sm font-black text-white mb-1">{m.title}</p>
+      <div className="text-5xl mb-4 opacity-90">{m.emoji}</div>
+      <p className="text-sm font-semibold tracking-tight text-white mb-1">{m.title}</p>
       <p className="text-xs text-zinc-500 mb-6">{m.sub}</p>
       {tab === "all" && (
         <button
           onClick={onUpload}
-          className="flex items-center gap-2 bg-white text-black font-black px-5 py-2.5 rounded-xl text-sm"
+          className="flex items-center gap-2 bg-white text-black font-semibold px-5 py-2.5 rounded-xl text-sm transition-transform active:scale-[0.98]"
         >
           <Camera className="w-4 h-4" />
           Upload now
