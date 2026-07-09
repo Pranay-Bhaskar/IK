@@ -148,8 +148,8 @@ export default function Page() {
   return (
     <Suspense
       fallback={
-        <div className="w-full h-[calc(100dvh-70px)] bg-[#0a0a0f] flex items-center justify-center">
-          <div className="text-white/40 text-sm">Loading map...</div>
+        <div className="w-full h-[calc(100dvh-70px)] bg-black flex items-center justify-center">
+          <div className="text-zinc-500 text-sm">Loading map...</div>
         </div>
       }
     >
