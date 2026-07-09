@@ -16,8 +16,8 @@ const ROLES = [
     emoji: "🧭",
     title: "Explorer",
     desc: "Discover & save hidden gems",
-    color: "border-blue-500/40 bg-blue-500/8 text-blue-400",
-    activeColor: "border-blue-500 bg-blue-500/15",
+    color: "border-zinc-700 bg-zinc-800 text-zinc-300",
+    activeColor: "border-white bg-white/10 text-white",
   },
   {
     value: "CREATOR" as Role,
@@ -25,8 +25,8 @@ const ROLES = [
     emoji: "🎬",
     title: "Creator",
     desc: "Upload & share your stories",
-    color: "border-[#7c3aed]/30 bg-[#7c3aed]/8 text-[#a78bfa]",
-    activeColor: "border-[#7c3aed] bg-[#7c3aed]/15",
+    color: "border-zinc-700 bg-zinc-800 text-zinc-300",
+    activeColor: "border-white bg-white/10 text-white",
   },
 ];
 
@@ -63,20 +63,20 @@ export default function SignupPage() {
     }
   };
 
-  const inputCls = "w-full bg-[#161622] border border-[#2a2a3e] rounded-xl px-4 py-3.5 text-sm text-white placeholder-[#555577] focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]/20 transition-all";
+  const inputCls = "w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-500 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/20 transition-all";
 
   return (
-    <div className="min-h-dvh bg-[#0d0d16] overflow-y-auto">
+    <div className="min-h-dvh bg-black overflow-y-auto">
       <div className="flex flex-col items-center px-6 pt-16 pb-12">
         {/* Logo */}
-        <div className="w-16 h-16 rounded-2xl bg-[#7c3aed] flex items-center justify-center mb-5 shadow-2xl shadow-purple-900/50">
-          <MapPin className="w-8 h-8 text-white" />
+        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-2xl shadow-white/10">
+          <MapPin className="w-8 h-8 text-black" />
         </div>
         <h1 className="text-2xl font-black text-white mb-1">Join Karnataka</h1>
-        <p className="text-sm text-[#555577] mb-7">Create your free account</p>
+        <p className="text-sm text-zinc-500 mb-7">Create your free account</p>
 
         {error && (
-          <div className="w-full bg-rose-500/10 border border-rose-500/25 rounded-2xl px-4 py-3 text-sm text-rose-400 mb-4">
+          <div className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-sm text-zinc-300 mb-4">
             {error}
           </div>
         )}
@@ -85,7 +85,7 @@ export default function SignupPage() {
 
           {/* Role picker */}
           <div>
-            <label className="text-xs font-black text-[#555577] tracking-wide mb-2 block">I WANT TO</label>
+            <label className="text-xs font-black text-zinc-500 tracking-wide mb-2 block">I WANT TO</label>
             <div className="grid grid-cols-2 gap-3">
               {ROLES.map(({ value, icon: Icon, emoji, title, desc, color, activeColor }) => (
                 <button
@@ -94,21 +94,21 @@ export default function SignupPage() {
                   onClick={() => setForm({ ...form, role: value })}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all text-center",
-                    form.role === value ? activeColor : "bg-[#161622] border-[#2a2a3e]"
+                    form.role === value ? activeColor : "bg-zinc-900 border-zinc-800"
                   )}
                 >
                   <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-xl",
-                    form.role === value ? color : "bg-[#1e1e2e]"
+                    form.role === value ? color : "bg-zinc-800"
                   )}>
                     {emoji}
                   </div>
                   <div>
                     <p className={cn("text-sm font-black",
-                      form.role === value ? "text-white" : "text-[#9ca3af]"
+                      form.role === value ? "text-white" : "text-zinc-400"
                     )}>
                       {title}
                     </p>
-                    <p className="text-[10px] text-[#555577] mt-0.5">{desc}</p>
+                    <p className="text-[10px] text-zinc-500 mt-0.5">{desc}</p>
                   </div>
                 </button>
               ))}
@@ -116,7 +116,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="text-xs font-black text-[#555577] tracking-wide mb-1.5 block">FULL NAME</label>
+            <label className="text-xs font-black text-zinc-500 tracking-wide mb-1.5 block">FULL NAME</label>
             <input
               type="text"
               value={form.fullName}
@@ -128,7 +128,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="text-xs font-black text-[#555577] tracking-wide mb-1.5 block">EMAIL</label>
+            <label className="text-xs font-black text-zinc-500 tracking-wide mb-1.5 block">EMAIL</label>
             <input
               type="email"
               value={form.email}
@@ -140,7 +140,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="text-xs font-black text-[#555577] tracking-wide mb-1.5 block">PASSWORD</label>
+            <label className="text-xs font-black text-zinc-500 tracking-wide mb-1.5 block">PASSWORD</label>
             <div className="relative">
               <input
                 type={showPwd ? "text" : "password"}
@@ -153,7 +153,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => setShowPwd(!showPwd)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555577] p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 p-1"
               >
                 {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -161,7 +161,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="text-xs font-black text-[#555577] tracking-wide mb-1.5 block">CONFIRM PASSWORD</label>
+            <label className="text-xs font-black text-zinc-500 tracking-wide mb-1.5 block">CONFIRM PASSWORD</label>
             <input
               type="password"
               value={form.confirmPassword}
@@ -175,7 +175,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#7c3aed] hover:bg-[#6d28d9] active:scale-[0.98] text-white font-black py-4 rounded-2xl transition-all disabled:opacity-60 flex items-center justify-center gap-2 shadow-xl shadow-purple-900/40 mt-2"
+            className="w-full bg-white hover:bg-zinc-200 active:scale-[0.98] text-black font-black py-4 rounded-2xl transition-all disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
           >
             {loading
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating account...</>
@@ -184,9 +184,9 @@ export default function SignupPage() {
           </button>
         </form>
 
-        <p className="text-sm text-[#555577] mt-6">
+        <p className="text-sm text-zinc-500 mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#a78bfa] font-black hover:underline">
+          <Link href="/login" className="text-white font-black hover:underline">
             Sign in
           </Link>
         </p>
