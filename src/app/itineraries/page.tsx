@@ -111,32 +111,32 @@ export default function ItinerariesPage() {
   // ── Auth guard ─────────────────────────────────────────────────────
   if (authLoading) {
     return (
-      <div className="h-dvh flex items-center justify-center bg-[#0d0d16]">
-        <Loader2 className="w-6 h-6 text-[#7c3aed] animate-spin" />
+      <div className="h-dvh flex items-center justify-center bg-black">
+        <Loader2 className="w-6 h-6 text-white animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-[#0d0d16] pb-28">
+    <div className="min-h-dvh bg-black pb-28">
 
       {/* ── Header ── */}
-      <div className="bg-gradient-to-b from-[#0f0a1f] to-[#0d0d16] px-4 pt-14 pb-5">
+      <div className="bg-gradient-to-b from-zinc-950 to-black px-4 pt-14 pb-5">
         <div className="flex items-center justify-between mb-1">
           <div>
             <h1 className="text-2xl font-black text-white">My Trips</h1>
-            <p className="text-xs text-[#555577] mt-0.5">Plan your Karnataka journey</p>
+            <p className="text-xs text-zinc-500 mt-0.5">Plan your Karnataka journey</p>
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="w-11 h-11 rounded-2xl bg-[#7c3aed] flex items-center justify-center shadow-lg shadow-purple-900/40 active:scale-[0.95] transition-all"
+            className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg shadow-white/10 active:scale-[0.95] transition-all"
           >
-            <Plus className="w-5 h-5 text-white" />
+            <Plus className="w-5 h-5 text-black" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-[#161622] border border-[#2a2a3e] rounded-2xl p-1 gap-1 mt-4">
+        <div className="flex bg-zinc-900 border border-zinc-800 rounded-2xl p-1 gap-1 mt-4">
           {(["trips", "saved"] as Tab[]).map(tab => (
             <button
               key={tab}
@@ -144,8 +144,8 @@ export default function ItinerariesPage() {
               className={cn(
                 "flex-1 py-2.5 rounded-xl text-xs font-black transition-all",
                 activeTab === tab
-                  ? "bg-[#7c3aed] text-white shadow-lg shadow-purple-900/30"
-                  : "text-[#555577]"
+                  ? "bg-white text-black"
+                  : "text-zinc-500"
               )}
             >
               {tab === "trips"
@@ -242,9 +242,9 @@ function SavedPlacesTab() {
           <button
             key={item._id}
             onClick={() => router.push(`/place/${v._id}`)}
-            className="w-full flex items-center gap-3 bg-[#161622] border border-[#2a2a3e] rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-[#7c3aed]/20"
+            className="w-full flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-zinc-700"
           >
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#1e1e2e] flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-zinc-800 flex-shrink-0">
               {v.thumbnailUrl ? (
                 <img src={v.thumbnailUrl} alt="" className="w-full h-full object-cover" />
               ) : (
@@ -254,13 +254,13 @@ function SavedPlacesTab() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-white truncate">{v.title}</p>
               <div className="flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-[#555577]" />
-                <span className="text-xs text-[#555577] truncate">
+                <MapPin className="w-3 h-3 text-zinc-500" />
+                <span className="text-xs text-zinc-500 truncate">
                   {v.placeName}, {v.district}
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#2a2a3e] flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0" />
           </button>
         );
       })}
