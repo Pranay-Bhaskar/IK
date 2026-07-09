@@ -79,7 +79,7 @@ export default function MapPageClient() {
   );
 
   return (
-    <div className="relative w-full h-[calc(100dvh-70px)] bg-[#0a0a0f] overflow-hidden">
+    <div className="relative w-full h-[calc(100dvh-70px)] bg-black overflow-hidden">
       <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
         <div className="absolute inset-0 h-40 bg-gradient-to-b from-black/60 to-transparent -z-10" />
 
@@ -91,19 +91,19 @@ export default function MapPageClient() {
 
       <div className="absolute inset-0 z-0">
         {!isLoaded && !loadError && (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f]">
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <Loader2 className="w-6 h-6 text-white/50 animate-spin" />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-black">
+            <div className="w-16 h-16 rounded-full bg-zinc-900 flex items-center justify-center mb-4">
+              <Loader2 className="w-6 h-6 text-zinc-500 animate-spin" />
             </div>
-            <p className="text-sm text-white/40 font-semibold tracking-wide">LOADING MAPS...</p>
+            <p className="text-sm text-zinc-500 font-semibold tracking-wide">LOADING MAPS...</p>
           </div>
         )}
 
         {loadError && (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] px-6 text-center">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-black px-6 text-center">
             <div className="text-3xl mb-4">🗺️</div>
-            <p className="text-sm text-red-400 font-semibold mb-2">Google Maps failed to load</p>
-            <p className="text-xs text-white/40">Please check your API key in .env.local</p>
+            <p className="text-sm text-white font-semibold mb-2">Google Maps failed to load</p>
+            <p className="text-xs text-zinc-500">Please check your API key in .env.local</p>
           </div>
         )}
 
