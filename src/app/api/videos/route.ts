@@ -103,6 +103,7 @@ export async function POST(req: NextRequest) {
 
 
 import { NextRequest } from "next/server";
+import "@/models/User";
 import { connectDB } from "@/lib/db/connect";
 import { Video } from "@/models/Video";
 import { getAuthUser } from "@/lib/auth/jwt";
@@ -184,19 +185,7 @@ export async function POST(req: NextRequest) {
     if (user.role !== "CREATOR") return apiError("Only creators can upload videos", 403);
 
     const body = await req.json();
-    const {
-      title,
-      description,
-      category,
-      placeName,
-      district,
-      latitude,
-      longitude,
-      tags,
-      videoUrl,
-      cloudinaryPublicId,
-      thumbnailUrl,
-    } = body;
+    const { title, description, category, placeName, district, latitude, longitude, tags, videoUrl, cloudinaryPublicId, thumbnailUrl } = body;
 
     if (!title || !description || !category || !placeName || !district || !videoUrl || !cloudinaryPublicId) {
       return apiError("Missing required fields", 400);
