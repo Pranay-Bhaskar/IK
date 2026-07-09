@@ -118,23 +118,14 @@ export async function GET(req: NextRequest) {
     const q = searchParams.get("q");
     const skip = (page - 1) * limit;
 
-    const latRaw = searchParams.get("lat");
-    const lngRaw = searchParams.get("lng");
-    const radiusRaw = searchParams.get("radius");
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    const radius = searchParams.get("radius");
 
-    const lat = latRaw === null ? NaN : parseFloat(latRaw);
-    const lng = lngRaw === null ? NaN : parseFloat(lngRaw);
-    const radiusKm = radiusRaw === null ? 0 : parseFloat(radiusRaw);
-
-    const swLatRaw = searchParams.get("swLat");
-    const swLngRaw = searchParams.get("swLng");
-    const neLatRaw = searchParams.get("neLat");
-    const neLngRaw = searchParams.get("neLng");
-
-    const swLat = swLatRaw === null ? NaN : parseFloat(swLatRaw);
-    const swLng = swLngRaw === null ? NaN : parseFloat(swLngRaw);
-    const neLat = neLatRaw === null ? NaN : parseFloat(neLatRaw);
-    const neLng = neLngRaw === null ? NaN : parseFloat(neLngRaw);
+    const swLat = searchParams.get("swLat");
+    const swLng = searchParams.get("swLng");
+    const neLat = searchParams.get("neLat");
+    const neLng = searchParams.get("neLng");
 
     const query: Record<string, unknown> = {};
     if (category) query.category = category;
@@ -148,24 +139,35 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    if (!Number.isNaN(lat) && !Number.isNaN(lng) && radiusKm > 0) {
+    const hasRadius =
+      lat !== null &&
+      lng !== null &&
+      radius !== null &&
+      !Number.isNaN(parseFloat(lat)) &&
+      !Number.isNaN(parseFloat(lng)) &&
+      parseFloat(radius) > 0;
+
+    if (hasRadius) {
       query.location = {
-        $nearSphere: {
-          $geometry: { type: "Point", coordinates: [lng, lat] },
-          $maxDistance: radiusKm * 1000,
+        $geoWithin: {
+          $centerSphere: [[parseFloat(lng), parseFloat(lat)], parseFloat(radius) / 6378.1],
         },
       };
     } else if (
-      !Number.isNaN(swLat) &&
-      !Number.isNaN(swLng) &&
-      !Number.isNaN(neLat) &&
-      !Number.isNaN(neLng)
+      swLat !== null &&
+      swLng !== null &&
+      neLat !== null &&
+      neLng !== null &&
+      !Number.isNaN(parseFloat(swLat)) &&
+      !Number.isNaN(parseFloat(swLng)) &&
+      !Number.isNaN(parseFloat(neLat)) &&
+      !Number.isNaN(parseFloat(neLng))
     ) {
       query.location = {
         $geoWithin: {
           $box: [
-            [swLng, swLat],
-            [neLng, neLat],
+            [parseFloat(swLng), parseFloat(swLat)],
+            [parseFloat(neLng), parseFloat(neLat)],
           ],
         },
       };
@@ -176,21 +178,24 @@ export async function GET(req: NextRequest) {
       Place.countDocuments(query),
     ]);
 
-    const enriched = !Number.isNaN(lat) && !Number.isNaN(lng)
-      ? places.map((p) => {
-          const [pLng, pLat] = p.location.coordinates;
-          const R = 6371;
-          const dLat = ((pLat - lat) * Math.PI) / 180;
-          const dLon = ((pLng - lng) * Math.PI) / 180;
-          const a =
-            Math.sin(dLat / 2) ** 2 +
-            Math.cos((lat * Math.PI) / 180) *
-              Math.cos((pLat * Math.PI) / 180) *
-              Math.sin(dLon / 2) ** 2;
-          const distanceKm = Math.round((R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * 10) / 10;
-          return { ...p, distanceKm };
-        })
-      : places;
+    const enriched =
+      lat !== null && !Number.isNaN(parseFloat(lat)) && lng !== null && !Number.isNaN(parseFloat(lng))
+        ? places.map((p) => {
+            const [pLng, pLat] = p.location.coordinates;
+            const R = 6371;
+            const userLat = parseFloat(lat);
+            const userLng = parseFloat(lng);
+            const dLat = ((pLat - userLat) * Math.PI) / 180;
+            const dLon = ((pLng - userLng) * Math.PI) / 180;
+            const a =
+              Math.sin(dLat / 2) ** 2 +
+              Math.cos((userLat * Math.PI) / 180) *
+                Math.cos((pLat * Math.PI) / 180) *
+                Math.sin(dLon / 2) ** 2;
+            const distanceKm = Math.round((R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * 10) / 10;
+            return { ...p, distanceKm };
+          })
+        : places;
 
     return apiSuccess({
       places: enriched,
