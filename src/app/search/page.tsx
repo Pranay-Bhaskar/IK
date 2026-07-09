@@ -72,35 +72,35 @@ export default function SearchPage() {
   const resultsCount = activeTab === "videos" ? videos.length : places.length;
 
   return (
-    <div className="min-h-dvh bg-[#0d0d16] pb-24">
+    <div className="min-h-dvh bg-black pb-24">
       {/* Header */}
-      <div className="px-4 pt-14 pb-3 bg-[#0d0d16] sticky top-0 z-10 border-b border-[#1e1e2e]">
+      <div className="px-4 pt-14 pb-3 bg-black sticky top-0 z-10 border-b border-zinc-900">
         <h1 className="text-xl font-black text-white mb-3">Search</h1>
         
         {/* Tabs */}
-        <div className="flex gap-4 mb-4 border-b border-[#1e1e2e]">
+        <div className="flex gap-4 mb-4 border-b border-zinc-900">
           <button 
             onClick={() => { setActiveTab("videos"); clearAll(); }}
-            className={cn("pb-2 text-sm font-bold border-b-2 transition-all", activeTab === "videos" ? "border-[#7c3aed] text-white" : "border-transparent text-[#555577]")}
+            className={cn("pb-2 text-sm font-bold border-b-2 transition-all", activeTab === "videos" ? "border-white text-white" : "border-transparent text-zinc-500")}
           >Videos</button>
           <button 
             onClick={() => { setActiveTab("places"); clearAll(); }}
-            className={cn("pb-2 text-sm font-bold border-b-2 transition-all", activeTab === "places" ? "border-[#7c3aed] text-white" : "border-transparent text-[#555577]")}
+            className={cn("pb-2 text-sm font-bold border-b-2 transition-all", activeTab === "places" ? "border-white text-white" : "border-transparent text-zinc-500")}
           >Places</button>
         </div>
 
         <form onSubmit={e => { e.preventDefault(); doSearch(); }} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555577]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
             <input
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder={activeTab === "videos" ? "Stories, food, etc..." : "Places, cities, etc..."}
-              className="w-full bg-[#161622] border border-[#2a2a3e] rounded-xl pl-9 pr-4 py-3 text-sm text-white placeholder-[#555577] focus:border-[#7c3aed] transition-all"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white placeholder-zinc-500 focus:border-zinc-500 transition-all"
             />
             {query && (
               <button type="button" onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-                <X className="w-4 h-4 text-[#555577]" />
+                <X className="w-4 h-4 text-zinc-500" />
               </button>
             )}
           </div>
@@ -110,8 +110,8 @@ export default function SearchPage() {
             className={cn(
               "w-12 h-12 rounded-xl border flex items-center justify-center transition-all",
               showFilters || category || district
-                ? "bg-[#7c3aed]/15 border-[#7c3aed] text-[#a78bfa]"
-                : "bg-[#161622] border-[#2a2a3e] text-[#555577]"
+                ? "bg-white/10 border-white text-white"
+                : "bg-zinc-900 border-zinc-800 text-zinc-500"
             )}
           >
             <Filter className="w-4 h-4" />
@@ -121,37 +121,37 @@ export default function SearchPage() {
         {showFilters && (
           <div className="mt-3 space-y-3 fade-up">
             <div>
-              <p className="text-[10px] font-black text-[#555577] tracking-wider mb-2">CATEGORY</p>
+              <p className="text-[10px] font-black text-zinc-500 tracking-wider mb-2">CATEGORY</p>
               <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 <button
                   onClick={() => setCategory("")}
                   className={cn("flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
-                    !category ? "bg-[#7c3aed] text-white border-[#7c3aed]" : "bg-[#161622] text-[#9ca3af] border-[#2a2a3e]"
+                    !category ? "bg-white text-black border-white" : "bg-zinc-900 text-zinc-400 border-zinc-800"
                   )}
                 >✨ All</button>
                 {currentCategories.map(c => (
                   <button key={c.value}
                     onClick={() => setCategory(category === c.value ? "" : c.value)}
                     className={cn("flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
-                      category === c.value ? "bg-[#7c3aed] text-white border-[#7c3aed]" : "bg-[#161622] text-[#9ca3af] border-[#2a2a3e]"
+                      category === c.value ? "bg-white text-black border-white" : "bg-zinc-900 text-zinc-400 border-zinc-800"
                     )}
                   >{c.emoji} {c.label}</button>
                 ))}
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-black text-[#555577] tracking-wider mb-2">DISTRICT</p>
+              <p className="text-[10px] font-black text-zinc-500 tracking-wider mb-2">DISTRICT</p>
               <select
                 value={district}
                 onChange={e => setDistrict(e.target.value)}
-                className="w-full bg-[#161622] border border-[#2a2a3e] rounded-xl px-4 py-2.5 text-sm text-white focus:border-[#7c3aed] transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-zinc-500 transition-all"
               >
                 <option value="">All districts</option>
                 {KARNATAKA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             {(category || district || query) && (
-              <button onClick={clearAll} className="text-xs text-[#a78bfa] font-semibold">Clear all filters</button>
+              <button onClick={clearAll} className="text-xs text-white font-semibold">Clear all filters</button>
             )}
           </div>
         )}
@@ -161,27 +161,27 @@ export default function SearchPage() {
       <div className="px-4 pt-4">
         {!searched && !loading && (
           <div>
-            <p className="text-xs font-black text-[#555577] tracking-wider mb-3">BROWSE BY CATEGORY</p>
+            <p className="text-xs font-black text-zinc-500 tracking-wider mb-3">BROWSE BY CATEGORY</p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
               {currentCategories.map(c => (
                 <button
                   key={c.value}
                   onClick={() => { setCategory(c.value); doSearch(); }}
-                  className="bg-[#161622] border border-[#2a2a3e] rounded-2xl p-4 text-left hover:border-[#7c3aed]/40 active:scale-[0.97] transition-all"
+                  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-left hover:border-zinc-600 active:scale-[0.97] transition-all"
                 >
                   <span className="text-2xl">{c.emoji}</span>
                   <p className="text-xs font-bold text-white mt-2">{c.label}</p>
-                  <p className="text-[10px] text-[#555577] mt-0.5">Explore →</p>
+                  <p className="text-[10px] text-zinc-500 mt-0.5">Explore →</p>
                 </button>
               ))}
             </div>
-            <p className="text-xs font-black text-[#555577] tracking-wider mb-3">POPULAR DISTRICTS</p>
+            <p className="text-xs font-black text-zinc-500 tracking-wider mb-3">POPULAR DISTRICTS</p>
             <div className="flex flex-wrap gap-2">
               {["Kodagu","Chikkamagaluru","Mysuru","Hassan","Uttara Kannada","Dakshina Kannada","Shivamogga"].map(d => (
                 <button
                   key={d}
                   onClick={() => { setDistrict(d); doSearch(); }}
-                  className="flex items-center gap-1.5 bg-[#161622] border border-[#2a2a3e] rounded-full px-3 py-1.5 text-xs text-[#9ca3af] hover:border-[#7c3aed]/40 transition-all"
+                  className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1.5 text-xs text-zinc-400 hover:border-zinc-600 transition-all"
                 >
                   <MapPin className="w-3 h-3" />{d}
                 </button>
@@ -200,13 +200,13 @@ export default function SearchPage() {
           <div className="py-16 text-center">
             <div className="text-4xl mb-3">🔍</div>
             <p className="text-sm font-bold text-white">No results found</p>
-            <p className="text-xs text-[#555577] mt-1">Try different keywords or filters</p>
+            <p className="text-xs text-zinc-500 mt-1">Try different keywords or filters</p>
           </div>
         )}
 
         {resultsCount > 0 && (
           <>
-            <p className="text-xs text-[#555577] font-semibold mb-3">{resultsCount} result{resultsCount !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-zinc-500 font-semibold mb-3">{resultsCount} result{resultsCount !== 1 ? "s" : ""}</p>
             <div className="space-y-3">
               {activeTab === "videos" 
                 ? videos.map(video => <SearchCard key={video._id} video={video} onClick={() => router.push(`/place/${video._id}`)} />)
@@ -229,9 +229,9 @@ function SearchCard({ video, onClick }: { video: IVideo; onClick: () => void }) 
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 bg-[#161622] border border-[#2a2a3e] rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-[#2a2a3e]/80"
+      className="w-full flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-zinc-700"
     >
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#1e1e2e] flex-shrink-0">
+      <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-800 flex-shrink-0">
         {video.thumbnailUrl
           ? <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover" />
           : <div className="w-full h-full flex items-center justify-center text-2xl">{cat?.emoji || "🎬"}</div>
@@ -240,15 +240,15 @@ function SearchCard({ video, onClick }: { video: IVideo; onClick: () => void }) 
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-white truncate">{video.title}</p>
         <div className="flex items-center gap-1 mt-0.5">
-          <MapPin className="w-3 h-3 text-[#555577]" />
-          <span className="text-[11px] text-[#555577] truncate">{video.placeName}, {video.district}</span>
+          <MapPin className="w-3 h-3 text-zinc-500" />
+          <span className="text-[11px] text-zinc-500 truncate">{video.placeName}, {video.district}</span>
         </div>
         <div className="flex items-center justify-between mt-1.5">
-          <span className="text-[10px] text-[#555577]">{creator?.fullName}</span>
-          <span className="text-[10px] text-[#555577]">{formatRelativeTime(video.createdAt)}</span>
+          <span className="text-[10px] text-zinc-500">{creator?.fullName}</span>
+          <span className="text-[10px] text-zinc-500">{formatRelativeTime(video.createdAt)}</span>
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-[#2a2a3e] flex-shrink-0" />
+      <ChevronRight className="w-4 h-4 text-zinc-700 flex-shrink-0" />
     </button>
   );
 }
@@ -259,9 +259,9 @@ function SearchPlaceCard({ place, onClick }: { place: IPlace; onClick: () => voi
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 bg-[#161622] border border-[#2a2a3e] rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-[#2a2a3e]/80"
+      className="w-full flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-3 text-left active:opacity-70 transition-all hover:border-zinc-700"
     >
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#1e1e2e] flex-shrink-0 relative">
+      <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-800 flex-shrink-0 relative">
         {place.thumbnailUrl
           ? <img src={place.thumbnailUrl} alt="" className="w-full h-full object-cover" />
           : <div className="w-full h-full flex items-center justify-center text-2xl bg-black/40">{emoji}</div>
@@ -270,11 +270,11 @@ function SearchPlaceCard({ place, onClick }: { place: IPlace; onClick: () => voi
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-white truncate">{place.name}</p>
         <div className="flex items-center gap-1 mt-0.5">
-          <MapPin className="w-3 h-3 text-[#555577]" />
-          <span className="text-[11px] text-[#555577] truncate">{[place.city, place.district].filter(Boolean).join(", ")}</span>
+          <MapPin className="w-3 h-3 text-zinc-500" />
+          <span className="text-[11px] text-zinc-500 truncate">{[place.city, place.district].filter(Boolean).join(", ")}</span>
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-[#2a2a3e] flex-shrink-0" />
+      <ChevronRight className="w-4 h-4 text-zinc-700 flex-shrink-0" />
     </button>
   );
 }
