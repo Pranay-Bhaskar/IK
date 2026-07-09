@@ -37,6 +37,10 @@ export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchem
 */
 
 
+/* NEW */
+
+
+/*
 import mongoose, { Schema } from "mongoose";
 
 const VideoSchema = new Schema(
@@ -82,6 +86,84 @@ const VideoSchema = new Schema(
 );
 
 // Useful indexes
+VideoSchema.index({ status: 1, createdAt: -1 });
+VideoSchema.index({ creatorId: 1, status: 1 });
+VideoSchema.index({ category: 1, status: 1 });
+VideoSchema.index({ placeId: 1, status: 1 });
+
+export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchema);
+
+
+*/
+
+
+
+/* NEWER */
+
+
+import mongoose, { Schema } from "mongoose";
+
+const VideoSchema = new Schema(
+  {
+    title: { type: String, required: true, trim: true, maxlength: 100 },
+    description: { type: String, maxlength: 500 },
+
+    category: {
+      type: String,
+      enum: [
+        "NATURE",
+        "HERITAGE",
+        "FOOD",
+        "TREKKING",
+        "WATERFALL",
+        "CULTURE",
+        "HIDDEN_GEM",
+        "TEMPLE",
+        "BEACH",
+        "WILDLIFE",
+        "RESTAURANT",
+      ],
+      required: true,
+    },
+
+    tags: [{ type: String, trim: true }],
+
+    placeId: {
+      type: Schema.Types.ObjectId,
+      ref: "Place",
+      required: true,
+      index: true,
+    },
+
+    youtubeUrl: { type: String },
+    videoUrl: { type: String },
+    thumbnailUrl: { type: String },
+    cloudinaryPublicId: { type: String },
+
+    creatorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "PENDING",
+      index: true,
+    },
+    rejectionReason: { type: String },
+
+    views: { type: Number, default: 0 },
+    likesCount: { type: Number, default: 0 },
+    commentsCount: { type: Number, default: 0 },
+    sharesCount: { type: Number, default: 0 },
+    savesCount: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
 VideoSchema.index({ status: 1, createdAt: -1 });
 VideoSchema.index({ creatorId: 1, status: 1 });
 VideoSchema.index({ category: 1, status: 1 });
