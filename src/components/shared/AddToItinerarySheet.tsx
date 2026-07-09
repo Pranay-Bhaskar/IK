@@ -79,39 +79,39 @@ export function AddToItinerarySheet({ video, isOpen, onClose, onSuccess }: Props
     <>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" onClick={onClose} />
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-[101] slide-up">
-        <div className="bg-[#161622] rounded-t-3xl border-t border-[#2a2a3e] max-h-[75dvh] flex flex-col">
+        <div className="bg-zinc-950 rounded-t-3xl border-t border-zinc-800 max-h-[75dvh] flex flex-col">
           {/* Handle */}
           <div className="flex justify-center pt-3 pb-1">
-            <div className="w-10 h-1 rounded-full bg-[#2a2a3e]" />
+            <div className="w-10 h-1 rounded-full bg-zinc-800" />
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-[#1e1e2e]">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-900">
             <div>
               <h3 className="text-base font-bold text-white">Add to trip</h3>
-              <p className="text-xs text-[#555577] mt-0.5 truncate max-w-[240px]">{video.placeName}, {video.district}</p>
+              <p className="text-xs text-zinc-500 mt-0.5 truncate max-w-[240px]">{video.placeName}, {video.district}</p>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#1e1e2e] flex items-center justify-center">
-              <X className="w-4 h-4 text-[#9ca3af]" />
+            <button onClick={onClose} className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center">
+              <X className="w-4 h-4 text-zinc-400" />
             </button>
           </div>
 
           {/* Create new input */}
-          <div className="px-5 py-4 border-b border-[#1e1e2e]">
+          <div className="px-5 py-4 border-b border-zinc-900">
             <div className="flex gap-2">
               <input
                 value={newTitle}
                 onChange={e => setNewTitle(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && createAndAdd()}
                 placeholder="Create new trip..."
-                className="flex-1 bg-[#0d0d16] border border-[#2a2a3e] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#555577] focus:border-[#7c3aed] transition-all"
+                className="flex-1 bg-black border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-white transition-all"
               />
               <button
                 onClick={createAndAdd}
                 disabled={!newTitle.trim() || creating}
-                className="w-10 h-10 rounded-xl bg-[#7c3aed] disabled:opacity-40 flex items-center justify-center flex-shrink-0"
+                className="w-10 h-10 rounded-xl bg-white disabled:opacity-40 flex items-center justify-center flex-shrink-0"
               >
-                {creating ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Plus className="w-4 h-4 text-white" />}
+                {creating ? <Loader2 className="w-4 h-4 text-black animate-spin" /> : <Plus className="w-4 h-4 text-black" />}
               </button>
             </div>
           </div>
@@ -122,8 +122,8 @@ export function AddToItinerarySheet({ video, isOpen, onClose, onSuccess }: Props
               <> {[1,2,3].map(i => <div key={i} className="h-16 skeleton" />)} </>
             ) : itineraries.length === 0 ? (
               <div className="py-8 text-center">
-                <Route className="w-8 h-8 text-[#2a2a3e] mx-auto mb-2" />
-                <p className="text-sm text-[#555577]">No trips yet — create your first one above</p>
+                <Route className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                <p className="text-sm text-zinc-500">No trips yet — create your first one above</p>
               </div>
             ) : (
               itineraries.map(itin => {
@@ -136,27 +136,27 @@ export function AddToItinerarySheet({ video, isOpen, onClose, onSuccess }: Props
                     className={cn(
                       "w-full flex items-center gap-3 p-3 rounded-2xl border transition-all text-left",
                       isAdded
-                        ? "bg-[#7c3aed]/10 border-[#7c3aed]/40"
-                        : "bg-[#0d0d16] border-[#2a2a3e] hover:border-[#7c3aed]/40 active:opacity-70"
+                        ? "bg-white/10 border-white/30"
+                        : "bg-black border-zinc-800 hover:border-zinc-600 active:opacity-70"
                     )}
                   >
                     <div className={cn(
                       "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-                      isAdded ? "bg-[#7c3aed]" : "bg-[#1e1e2e]"
+                      isAdded ? "bg-white" : "bg-zinc-900"
                     )}>
                       {isAdding
-                        ? <Loader2 className="w-4 h-4 text-white animate-spin" />
+                        ? <Loader2 className="w-4 h-4 text-black animate-spin" />
                         : isAdded
-                          ? <Check className="w-4 h-4 text-white" />
-                          : <Route className="w-4 h-4 text-[#555577]" />
+                          ? <Check className="w-4 h-4 text-black" />
+                          : <Route className="w-4 h-4 text-zinc-500" />
                       }
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={cn("text-sm font-semibold truncate", isAdded ? "text-[#a78bfa]" : "text-white")}>{itin.title}</p>
-                      <p className="text-[11px] text-[#555577] mt-0.5">{itin.places?.length || 0} places · {formatDate(itin.updatedAt)}</p>
+                      <p className={cn("text-sm font-semibold truncate", isAdded ? "text-white" : "text-white")}>{itin.title}</p>
+                      <p className="text-[11px] text-zinc-500 mt-0.5">{itin.places?.length || 0} places · {formatDate(itin.updatedAt)}</p>
                     </div>
-                    {!isAdded && <ChevronRight className="w-4 h-4 text-[#2a2a3e]" />}
-                    {isAdded && <span className="text-[10px] text-[#a78bfa] font-medium">Added</span>}
+                    {!isAdded && <ChevronRight className="w-4 h-4 text-zinc-700" />}
+                    {isAdded && <span className="text-[10px] text-white font-medium">Added</span>}
                   </button>
                 );
               })
