@@ -1,4 +1,4 @@
-/*
+
 import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db/connect";
 import { Place } from "@/models/Place";
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
     return apiError("Failed to load places", 500);
   }
 }
-*/
+/*
 
 
 import { NextRequest } from "next/server";
@@ -204,3 +204,4 @@ export async function GET(req: NextRequest) {
     return apiError("Failed to load places", 500);
   }
 }
+  */
