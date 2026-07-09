@@ -237,47 +237,30 @@ input[type=range]::-moz-range-thumb {
 
 */
 
+
+
 @import "tailwindcss";
 
 :root {
   /* Brand / Accent (neutral grayscale) */
-  --brand: #000000;              /* pure black */
+  --brand: #ffffff;              /* pure white for accents */
   --brand-mid: #333333;          /* dark gray */
-  --brand-glow: rgba(0,0,0,0.25);
+  --brand-glow: rgba(255,255,255,0.15);
 
   /* Backgrounds */
-  --bg-app: #0a0a0a;             /* near black */
-  --bg-card: #1a1a1a;            /* dark gray card */
-  --bg-surface: #2a2a2a;         /* lighter surface */
-  --border: #3a3a3a;             /* subtle border */
+  --bg-app: #000000;             /* pure black */
+  --bg-card: #121212;            /* subtle dark gray card */
+  --bg-surface: #1e1e1e;         /* lighter surface */
+  --border: #2a2a2a;             /* subtle border */
   --border-subtle: #1a1a1a;
 
   /* Text */
   --text-primary: #ffffff;       /* pure white */
-  --text-secondary: #cccccc;     /* light gray */
-  --text-muted: #888888;         /* mid gray */
-
-  /* Accents (neutralized to grayscale) */
-  --emerald: #444444;
-  --amber: #666666;
-  --rose: #999999;
-  --blue: #555555;
+  --text-secondary: #a1a1aa;     /* zinc-400 */
+  --text-muted: #71717a;         /* zinc-500 */
 
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-
-/*
-html, body {
-  margin: 0; padding: 0;
-  background: #000000; 
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color-scheme: dark;
-}
-*/
-/* new */
 
 html, body {
   margin: 0;
@@ -285,25 +268,30 @@ html, body {
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  background: #000000;
+  background: var(--bg-app);
   color-scheme: dark;
 }
 
 /* Skeleton shimmer updated to grayscale */
 .skeleton {
-  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+  background: linear-gradient(90deg, #121212 25%, #1e1e1e 50%, #121212 75%);
   background-size: 400% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
   border-radius: 12px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Glass effect in grayscale */
 .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .glass-dark { background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
 
-/* Gradient text simplified to black → white */
+/* Gradient text simplified to white → gray */
 .gradient-text { 
-  background: linear-gradient(135deg, #ffffff, #000000); 
+  background: linear-gradient(135deg, #ffffff, #71717a); 
   -webkit-background-clip: text; 
   -webkit-text-fill-color: transparent; 
   background-clip: text; 
