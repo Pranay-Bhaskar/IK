@@ -96,11 +96,11 @@ export default function ExplorePage() {
   if (loading && videos.length === 0) {
     return (
       <div className="h-dvh flex flex-col items-center justify-center bg-black">
-        <div className="w-14 h-14 rounded-2xl bg-[#7c3aed] flex items-center justify-center mb-4 shadow-xl shadow-purple-900/50">
-          <MapPin className="w-7 h-7 text-white" />
+        <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-4 shadow-xl shadow-white/10">
+          <MapPin className="w-7 h-7 text-black" />
         </div>
-        <p className="text-sm text-[#9ca3af] mb-3">Loading Karnataka stories...</p>
-        <Loader2 className="w-5 h-5 text-[#7c3aed] animate-spin" />
+        <p className="text-sm text-zinc-500 mb-3">Loading Karnataka stories...</p>
+        <Loader2 className="w-5 h-5 text-white animate-spin" />
         <BottomNav />
       </div>
     );
@@ -111,7 +111,7 @@ export default function ExplorePage() {
       <div className="h-dvh flex flex-col items-center justify-center bg-black px-8 text-center">
         <div className="text-5xl mb-4">🌿</div>
         <h2 className="text-lg font-black text-white mb-2">No stories found</h2>
-        <p className="text-sm text-[#9ca3af]">
+        <p className="text-sm text-zinc-400">
           {activeTab === "Nearby"
             ? "No videos within your radius. Expand it in filters."
             : "Check back soon for new Karnataka stories."}
@@ -146,13 +146,13 @@ export default function ExplorePage() {
 
         {!hasMore && videos.length > 0 && (
           <div
-            className="flex items-center justify-center bg-[#0d0d16]"
+            className="flex items-center justify-center bg-black"
             style={{ scrollSnapAlign: "start", height: "100dvh" }}
           >
             <div className="text-center px-8">
               <div className="text-5xl mb-4">🎬</div>
               <p className="text-white font-black text-xl">You have roamed it all</p>
-              <p className="text-sm text-[#9ca3af] mt-2">New stories drop every day.</p>
+              <p className="text-sm text-zinc-500 mt-2">New stories drop every day.</p>
             </div>
           </div>
         )}
