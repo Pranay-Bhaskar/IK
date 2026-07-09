@@ -145,6 +145,7 @@ export async function GET(req: NextRequest) {
     const [videos, total] = await Promise.all([
       Video.find(query)
         .populate("creatorId", "fullName profileImage district isVerified")
+        .populate("placeId", "name district city state category location thumbnailUrl")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit * 3)
@@ -185,9 +186,23 @@ export async function POST(req: NextRequest) {
     if (user.role !== "CREATOR") return apiError("Only creators can upload videos", 403);
 
     const body = await req.json();
-    const { title, description, category, placeName, district, latitude, longitude, tags, videoUrl, cloudinaryPublicId, thumbnailUrl } = body;
+    const {
+      title,
+      description,
+      category,
+      placeId,
+      youtubeUrl,
+      placeName,
+      district,
+      latitude,
+      longitude,
+      tags,
+      videoUrl,
+      cloudinaryPublicId,
+      thumbnailUrl,
+    } = body;
 
-    if (!title || !description || !category || !placeName || !district || !videoUrl || !cloudinaryPublicId) {
+    if (!title || !description || !category || !placeId) {
       return apiError("Missing required fields", 400);
     }
 
@@ -195,11 +210,13 @@ export async function POST(req: NextRequest) {
       title: title.trim(),
       description: description.trim(),
       category,
-      placeName: placeName.trim(),
+      placeId,
+      placeName: placeName?.trim(),
       district,
       latitude: latitude ? parseFloat(latitude) : undefined,
       longitude: longitude ? parseFloat(longitude) : undefined,
       tags: tags || [],
+      youtubeUrl,
       videoUrl,
       cloudinaryPublicId,
       thumbnailUrl,
