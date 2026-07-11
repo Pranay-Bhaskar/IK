@@ -36,17 +36,25 @@ export function AddToItinerarySheet({ video, isOpen, onClose, onSuccess }: Props
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          videoId: video._id,
-          placeName: video.placeName,
-          district: video.district,
+          videoId: video._id, // Ensure this is a string
+          placeName: video.placeName || "Unknown Place", // Add a fallback
+          district: video.district || "Unknown District",
           thumbnailUrl: video.thumbnailUrl,
+          notes: ""
         }),
       });
+      
       const data = await res.json();
-      if (data.success) {
-        setAdded(prev => new Set([...prev, itinId]));
-        onSuccess(`Added to "${itineraries.find(i => i._id === itinId)?.title}"`);
+      if (!data.success) {
+        throw new Error(data.error || "Failed to add");
       }
+      
+      setAdded(prev => new Set([...prev, itinId]));
+      onSuccess(`Added to "${itineraries.find(i => i._id === itinId)?.title}"`);
+    } catch (err: any) {
+      console.error(err);
+      // This will now show you the real error message from the backend
+      alert("Error: " + err.message); 
     } finally {
       setAddingTo(null);
     }
