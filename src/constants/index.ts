@@ -1,10 +1,9 @@
-// src/constants.ts
 export const CATEGORIES = [
   { value: "NATURE", label: "Nature", emoji: "🌿" },
   { value: "HERITAGE", label: "Heritage", emoji: "🏛" },
-  { value: "RESTAURANT", label: "Restaurant", emoji: "🍽" }, // Matches Schema
+  { value: "RESTAURANT", label: "Restaurant", emoji: "🍽" }, // Added to match Schema
   { value: "TREKKING", label: "Trekking", emoji: "🥾" },
-  { value: "WATERFALL", label: "Waterfall", emoji: "💧" },  // Matches Schema
+  { value: "WATERFALL", label: "Waterfall", emoji: "💧" },
   { value: "CULTURE", label: "Culture", emoji: "🎭" },
   { value: "HIDDEN_GEM", label: "Hidden Gem", emoji: "💎" },
   { value: "TEMPLE", label: "Temple", emoji: "🛕" },

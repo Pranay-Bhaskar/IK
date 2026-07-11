@@ -112,7 +112,7 @@
 //     </div>
 //   );
 // }
-
+/*
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
@@ -237,7 +237,7 @@ export default function RoamFeed() {
             }}
             className="relative w-full h-[100dvh] snap-start bg-zinc-900 flex flex-col"
           >
-            {/* Media */}
+          
             <div className="flex-1 relative">
               <MediaPlayer
                 type={item.type}
@@ -248,7 +248,7 @@ export default function RoamFeed() {
               />
             </div>
 
-            {/* Overlay Info */}
+           
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end">
               <div className="flex-1 text-white pr-4">
                 <h3 className="font-bold text-lg mb-1">
@@ -282,7 +282,7 @@ export default function RoamFeed() {
     </div>
   );
 }
-/*
+
 
 */
 
@@ -424,4 +424,4 @@ export default function RoamFeed() {
   );
 }
 
-*/
+
