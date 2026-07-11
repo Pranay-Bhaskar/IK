@@ -75,6 +75,9 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
   // }, [isActive]);
 
   useEffect(() => {
+  if (video.sourceType === "youtube") {
+  return;
+}
   const v = videoRef.current;
   if (!v) return;
 
@@ -131,7 +134,7 @@ const playVideo = async () => {
   return () => {
     cancelled = true;
   };
-}, [isActive]);
+}, [isActive, video.sourceType]);
 
   // Check saved
   useEffect(() => {
@@ -194,25 +197,53 @@ const playVideo = async () => {
     } catch {}
   }, [video.title, pId, toast]);
 
+  const getYoutubeId = (url: string) => {
+  const regExp =
+    /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+
+  const match = url.match(regExp);
+
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
+const youtubeId =
+  video.youtubeVideoId ||
+  (video.url ? getYoutubeId(video.url) : null);
+
   return (
     <>
       {/* Full-screen reel card */}
       <div className="relative w-full h-dvh bg-black overflow-hidden select-none">
 
         {/* ── Video ── */}
-        <video
-          ref={videoRef}
-          src={video.url}
+        {video.sourceType === "youtube" ? (
+  <iframe
+    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${
+      isActive ? 1 : 0
+    }&mute=1&playsinline=1&rel=0&modestbranding=1`}
+    className="absolute inset-0 w-full h-full"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    title={video.title}
+  />
+) : (
+  <video
+    ref={videoRef}
+    src={video.url}
+    poster={video.thumbnailUrl}
+    className="absolute inset-0 w-full h-full object-cover"
+    loop
+    muted={muted}
+    playsInline
+    preload="metadata"
     onLoadedData={() => console.log("loadeddata", video.title)}
     onCanPlay={() => console.log("canplay", video.title)}
     onPlaying={() => console.log("playing", video.title)}
     onPause={() => console.log("paused", video.title)}
     onError={(e) => console.log("video error", e)}
-          poster={video.thumbnailUrl}
-          className="absolute inset-0 w-full h-full object-cover"
-          loop muted={muted} playsInline
-          onClick={togglePlay}
-        />
+    onClick={togglePlay}
+  />
+)}
 
         {/* ── Gradient overlays ── */}
         <div className="absolute inset-0 pointer-events-none">
