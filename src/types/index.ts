@@ -40,14 +40,14 @@ export interface IPlace {
   createdAt: string;
   updatedAt: string;
 }
-
+/*
 export interface IVideo {
   _id: string;
   title: string;
   description?: string;
   category: Category;
   tags: string[];
-  /** Populated Place object or ObjectId string */
+  /** Populated Place object or ObjectId string *
   placeId: IPlace | string;
   youtubeUrl?: string;
   videoUrl?: string;
@@ -69,6 +69,46 @@ export interface IVideo {
   latitude?: number;
   longitude?: number;
   distanceKm?: number;
+}
+*/
+
+export interface IVideo {
+  _id: string;
+  title: string;
+  description?: string;
+  category: Category;
+  tags: string[];
+  placeId: IPlace | string;
+
+  uploadedBy?: IUser | string;
+  creatorId?: IUser | string;
+
+  sourceType?: "cloudinary" | "youtube";
+  type?: "video" | "image";
+  url?: string;
+  videoUrl?: string;
+  thumbnailUrl?: string;
+  publicId?: string;
+  youtubeVideoId?: string;
+  youtubePlaylistId?: string;
+  youtubeChannelId?: string;
+
+  status: VideoStatus;
+  rejectionReason?: string;
+  views: number;
+  likesCount: number;
+  commentsCount: number;
+  sharesCount: number;
+  savesCount: number;
+
+  placeName?: string;
+  district?: string;
+  latitude?: number;
+  longitude?: number;
+  distanceKm?: number;
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IItinerary {
