@@ -376,10 +376,21 @@ export default function PlacePage() {
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
-  ArrowLeft, MapPin, Share2, Bookmark, Play,
-  Eye, Heart, MessageCircle, Navigation,
-  Footprints, Car, Bike, Bus, Loader2,
-  CheckCircle2
+  ArrowLeft,
+  MapPin,
+  Share2,
+  Bookmark,
+  Play,
+  Eye,
+  Heart,
+  MessageCircle,
+  Navigation,
+  Footprints,
+  Car,
+  Bike,
+  Bus,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import { IVideo, TRAVEL_MODES, IPlace } from "@/types";
 import { CATEGORIES } from "@/constants";
@@ -394,6 +405,67 @@ const TRAVEL_ICONS: Record<string, React.ElementType> = {
   car: Car,
   public: Bus,
 };
+
+function resolveVideoSrc(video: IVideo | null) {
+  if (!video) return null;
+  return video.url || video.videoUrl || null;
+}
+
+function MediaPlayer({
+  video,
+  placeName,
+}: {
+  video: IVideo | null;
+  placeName: string;
+}) {
+  if (!video) {
+    return (
+      <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+        <Play className="w-12 h-12 text-zinc-700" />
+      </div>
+    );
+  }
+
+  if (video.sourceType === "youtube") {
+    const embedUrl = video.youtubeVideoId
+      ? `https://www.youtube.com/embed/${video.youtubeVideoId}?autoplay=1&rel=0`
+      : video.url || video.videoUrl || "";
+
+    return (
+      <iframe
+        src={embedUrl}
+        title={video.title || placeName}
+        className="w-full h-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+
+  if (video.type === "image") {
+    const src = video.url || video.videoUrl || video.thumbnailUrl || "";
+    return <img src={src} alt={video.title || placeName} className="w-full h-full object-cover" />;
+  }
+
+  const src = resolveVideoSrc(video);
+  if (!src) {
+    return (
+      <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+        <Play className="w-12 h-12 text-zinc-700" />
+      </div>
+    );
+  }
+
+  return (
+    <video
+      src={src}
+      className="w-full h-full object-cover"
+      autoPlay
+      controls
+      playsInline
+    />
+  );
+}
 
 export default function PlacePage() {
   const params = useParams();
@@ -414,7 +486,7 @@ export default function PlacePage() {
 
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
-      pos => setUserLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      (pos) => setUserLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
       () => {}
     );
   }, []);
@@ -465,7 +537,7 @@ export default function PlacePage() {
         await navigator.share({
           title: place?.name || activeVideo?.title,
           text: place?.description || activeVideo?.description || "",
-          url
+          url,
         });
       } else {
         await navigator.clipboard.writeText(url);
@@ -528,14 +600,8 @@ export default function PlacePage() {
   return (
     <div className="min-h-dvh bg-black pb-10">
       <div className="relative w-full aspect-[9/16] max-h-[65dvh] bg-black overflow-hidden">
-        {playing && activeVideo?.videoUrl ? (
-          <video
-            src={activeVideo.videoUrl}
-            className="w-full h-full object-cover"
-            autoPlay
-            controls
-            playsInline
-          />
+        {playing ? (
+          <MediaPlayer video={activeVideo} placeName={place.name} />
         ) : (
           <>
             {activeVideo?.thumbnailUrl || place.thumbnailUrl ? (
