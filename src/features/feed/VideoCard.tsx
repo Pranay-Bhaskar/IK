@@ -640,9 +640,7 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
         <div className="absolute inset-0 w-full h-full">
           <MediaPlayer 
             type={video.type || 'video'}
-            // 1. Added '?.' to safely check for youtube ONLY if url exists
             sourceType={video.sourceType || (video.url?.includes('youtube') ? 'youtube' : 'cloudinary')}
-            // 2. Added '|| ""' so it always passes a string, satisfying TypeScript
             url={video.url || ""}
             thumbnailUrl={video.thumbnailUrl}
             className="w-full h-full object-cover"
