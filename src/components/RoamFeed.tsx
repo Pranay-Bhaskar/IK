@@ -1,4 +1,4 @@
-/*
+
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
@@ -113,8 +113,8 @@ export default function RoamFeed() {
   );
 }
 
-*/
 
+/*
 
 
 'use client';
@@ -223,7 +223,7 @@ export default function RoamFeed() {
               />
             </div>
             
-            {/* Overlay Info */}
+           
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end z-10 pointer-events-none">
               <div className="flex-1 text-white pr-4">
                 <h3 className="font-bold text-lg mb-1">{item.title || 'Untitled'}</h3>
@@ -252,3 +252,5 @@ export default function RoamFeed() {
     </div>
   );
 }
+
+*/
