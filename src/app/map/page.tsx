@@ -1,5 +1,5 @@
-import MapView from '@/components/MapView';
-import Script from 'next/script';
+import MapPageClient from "@/features/map/MapPageClient";
+import { Suspense } from "react";
 
 export const metadata = {
   title: 'Map - Location Explorer',
@@ -8,11 +8,13 @@ export const metadata = {
 export default function MapPage() {
   return (
     <main className="bg-black min-h-screen">
-      <Script 
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} 
-        strategy="beforeInteractive" 
-      />
-      <MapView />
+      {/* 
+        We use Suspense because MapPageClient uses useSearchParams(). 
+        Next.js requires Suspense boundaries for search params in production. 
+      */}
+      <Suspense fallback={<div className="w-full h-screen bg-black flex items-center justify-center text-white">Loading Map...</div>}>
+        <MapPageClient />
+      </Suspense>
     </main>
   );
 }
