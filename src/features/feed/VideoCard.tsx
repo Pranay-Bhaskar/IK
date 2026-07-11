@@ -600,6 +600,11 @@ const playVideo = async () => {
         <video
           ref={videoRef}
           src={video.videoUrl}
+    onLoadedData={() => console.log("loadeddata", video.title)}
+    onCanPlay={() => console.log("canplay", video.title)}
+    onPlaying={() => console.log("playing", video.title)}
+    onPause={() => console.log("paused", video.title)}
+    onError={(e) => console.log("video error", e)}
           poster={video.thumbnailUrl}
           className="absolute inset-0 w-full h-full object-cover"
           loop muted={muted} playsInline
