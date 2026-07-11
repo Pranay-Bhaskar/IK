@@ -15,12 +15,13 @@ const DISTRICT_BARS = [
   { name: "Udupi", value: 3600, pct: 39, color: "#a78bfa" },
 ];
 
-export default function AdminAnalyticsPage() {
+export default function CreatorAnalyticsPage() {
   const [videos, setVideos] = useState<IVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/videos?status=APPROVED")
+
+    fetch("/api/videos/my-videos?status=APPROVED")
       .then(r => r.json())
       .then(d => { if (d.success) setVideos(d.data.videos || []); })
       .finally(() => setLoading(false));
@@ -35,8 +36,8 @@ export default function AdminAnalyticsPage() {
   return (
     <div className="px-4 pt-5 pb-6">
       <div className="mb-5">
-        <h2 className="text-xl font-black text-white">Analytics</h2>
-        <p className="text-xs text-[#475569] mt-0.5">Platform-wide performance</p>
+        <h2 className="text-xl font-black text-white">My Analytics</h2>
+        <p className="text-xs text-[#475569] mt-0.5">Performance of your approved stories</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-5">
@@ -59,6 +60,7 @@ export default function AdminAnalyticsPage() {
         ))}
       </div>
 
+      {/* Trending Districts (Static for now, but you can wire this up later!) */}
       <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-4 mb-5">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="w-4 h-4 text-[#60a5fa]" />
@@ -80,9 +82,11 @@ export default function AdminAnalyticsPage() {
       </div>
 
       <div className="mb-5">
-        <p className="text-sm font-black text-white mb-3">Most viewed places</p>
+        <p className="text-sm font-black text-white mb-3">Your most viewed places</p>
         {loading ? (
           <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="h-14 skeleton rounded-2xl" />)}</div>
+        ) : topByViews.length === 0 ? (
+           <p className="text-xs text-[#475569]">No approved videos yet.</p>
         ) : (
           <div className="space-y-2">
             {topByViews.map((v, i) => {
@@ -116,9 +120,11 @@ export default function AdminAnalyticsPage() {
       </div>
 
       <div>
-        <p className="text-sm font-black text-white mb-3">Most saved places</p>
+        <p className="text-sm font-black text-white mb-3">Your most saved places</p>
         {loading ? (
           <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="h-14 skeleton rounded-2xl" />)}</div>
+        ) : topBySaves.length === 0 ? (
+           <p className="text-xs text-[#475569]">No approved videos yet.</p>
         ) : (
           <div className="space-y-2">
             {topBySaves.map((v, i) => {
