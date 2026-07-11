@@ -5,7 +5,6 @@ import { Video } from "@/models/Video";
 import { getAuthUser } from "@/lib/auth/jwt";
 import { apiError, apiSuccess } from "@/lib/utils";
 
-// POST /api/videos/save  { videoId }  — toggle save
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/videos/save?videoId=xxx  — check if saved
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
