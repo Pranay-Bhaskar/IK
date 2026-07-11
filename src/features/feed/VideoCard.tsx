@@ -477,37 +477,45 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
 
   let cancelled = false;
 
-  const playVideo = async () => {
-    try {
-      if (v.readyState >= 2) {
-        if (!cancelled) {
+const playVideo = async () => {
+  try {
+    console.log("▶ Calling play()", video.title);
+    console.log("readyState:", v.readyState);
+    console.log("networkState:", v.networkState);
+    console.log("paused:", v.paused);
+    console.log("src:", v.currentSrc);
+
+    if (v.readyState >= 2) {
+      if (!cancelled) {
+        await v.play();
+        console.log("✅ play() success");
+        setPaused(false);
+      }
+    } else {
+      console.log("⏳ Waiting for loadeddata...");
+
+      const onLoaded = async () => {
+        console.log("✅ loadeddata fired");
+
+        v.removeEventListener("loadeddata", onLoaded);
+
+        if (cancelled) return;
+
+        try {
           await v.play();
+          console.log("✅ play() after loadeddata");
           setPaused(false);
+        } catch (err: any) {
+          console.error("❌ play() failed", err);
         }
-      } else {
-        const onLoaded = async () => {
-          v.removeEventListener("loadeddata", onLoaded);
+      };
 
-          if (cancelled) return;
-
-          try {
-            await v.play();
-            setPaused(false);
-          } catch (err: any) {
-            if (err.name !== "AbortError") {
-              console.error(err);
-            }
-          }
-        };
-
-        v.addEventListener("loadeddata", onLoaded);
-      }
-    } catch (err: any) {
-      if (err.name !== "AbortError") {
-        console.error(err);
-      }
+      v.addEventListener("loadeddata", onLoaded);
     }
-  };
+  } catch (err: any) {
+    console.error("❌ playVideo error", err);
+  }
+};
 
   if (isActive) {
     playVideo();
@@ -534,6 +542,13 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
   const togglePlay = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
+    console.log("========== VIDEO EFFECT ==========");
+    console.log("Title:", video.title);
+    console.log("isActive:", isActive);
+    console.log("src:", video.videoUrl);
+    console.log("readyState:", v.readyState);
+    console.log("paused:", v.paused);
+    console.log("=================================");
     if (v.paused) {
     v.play().catch(err => {
         if (err.name !== "AbortError") {
