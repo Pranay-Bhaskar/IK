@@ -144,6 +144,7 @@ export default function MapPageClient() {
 
 */
 
+"use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -179,7 +180,6 @@ export default function MapPageClient() {
 
   useEffect(() => {
     if (!isLoaded || !initialPlaceId || places.length === 0 || initialPlaceSet.current) return;
-
     const place = places.find((p) => p._id === initialPlaceId);
     if (!place) return;
 
@@ -210,10 +210,7 @@ export default function MapPageClient() {
 
   const openInMaps = useCallback((place: IPlace) => {
     const [lng, lat] = place.location.coordinates;
-    window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
-      "_blank"
-    );
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
   }, []);
 
   const watchVideos = useCallback(
@@ -228,7 +225,6 @@ export default function MapPageClient() {
     <div className="relative w-full h-[calc(100dvh-70px)] bg-black overflow-hidden">
       <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
         <div className="absolute inset-0 h-40 bg-gradient-to-b from-black/60 to-transparent -z-10" />
-
         <div className="pt-12 px-4 pointer-events-auto space-y-4">
           <MapSearchBar places={places} onSelectPlace={handleSelectPlace} />
           <MapFilterPanel activeCategory={category} onChange={setCategory} />
