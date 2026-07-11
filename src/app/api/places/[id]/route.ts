@@ -12,14 +12,17 @@ export async function GET(
     await connectDB();
     const { id } = await params;
 
-    const place = await Place.findById(id).lean();
+    const place = await Place.findById(id).populate({
+      path: "gallery",
+      options: { sort: { createdAt: -1 } },
+    }).lean();
+
     if (!place) return apiError("Place not found", 404);
 
-    // Fetch all approved videos linked to this place
     const videos = await Video.find({ placeId: id, status: "APPROVED" })
-      .populate("creatorId", "fullName profileImage district isVerified")
+      .populate("uploadedBy", "fullName profileImage district isVerified")
       .sort({ createdAt: -1 })
-      .limit(20)
+      .limit(50)
       .lean();
 
     return apiSuccess({ place, videos });
