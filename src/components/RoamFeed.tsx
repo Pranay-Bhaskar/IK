@@ -1,3 +1,4 @@
+/*
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
@@ -82,7 +83,7 @@ export default function RoamFeed() {
               />
             </div>
             
-            {/* Overlay Info */}
+            {/* Overlay Info *}
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end">
               <div className="flex-1 text-white pr-4">
                 <h3 className="font-bold text-lg mb-1">{item.title || 'Untitled'}</h3>
@@ -108,6 +109,117 @@ export default function RoamFeed() {
           <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
         </div>
       )}
+    </div>
+  );
+}
+
+*/
+
+
+
+'use client';
+
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import MediaPlayer from './MediaPlayer';
+import Link from 'next/link';
+import { MapPin } from 'lucide-react';
+
+interface MediaItem {
+  _id: string;
+  type: 'video' | 'image';
+  sourceType: 'cloudinary' | 'youtube';
+  url: string;
+  thumbnailUrl?: string;
+  title?: string;
+  description?: string;
+  placeId: {
+    _id: string;
+    name: string;
+    location: { coordinates: number[] };
+  };
+}
+
+export default function RoamFeed() {
+  const [items, setItems] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [skip, setSkip] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [activeId, setActiveId] = useState<string | null>(null); // Track active video
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  // Intersection Observer to detect which video is in view
+  const feedObserver = useRef<IntersectionObserver | null>(null);
+  const feedCallback = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setActiveId(entry.target.getAttribute('data-id'));
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    feedObserver.current = new IntersectionObserver(feedCallback, { threshold: 0.6 });
+    return () => feedObserver.current?.disconnect();
+  }, [feedCallback]);
+
+  const fetchMedia = async (skipCount: number) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/media/roam?limit=5&skip=${skipCount}`);
+      const data = await res.json();
+      if (data.success) {
+        setItems(prev => [...prev, ...data.data]);
+        setHasMore(data.pagination.hasMore);
+      }
+    } catch (error) {
+      console.error('Failed to fetch roam feed', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchMedia(0); }, []);
+
+  const lastElementRef = useCallback((node: HTMLDivElement) => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        const nextSkip = skip + 5;
+        setSkip(nextSkip);
+        fetchMedia(nextSkip);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, skip]);
+
+  return (
+    <div className="w-full max-w-md mx-auto h-[100dvh] overflow-y-scroll snap-y snap-mandatory bg-black">
+      {items.map((item, index) => {
+        const isLast = index === items.length - 1;
+        
+        return (
+          <div 
+            key={item._id} 
+            data-id={item._id} // ID for observer
+            ref={(node) => {
+              if (isLast) lastElementRef(node as HTMLDivElement);
+              if (node) feedObserver.current?.observe(node);
+            }}
+            className="relative w-full h-[100dvh] snap-start bg-zinc-900 flex flex-col"
+          >
+            <div className="flex-1 relative h-full">
+              <MediaPlayer 
+                {...item}
+                // Only "play" if this ID is the active one
+                className={activeId === item._id ? "opacity-100" : "opacity-0"} 
+              />
+            </div>
+            {/* Overlay Info remains same */}
+          </div>
+        );
+      })}
     </div>
   );
 }
