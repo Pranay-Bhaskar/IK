@@ -1,48 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongoose";
-import { Media } from "@/models/Media";
-import { Place } from "@/models/Place";
+import { connectDB } from "@/lib/db/connect";
+import { Video } from "@/models/Video"; // Import Video instead of Media
 
-export async function GET(req: NextRequest) {
-  try {
-    await dbConnect();
+export async function GET(req: Request) {
+  await connectDB();
+  const { searchParams } = new URL(req.url);
+  const skip = parseInt(searchParams.get("skip") || "0");
+  const limit = parseInt(searchParams.get("limit") || "5");
 
-    const { searchParams } = new URL(req.url);
-    const limit = parseInt(searchParams.get("limit") || "10", 10);
-    const skip = parseInt(searchParams.get("skip") || "0", 10);
+  // Query Video instead of Media
+  const data = await Video.find({ status: "APPROVED" })
+    .populate("placeId", "name location") // Ensures placeId is populated
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
 
-    const mediaList = await Media.find({ status: "APPROVED" })
-      .populate({
-        path: "placeId",
-        populate: {
-          path: "gallery",
-          options: { sort: { createdAt: -1 } },
-        },
-      })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
+  const total = await Video.countDocuments({ status: "APPROVED" });
 
-    const total = await Media.countDocuments({ status: "APPROVED" });
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        media: mediaList,
-      },
-      pagination: {
-        total,
-        skip,
-        limit,
-        hasMore: skip + limit < total,
-      },
-    });
-  } catch (error: any) {
-    console.error("Roam Feed API Error:", error);
-    return NextResponse.json(
-      { success: false, error: error.message || "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  return Response.json({
+    success: true,
+    data,
+    pagination: { hasMore: skip + data.length < total }
+  });
 }
