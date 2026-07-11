@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       youtubeChannelId,
       placeId: place._id,
       uploadedBy: new mongoose.Types.ObjectId(uploadedBy),
-      status: "APPROVED",
+      status: "PENDING",
     });
 
     await Place.findByIdAndUpdate(place._id, {
