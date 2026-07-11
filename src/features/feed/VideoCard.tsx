@@ -380,14 +380,14 @@ const youtubeId =
           </h2>
 
           {/* Place pill */}
-          <button
+          {/* <button
             // FIXED: Use pId instead of video._id
             onClick={e => { e.stopPropagation(); if (pId) router.push(`/place/${pId}`); }}
             className="flex items-center gap-1.5 glass border border-white/15 rounded-full px-3 py-1.5 mb-2 active:opacity-70"
           >
             <MapPin className="w-3 h-3 text-[#a78bfa]" />
             <span className="text-xs text-white font-medium">{video.placeName}, {video.district}</span>
-          </button>
+          </button> */}
 
           {/* Weather + distance badge row */}
           <div className="flex items-center gap-2 mb-3">
@@ -407,10 +407,10 @@ const youtubeId =
               </button>
             )}
             {/* Fake weather badge for UI */}
-            <div className="flex items-center gap-1 glass border border-amber-400/20 rounded-full px-2.5 py-1.5 text-[10px]">
+            {/* <div className="flex items-center gap-1 glass border border-amber-400/20 rounded-full px-2.5 py-1.5 text-[10px]">
               <Sun className="w-3 h-3 text-amber-300" />
               <span className="text-amber-200 font-bold">28°C</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Travel mode picker */}
