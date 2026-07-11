@@ -205,24 +205,37 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     let { title, description, category, placeId, tags, url, thumbnailUrl, publicId, type = "video", placeName, district, latitude, longitude } = body;
 
-    // Logic: Find or Create Place if ID is missing
-    if (!placeId && placeName && district) {
-      let place = await Place.findOne({ name: { $regex: new RegExp(`^${placeName}$`, "i") }, district });
+    // ── FIXED LOGIC: Find or Create Place ──
+    if (!placeId && placeName) {
+      // 1. Clean the inputs (remove accidental spaces from frontend)
+      const cleanPlaceName = placeName.trim();
+      const cleanDistrict = district ? district.trim() : "";
+
+      // 2. Escape special characters just in case, then make it case-insensitive
+      const safePlaceName = cleanPlaceName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      // 3. Search database robustly
+      let place = await Place.findOne({ 
+        name: { $regex: new RegExp(`^${safePlaceName}$`, "i") },
+        ...(cleanDistrict && { district: cleanDistrict }) // Only match district if provided
+      });
       
+      // 4. Create ONLY if it truly doesn't exist
       if (!place) {
-        // USE COORDINATES FROM BODY OR DEFAULTS
         const coords = [
           parseFloat(longitude) || 77.5946, 
           parseFloat(latitude) || 12.9716
         ];
 
         place = await Place.create({ 
-          name: placeName, 
-          district: district, 
+          name: cleanPlaceName, // Save clean version
+          district: cleanDistrict, 
           category: category || "OTHER", 
           location: { type: "Point", coordinates: coords }
         });
       }
+      
+      // 5. Assign the found/created ID to the video
       placeId = place._id;
     }
 
@@ -240,14 +253,14 @@ export async function POST(req: NextRequest) {
       thumbnailUrl,
       publicId,
       type,
-      sourceType: "cloudinary",
+      sourceType: url.includes('youtube') ? 'youtube' : 'cloudinary',
       uploadedBy: user.id,
       status: "PENDING",
     });
 
     return apiSuccess({ video }, "Video created", 201);
   } catch (err: any) {
-  console.error("[POST /api/videos] Error:", err.message); // This will show you Mongoose validation errors
+    console.error("[POST /api/videos] Error:", err.message);
     if (err.name === 'ValidationError') {
       return apiError("Invalid data: " + err.message, 400);
     }
