@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
       type,
       sourceType: "cloudinary",
       uploadedBy: user.id,
-      status: "APPROVED",
+      status: "PENDING",
     });
 
     return apiSuccess({ video }, "Video created", 201);
