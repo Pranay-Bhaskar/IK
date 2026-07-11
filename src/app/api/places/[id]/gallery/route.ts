@@ -3,14 +3,21 @@ import dbConnect from '@/lib/mongoose';
 import { Place } from '@/models/Place';
 import { Media } from '@/models/Media';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// Fix: params is typed as a Promise
+export async function GET(
+  req: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     await dbConnect();
     
     // Ensure Media is registered
     const _ = Media;
 
-    const placeId = params.id;
+    // Fix: Await the params object before accessing id
+    const resolvedParams = await params;
+    const placeId = resolvedParams.id;
+    
     const place = await Place.findById(placeId).populate({
       path: 'gallery',
       options: { sort: { createdAt: -1 } },
