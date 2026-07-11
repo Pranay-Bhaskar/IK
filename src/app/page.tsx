@@ -253,10 +253,19 @@ function HomePage() {
         />
         <div className="flex gap-3 px-4 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
           {loading
-            ? [1,2,3,4].map(i => <div key={i} className="flex-shrink-0 w-36 h-52 skeleton" />)
-            : videos?.slice(0, 8).map(v => (
-                <GemCard key={v._id} video={v} onClick={() => router.push(`/place/${v._id}`)} />
-              ))
+            ? [1, 2, 3, 4].map(i => <div key={i} className="flex-shrink-0 w-36 h-52 skeleton rounded-2xl" />)
+            : videos?.slice(0, 8).map(v => {
+                // Safely extract the place ID whether it's an object or a string
+                const targetId = typeof v.placeId === "object" ? (v.placeId as any)._id : v.placeId;
+                
+                return (
+                  <GemCard 
+                    key={v._id} 
+                    video={v} 
+                    onClick={() => router.push(`/place/${targetId}`)} 
+                  />
+                );
+              })
           }
         </div>
       </section>
