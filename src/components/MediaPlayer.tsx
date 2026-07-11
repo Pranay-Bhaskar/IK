@@ -221,37 +221,62 @@ const MediaPlayer = React.memo(
       const video = videoRef.current;
       if (!video) return;
 
+      console.log("================================");
+      console.log("URL:", url);
+      console.log("Active:", isActive);
+      console.log("readyState:", video.readyState);
+      console.log("networkState:", video.networkState);
+      console.log("paused:", video.paused);
+      console.log("================================");
+
+      console.log("MediaPlayer Effect", {
+  url,
+  isActive,
+  readyState: video.readyState,
+  paused: video.paused,
+});
+
       let cancelled = false;
 
       const playVideo = async () => {
+  try {
+    console.log("▶ Calling play()", {
+      url,
+      isActive,
+      readyState: video.readyState,
+      networkState: video.networkState,
+      paused: video.paused,
+    });
+
+    if (video.readyState >= 2) {
+      if (!cancelled) {
+        await video.play();
+        console.log("✅ play() resolved");
+      }
+    } else {
+      console.log("⏳ Waiting for loadeddata...");
+
+      const onLoaded = async () => {
+        console.log("✅ loadeddata fired");
+
+        video.removeEventListener("loadeddata", onLoaded);
+
+        if (cancelled) return;
+
         try {
-          if (video.readyState >= 2) {
-            if (!cancelled) {
-              await video.play();
-            }
-          } else {
-            const onLoaded = async () => {
-              video.removeEventListener('loadeddata', onLoaded);
-
-              if (cancelled) return;
-
-              try {
-                await video.play();
-              } catch (err: any) {
-                if (err.name !== 'AbortError') {
-                  console.error('Video play error:', err);
-                }
-              }
-            };
-
-            video.addEventListener('loadeddata', onLoaded);
-          }
-        } catch (err: any) {
-          if (err.name !== 'AbortError') {
-            console.error('Video play error:', err);
-          }
+          await video.play();
+          console.log("✅ play() after loadeddata");
+        } catch (err) {
+          console.error("❌ play() failed", err);
         }
       };
+
+      video.addEventListener("loadeddata", onLoaded);
+    }
+  } catch (err) {
+    console.error("❌ playVideo error", err);
+  }
+};
 
       if (isActive) {
         playVideo();
