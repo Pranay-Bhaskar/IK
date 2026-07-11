@@ -8,7 +8,6 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { CATEGORIES, KARNATAKA_DISTRICTS, ALLOWED_VIDEO_TYPES, MAX_VIDEO_SIZE } from "@/constants";
 import { cn } from "@/lib/utils";
 
-
 type Step = "pick" | "details" | "uploading" | "done";
 
 const inputCls = "w-full bg-[#0d0d16] border border-[#2a2a3e] rounded-xl px-4 py-3 text-sm text-white placeholder-[#555577] focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]/30 transition-all";
@@ -48,7 +47,6 @@ export default function UploadPage() {
     
     setError("");
     
-    // 1. Validate fields
     const req = ["title", "description", "category", "placeName", "district"];
     for (const k of req) {
       if (!form[k as keyof typeof form]?.trim()) { 
@@ -63,24 +61,30 @@ export default function UploadPage() {
       const { downloadURL, publicId } = await uploadVideo(file, path, setProgress);
       const thumbnail_url = downloadURL.replace(/\.[^/.]+$/, ".jpg");
 
-      // 2. Send the request with ALL required fields
+      // Sending data explicitly to match backend expectations
+      const payload = {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        placeName: form.placeName,
+        district: form.district,
+        url: downloadURL,
+        thumbnailUrl: thumbnail_url,
+        publicId: publicId,
+        tags: typeof form.tags === 'string' ? form.tags.split(",").map(t => t.trim()).filter(Boolean) : form.tags,
+        latitude: form.latitude ? parseFloat(form.latitude) : undefined,
+        longitude: form.longitude ? parseFloat(form.longitude) : undefined,
+        type: "video"
+      };
+
       const res = await fetch("/api/videos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          // Explicitly map these so the backend receives what it needs
-          url: downloadURL,
-          thumbnailUrl: thumbnail_url,
-          publicId: publicId,
-          tags: typeof form.tags === 'string' ? form.tags.split(",").map(t => t.trim()).filter(Boolean) : form.tags,
-          latitude: form.latitude ? parseFloat(form.latitude) : undefined,
-          longitude: form.longitude ? parseFloat(form.longitude) : undefined,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-      if (!data.success) throw new Error(data.error);
+      if (!data.success) throw new Error(data.error || "Upload failed");
       setStep("done");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Upload failed. Try again.");
@@ -89,7 +93,6 @@ export default function UploadPage() {
   };
 
   const reset = () => { setStep("pick"); setFile(null); setPreview(null); setProgress(0); setError(""); setForm({ title:"",description:"",category:"",placeName:"",district:"",latitude:"",longitude:"",tags:"" }); };
-
   if (step === "done") {
     return (
       <div className="min-h-dvh bg-[#0d0d16] flex flex-col items-center justify-center px-8 text-center">
