@@ -43,34 +43,42 @@ export default function UploadPage() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("handleSubmit called in Creator Upload");
     e.preventDefault();
     if (!file || !user) return;
-    console.log("User:", user);
+    
     setError("");
-    const req = ["title","description","category","placeName","district"];
+    
+    // 1. Validate fields
+    const req = ["title", "description", "category", "placeName", "district"];
     for (const k of req) {
-      if (!form[k as keyof typeof form]?.trim()) { setError(`${k.charAt(0).toUpperCase() + k.slice(1)} is required`); return; }
+      if (!form[k as keyof typeof form]?.trim()) { 
+        setError(`${k.charAt(0).toUpperCase() + k.slice(1)} is required`); 
+        return; 
+      }
     }
+
     setStep("uploading");
     try {
       const path = generateVideoPath(user.id, file.name);
       const { downloadURL, publicId } = await uploadVideo(file, path, setProgress);
       const thumbnail_url = downloadURL.replace(/\.[^/.]+$/, ".jpg");
 
+      // 2. Send the request with ALL required fields
       const res = await fetch("/api/videos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          tags: form.tags.split(",").map(t => t.trim()).filter(Boolean),
-          videoUrl: downloadURL,
-          cloudinaryPublicId: publicId,
+          // Explicitly map these so the backend receives what it needs
+          url: downloadURL,
           thumbnailUrl: thumbnail_url,
+          publicId: publicId,
+          tags: typeof form.tags === 'string' ? form.tags.split(",").map(t => t.trim()).filter(Boolean) : form.tags,
           latitude: form.latitude ? parseFloat(form.latitude) : undefined,
           longitude: form.longitude ? parseFloat(form.longitude) : undefined,
         }),
       });
+
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
       setStep("done");
