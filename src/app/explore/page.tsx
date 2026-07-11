@@ -47,6 +47,8 @@ export default function ExplorePage() {
       // FIX: Ensure fetchedVideos is an array before attempting to spread/map it
       if (data.success) {
         const fetchedVideos = data?.data?.videos || [];
+        console.log("Fetched videos", fetchedVideos);
+        console.log("First video", fetchedVideos[0]);
         setVideos(prev => reset || p === 1 ? fetchedVideos : [...prev, ...fetchedVideos]);
         setHasMore(!!data?.data?.hasMore);
       } else {
