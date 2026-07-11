@@ -55,9 +55,10 @@ export function PlaceBottomSheet({
     fetch(`/api/places/${place._id}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.success) setVideos(d.data.videos || []);
+        // DEFENSIVE FIX: Ensure it falls back to an empty array
+        if (d.success) setVideos(d.data?.videos || []);
       })
-      .catch(() => {})
+      .catch(() => { setVideos([]); })
       .finally(() => setVideosLoading(false));
   }, [place?._id]);
 
@@ -117,6 +118,9 @@ export function PlaceBottomSheet({
   const MAX_DESC = 140;
   const desc = place.description || "";
   const descCropped = desc.length > MAX_DESC && !descExpanded ? desc.slice(0, MAX_DESC) + "…" : desc;
+
+  // DEFENSIVE FIX: Safe reference for videos
+  const safeVideos = videos || [];
 
   return (
     <>
@@ -257,8 +261,9 @@ export function PlaceBottomSheet({
               <div className="flex items-center gap-2 mb-3">
                 <Film className="w-4 h-4 text-white/50" />
                 <span className="text-sm font-bold text-white/80">Videos from this place</span>
-                {!videosLoading && videos.length > 0 && (
-                  <span className="text-xs text-white/40 font-semibold ml-auto">{videos.length} video{videos.length !== 1 ? "s" : ""}</span>
+                {/* DEFENSIVE FIX: Check safeVideos array instead */}
+                {!videosLoading && safeVideos.length > 0 && (
+                  <span className="text-xs text-white/40 font-semibold ml-auto">{safeVideos.length} video{safeVideos.length !== 1 ? "s" : ""}</span>
                 )}
               </div>
 
@@ -269,19 +274,21 @@ export function PlaceBottomSheet({
                 </div>
               )}
 
-              {!videosLoading && videos.length === 0 && (
+              {/* DEFENSIVE FIX: Check safeVideos array instead */}
+              {!videosLoading && safeVideos.length === 0 && (
                 <div className="py-4 text-center">
                   <div className="text-3xl mb-2">🎬</div>
                   <p className="text-sm text-white/40">No videos for this place yet</p>
                 </div>
               )}
 
-              {!videosLoading && videos.length > 0 && (
+              {/* DEFENSIVE FIX: Check safeVideos array instead */}
+              {!videosLoading && safeVideos.length > 0 && (
                 <div
                   className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1"
                   style={{ scrollbarWidth: "none" }}
                 >
-                  {videos.map((video) => (
+                  {safeVideos.map((video) => (
                     <VideoThumb
                       key={video._id}
                       video={video}
