@@ -216,15 +216,17 @@ const youtubeId =
       <div className="relative w-full h-dvh bg-black overflow-hidden select-none">
 
         {/* ── Video ── */}
-        {video.sourceType === "youtube" ? (
+        {/* ── Media ── */}
+{video.sourceType === "youtube" ? (
   <iframe
     src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${
       isActive ? 1 : 0
     }&mute=1&playsinline=1&rel=0&modestbranding=1`}
+    title={video.title}
     className="absolute inset-0 w-full h-full"
+    frameBorder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowFullScreen
-    title={video.title}
   />
 ) : (
   <video
