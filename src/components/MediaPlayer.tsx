@@ -16,6 +16,16 @@ export default function MediaPlayer({ type, sourceType, url, thumbnailUrl, class
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (sourceType === 'youtube') {
+    // 1. Extract the Video ID
+    const getVideoId = (url: string) => {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    };
+
+    const videoId = getVideoId(url);
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
     if (!isPlaying && thumbnailUrl) {
       return (
         <div 
@@ -34,7 +44,8 @@ export default function MediaPlayer({ type, sourceType, url, thumbnailUrl, class
 
     return (
       <iframe
-        src={`${url}?autoplay=1`}
+        // 2. Use the generated embedUrl here
+        src={`${embedUrl}?autoplay=1`}
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -43,6 +54,8 @@ export default function MediaPlayer({ type, sourceType, url, thumbnailUrl, class
       />
     );
   }
+
+  // ... rest of your code (image and Cloudinary video)
 
   if (type === 'image') {
     return (
