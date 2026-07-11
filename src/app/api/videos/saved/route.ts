@@ -11,12 +11,22 @@ export async function GET(_req: NextRequest) {
     if (!user) return apiError("Not authenticated", 401);
 
     const saved = await SavedVideo.find({ userId: user.id })
-      .populate({ path: "videoId", populate: { path: "creatorId", select: "fullName profileImage isVerified" } })
+      .populate({
+        path: "videoId",
+        populate: { 
+          path: "uploadedBy", 
+          select: "fullName profileImage isVerified" 
+        },
+      })
       .sort({ createdAt: -1 })
       .lean();
 
-    return apiSuccess({ saved });
-  } catch {
+    // FILTER FIX: Remove any entries where the video has been deleted (videoId is null)
+    const validSaved = saved.filter(item => item.videoId !== null);
+
+    return apiSuccess({ saved: validSaved });
+  } catch (error) {
+    console.error("[GET /api/saved]", error);
     return apiError("Failed to load saved videos", 500);
   }
 }
