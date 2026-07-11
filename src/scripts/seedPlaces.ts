@@ -139,7 +139,6 @@ seed();
 
 */
 
-
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import path from "path";
@@ -159,12 +158,12 @@ const SEED_PLACES = [
     city: "Machilipatnam",
     state: "Andhra Pradesh",
     category: "STREET FOOD",
-    description: "Iconic sweet shop established in 1951, famous for its authentic Bunder Laddu, Wheat Halwa, and Kaju Mithai.",
+    description:
+      "Iconic sweet shop established in 1951, famous for its authentic Bunder Laddu, Wheat Halwa, and Kaju Mithai.",
     location: { type: "Point", coordinates: [81.1416, 16.1808] },
     thumbnailUrl: "https://i.ytimg.com/vi/6tazV4JLR6Q/hqdefault.jpg",
     status: "APPROVED",
     isVerified: true,
-    gallery: [],
   },
   {
     name: "RK Paradise",
@@ -173,13 +172,13 @@ const SEED_PLACES = [
     city: "Machilipatnam",
     state: "Andhra Pradesh",
     category: "RESTAURANT",
-    description: "Popular restaurant famous for its Andhra Meals, crumb-fried prawns, and unique delicacies like Kaju Fish Halwa.",
+    description:
+      "Popular restaurant famous for its Andhra Meals, crumb-fried prawns, and unique delicacies like Kaju Fish Halwa.",
     location: { type: "Point", coordinates: [81.1332, 16.177] },
     thumbnailUrl: "https://i.ytimg.com/vi/6tazV4JLR6Q/hqdefault.jpg",
     status: "APPROVED",
     isVerified: true,
-    gallery: [],
-  }
+  },
 ];
 
 async function seed() {
@@ -200,9 +199,11 @@ async function seed() {
     await Place.insertMany(SEED_PLACES);
 
     console.log("Seed complete");
+    await mongoose.connection.close();
     process.exit(0);
   } catch (err) {
     console.error("Seed failed:", err);
+    await mongoose.connection.close();
     process.exit(1);
   }
 }
