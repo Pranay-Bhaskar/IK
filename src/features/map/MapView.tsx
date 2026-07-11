@@ -245,7 +245,7 @@ export const MapView = forwardRef<MapViewHandle, MapViewProps>(function MapView(
     const { MarkerClusterer } = await import("@googlemaps/markerclusterer");
     const newMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
 
-    // DEFENSIVE FIX: Provide an empty array fallback
+    // FIX: Fallback array so the loop doesn't crash if places is undefined
     const safePlaces = places || [];
 
     for (const place of safePlaces) {
@@ -264,7 +264,6 @@ export const MapView = forwardRef<MapViewHandle, MapViewProps>(function MapView(
         selectedIdRef.current = place._id;
 
         markersRef.current.forEach((m, id) => {
-          // DEFENSIVE FIX: Use safePlaces here too
           const p = safePlaces.find((x) => x._id === id);
           if (p) m.content = createMarkerElement(p, id === place._id);
           m.zIndex = id === place._id ? 999 : undefined;
@@ -296,7 +295,7 @@ export const MapView = forwardRef<MapViewHandle, MapViewProps>(function MapView(
     const newId = selectedPlace?._id || null;
     selectedIdRef.current = newId;
 
-    // DEFENSIVE FIX: Provide an empty array fallback
+    // FIX: Fallback array here too
     const safePlaces = places || [];
 
     markersRef.current.forEach((marker, id) => {
