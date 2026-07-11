@@ -1,3 +1,4 @@
+/*
 import { NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth/jwt";
 import { apiError, apiSuccess } from "@/lib/utils";
@@ -20,6 +21,54 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess({ signature, timestamp, cloudName, apiKey, folder });
   } catch {
+    return apiError("Failed to sign upload", 500);
+  }
+}
+*/
+
+
+
+import { NextRequest } from "next/server";
+import { getAuthUser } from "@/lib/auth/jwt";
+import { apiError, apiSuccess } from "@/lib/utils";
+import { v2 as cloudinary } from "cloudinary";
+
+export const runtime = "nodejs";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const user = await getAuthUser();
+    if (!user) return apiError("Not authenticated", 401);
+    if (user.role !== "CREATOR") return apiError("Creators only", 403);
+
+    const { folder } = await req.json();
+    const timestamp = Math.round(Date.now() / 1000);
+
+    const paramsToSign = {
+      folder,
+      timestamp,
+    };
+
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET!
+    );
+
+    return apiSuccess({
+      signature,
+      timestamp,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
+      apiKey: process.env.CLOUDINARY_API_KEY!,
+      folder,
+    });
+  } catch (error) {
+    console.error("[POST /api/upload/sign]", error);
     return apiError("Failed to sign upload", 500);
   }
 }
