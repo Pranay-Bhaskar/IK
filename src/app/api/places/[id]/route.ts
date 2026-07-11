@@ -11,11 +11,12 @@ export async function GET(
   try {
     await connectDB();
     const { id } = await params;
-
+    console.log("Requested Place ID:", id);
     const place = await Place.findById(id).populate({
       path: "gallery",
       options: { sort: { createdAt: -1 } },
     }).lean();
+    console.log("Found Place:", place);
 
     if (!place) return apiError("Place not found", 404);
 
