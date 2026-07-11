@@ -166,7 +166,7 @@ function HomePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="relative w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+            {/* <button className="relative w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
               <Bell className="w-4 h-4 text-zinc-400" />
               <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-white" />
             </button>
@@ -175,7 +175,7 @@ function HomePage() {
               className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center"
             >
               <Search className="w-4 h-4 text-zinc-400" />
-            </button>
+            </button> */}
           </div>
         </div>
 
