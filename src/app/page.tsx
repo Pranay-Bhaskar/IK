@@ -279,10 +279,22 @@ function HomePage() {
         />
         <div className="px-4 space-y-2">
           {trending.length === 0
-            ? [1,2,3].map(i => <div key={i} className="h-16 skeleton rounded-2xl" />)
-            : trending.map((v, i) => (
-                <TrendingItem key={v._id} video={v} rank={i + 1} onClick={() => router.push(`/place/${v._id}`)} />
-              ))
+            ? [1, 2, 3].map(i => <div key={i} className="h-16 skeleton rounded-2xl" />)
+            : trending.map((v, i) => {
+                // Safely extract the place ID
+                const targetId = typeof v.placeId === "object" && v.placeId !== null 
+                  ? (v.placeId as any)._id 
+                  : v.placeId;
+
+                return (
+                  <TrendingItem 
+                    key={v._id} 
+                    video={v} 
+                    rank={i + 1} 
+                    onClick={() => router.push(`/place/${targetId}`)} 
+                  />
+                );
+              })
           }
         </div>
       </section>
