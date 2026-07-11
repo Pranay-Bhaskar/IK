@@ -82,6 +82,8 @@ export default function MediaPlayer({ type, sourceType, url, thumbnailUrl, class
 
 
 
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Play } from 'lucide-react';
 
@@ -91,31 +93,43 @@ interface MediaPlayerProps {
   url: string;
   thumbnailUrl?: string;
   className?: string;
-  isActive?: boolean; // Tells the player if it is currently in view
+  isActive?: boolean;
 }
 
 const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className = '', isActive = false }: MediaPlayerProps) => {
   const [showIframe, setShowIframe] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  
-  // Handle Thumbnail Fallback
   const [imgSrc, setImgSrc] = useState(thumbnailUrl || '');
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Autoplay and Pause logic driven by the Intersection Observer
+  // FIX FOR TYPESCRIPT + MOBILE AUTOPLAY
+  // Set defaultMuted directly on the DOM node to bypass TypeScript JSX restrictions
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+    }
+  }, []);
+
+  // Play/Pause logic based on scrolling (isActive)
   useEffect(() => {
     if (isActive) {
-      setShowIframe(true); // Load YouTube iframe
-      if (videoRef.current && type === 'video' && sourceType !== 'youtube') {
-        // Play Cloudinary video, catch AbortError silently
-        videoRef.current.play().catch(err => {
-          if (err.name !== 'AbortError') console.error('Video play error:', err);
-        });
+      if (sourceType === 'youtube') {
+        setShowIframe(true);
+      } else if (type === 'video' && videoRef.current) {
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            if (err.name !== 'AbortError') {
+              console.log("Autoplay prevented by browser:", err);
+            }
+          });
+        }
       }
     } else {
-      setShowIframe(false); // Unload YouTube iframe to stop it
-      if (videoRef.current && type === 'video' && sourceType !== 'youtube') {
-        videoRef.current.pause(); // Pause Cloudinary video
-        videoRef.current.currentTime = 0; // Optional: Reset to start
+      if (sourceType === 'youtube') {
+        setShowIframe(false);
+      } else if (type === 'video' && videoRef.current) {
+        videoRef.current.pause();
       }
     }
   }, [isActive, type, sourceType]);
@@ -131,7 +145,6 @@ const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className
     const embedUrl = `https://www.youtube.com/embed/${videoId}`;
     const fallbackThumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
-    // Show thumbnail if not active or not clicked
     if (!showIframe) {
       return (
         <div 
@@ -140,7 +153,7 @@ const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className
         >
           <img 
             src={imgSrc || fallbackThumb} 
-            onError={() => setImgSrc(fallbackThumb)} // Fixes the 404 missing thumbnail error
+            onError={() => setImgSrc(fallbackThumb)} 
             alt="Video thumbnail" 
             className="w-full h-full object-cover opacity-80" 
           />
@@ -153,10 +166,9 @@ const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className
       );
     }
 
-    // Mute is highly recommended for autoplay to bypass strict browser policies
     return (
       <iframe
-        src={`${embedUrl}?autoplay=1&mute=1&modestbranding=1`} 
+        src={`${embedUrl}?autoplay=1&mute=1&modestbranding=1&rel=0`} 
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -170,7 +182,7 @@ const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className
     return <img src={url} alt="Media content" className={`w-full h-full object-cover ${className}`} />;
   }
 
-  // Cloudinary Video (or direct mp4)
+  // Cloudinary / Standard Video
   return (
     <video
       ref={videoRef}
@@ -179,7 +191,7 @@ const MediaPlayer = React.memo(({ type, sourceType, url, thumbnailUrl, className
       controls
       loop
       playsInline
-      muted // Required by most mobile browsers to allow programmatic autoplay
+      muted // Keeps standard JSX typing happy
       className={`w-full h-full object-cover ${className}`}
     />
   );
