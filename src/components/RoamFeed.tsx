@@ -83,7 +83,7 @@ export default function RoamFeed() {
               />
             </div>
             
-            {/* Overlay Info *}
+            {/* Overlay Info */}
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end">
               <div className="flex-1 text-white pr-4">
                 <h3 className="font-bold text-lg mb-1">{item.title || 'Untitled'}</h3>
