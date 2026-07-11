@@ -98,7 +98,7 @@ export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchem
 
 
 
-/* NEWER */
+/* NEWER 
 
 
 import mongoose, { Schema } from "mongoose";
@@ -168,5 +168,170 @@ VideoSchema.index({ status: 1, createdAt: -1 });
 VideoSchema.index({ creatorId: 1, status: 1 });
 VideoSchema.index({ category: 1, status: 1 });
 VideoSchema.index({ placeId: 1, status: 1 });
+
+export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchema);
+
+*/
+
+/*
+import mongoose, { Schema } from "mongoose";
+
+const VideoSchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ["video", "image"],
+      required: true,
+      index: true,
+    },
+    sourceType: {
+      type: String,
+      enum: ["cloudinary", "youtube"],
+      required: true,
+      index: true,
+    },
+    title: { type: String, trim: true, maxlength: 160 },
+    description: { type: String, maxlength: 1000 },
+    url: { type: String, required: true },
+    thumbnailUrl: { type: String },
+    publicId: { type: String },
+    youtubeVideoId: { type: String },
+    youtubePlaylistId: { type: String },
+    youtubeChannelId: { type: String },
+    placeId: {
+      type: Schema.Types.ObjectId,
+      ref: "Place",
+      required: true,
+      index: true,
+    },
+    uploadedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    category: {
+      type: String,
+      enum: [
+        "NATURE",
+        "HERITAGE",
+        "FOOD",
+        "TREKKING",
+        "WATERFALL",
+        "CULTURE",
+        "HIDDEN_GEM",
+        "TEMPLE",
+        "BEACH",
+        "WILDLIFE",
+        "RESTAURANT",
+      ],
+      required: true,
+      index: true,
+    },
+    tags: [{ type: String, trim: true }],
+    status: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "APPROVED",
+      index: true,
+    },
+    rejectionReason: { type: String },
+    views: { type: Number, default: 0 },
+    likesCount: { type: Number, default: 0 },
+    commentsCount: { type: Number, default: 0 },
+    sharesCount: { type: Number, default: 0 },
+    savesCount: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+VideoSchema.index({ status: 1, createdAt: -1 });
+VideoSchema.index({ uploadedBy: 1, status: 1 });
+VideoSchema.index({ category: 1, status: 1 });
+VideoSchema.index({ placeId: 1, status: 1 });
+VideoSchema.index({ sourceType: 1, type: 1 });
+
+export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchema);
+
+*/
+
+
+// src/models/Video.ts
+import mongoose, { Schema } from "mongoose";
+
+const VideoSchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ["video", "image"],
+      required: true,
+      index: true,
+    },
+    sourceType: {
+      type: String,
+      enum: ["cloudinary", "youtube"],
+      required: true,
+      index: true,
+    },
+    title: { type: String, trim: true, maxlength: 160 },
+    description: { type: String, maxlength: 1000 },
+    url: { type: String, required: true },
+    thumbnailUrl: { type: String },
+    publicId: { type: String },
+    youtubeVideoId: { type: String },
+    youtubePlaylistId: { type: String },
+    youtubeChannelId: { type: String },
+    placeId: {
+      type: Schema.Types.ObjectId,
+      ref: "Place",
+      required: true,
+      index: true,
+    },
+    uploadedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    category: {
+      type: String,
+      enum: [
+        "NATURE",
+        "HERITAGE",
+        "FOOD",
+        "TREKKING",
+        "WATERFALL",
+        "CULTURE",
+        "HIDDEN_GEM",
+        "TEMPLE",
+        "BEACH",
+        "WILDLIFE",
+        "RESTAURANT",
+      ],
+      required: true,
+      index: true,
+    },
+    tags: [{ type: String, trim: true }],
+    status: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "APPROVED",
+      index: true,
+    },
+    rejectionReason: { type: String },
+    views: { type: Number, default: 0 },
+    likesCount: { type: Number, default: 0 },
+    commentsCount: { type: Number, default: 0 },
+    sharesCount: { type: Number, default: 0 },
+    savesCount: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+VideoSchema.index({ status: 1, createdAt: -1 });
+VideoSchema.index({ uploadedBy: 1, status: 1 });
+VideoSchema.index({ category: 1, status: 1 });
+VideoSchema.index({ placeId: 1, status: 1 });
+VideoSchema.index({ sourceType: 1, type: 1 });
 
 export const Video = mongoose.models.Video || mongoose.model("Video", VideoSchema);
