@@ -323,6 +323,7 @@ export default function RoamFeed() {
     entries.forEach(entry => {
       // 0.4 threshold ensures it triggers even with mobile URL bars changing screen height
       if (entry.isIntersecting) {
+          console.log("ACTIVE VIDEO:", entry.target.getAttribute("data-id"));
         setActiveId(entry.target.getAttribute('data-id'));
       }
     });
