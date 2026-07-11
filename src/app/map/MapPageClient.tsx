@@ -32,9 +32,14 @@ export default function MapPageClient() {
   const { coords, permissionState, requesting, requestLocation } = useGeolocation();
   const { places, fetchByBounds } = usePlaces({ category });
 
+  // DEFENSIVE FALLBACK: Guarantee places is always an array
+  const safePlaces = places || [];
+
   useEffect(() => {
-    if (!isLoaded || !initialPlaceId || places.length === 0 || initialPlaceSet.current) return;
-    const place = places.find((p) => p._id === initialPlaceId);
+    // FIX: Using safePlaces so length check never crashes
+    if (!isLoaded || !initialPlaceId || safePlaces.length === 0 || initialPlaceSet.current) return;
+    
+    const place = safePlaces.find((p) => p._id === initialPlaceId);
     if (!place) return;
 
     initialPlaceSet.current = true;
@@ -46,7 +51,7 @@ export default function MapPageClient() {
     }, 500);
 
     return () => window.clearTimeout(t);
-  }, [isLoaded, initialPlaceId, places]);
+  }, [isLoaded, initialPlaceId, safePlaces]);
 
   const handleSelectPlace = useCallback((place: IPlace) => {
     setSelectedPlace(place);
@@ -64,7 +69,7 @@ export default function MapPageClient() {
 
   const openInMaps = useCallback((place: IPlace) => {
     const [lng, lat] = place.location.coordinates;
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
+    window.open(`http://googleusercontent.com/maps.google.com/?q=${lat},${lng}`, "_blank");
   }, []);
 
   const watchVideos = useCallback(
@@ -80,7 +85,7 @@ export default function MapPageClient() {
       <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
         <div className="absolute inset-0 h-40 bg-gradient-to-b from-black/60 to-transparent -z-10" />
         <div className="pt-12 px-4 pointer-events-auto space-y-4">
-          <MapSearchBar places={places} onSelectPlace={handleSelectPlace} />
+          <MapSearchBar places={safePlaces} onSelectPlace={handleSelectPlace} />
           <MapFilterPanel activeCategory={category} onChange={setCategory} />
         </div>
       </div>
@@ -107,7 +112,7 @@ export default function MapPageClient() {
           <MapView
             ref={mapRef}
             isLoaded={isLoaded}
-            places={places}
+            places={safePlaces}
             selectedPlace={selectedPlace}
             userCoords={coords}
             onMarkerClick={handleSelectPlace}
