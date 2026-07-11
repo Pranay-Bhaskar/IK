@@ -464,12 +464,63 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
   const fmtTime    = (m: number) => m < 60 ? `${m}m` : `${Math.floor(m/60)}h${m%60 ? ` ${m%60}m` : ""}`;
 
   // Autoplay
+  // useEffect(() => {
+  //   const v = videoRef.current;
+  //   if (!v) return;
+  //   if (isActive) { v.currentTime = 0; v.play().catch(()=>{}); setPaused(false); }
+  //   else v.pause();
+  // }, [isActive]);
+
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (isActive) { v.currentTime = 0; v.play().catch(()=>{}); setPaused(false); }
-    else v.pause();
-  }, [isActive]);
+  const v = videoRef.current;
+  if (!v) return;
+
+  let cancelled = false;
+
+  const playVideo = async () => {
+    try {
+      if (v.readyState >= 2) {
+        if (!cancelled) {
+          await v.play();
+          setPaused(false);
+        }
+      } else {
+        const onLoaded = async () => {
+          v.removeEventListener("loadeddata", onLoaded);
+
+          if (cancelled) return;
+
+          try {
+            await v.play();
+            setPaused(false);
+          } catch (err: any) {
+            if (err.name !== "AbortError") {
+              console.error(err);
+            }
+          }
+        };
+
+        v.addEventListener("loadeddata", onLoaded);
+      }
+    } catch (err: any) {
+      if (err.name !== "AbortError") {
+        console.error(err);
+      }
+    }
+  };
+
+  if (isActive) {
+    playVideo();
+  } else {
+    if (!v.paused) {
+      v.pause();
+    }
+  }
+
+  return () => {
+    cancelled = true;
+  };
+}, [isActive]);
 
   // Check saved
   useEffect(() => {
@@ -483,7 +534,14 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
   const togglePlay = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); setPaused(false); }
+    if (v.paused) {
+    v.play().catch(err => {
+        if (err.name !== "AbortError") {
+            console.error(err);
+        }
+    });
+    setPaused(false);
+}
     else { v.pause(); setPaused(true); }
     setFlashPlay(true);
     setTimeout(() => setFlashPlay(false), 600);
