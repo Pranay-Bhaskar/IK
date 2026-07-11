@@ -99,12 +99,12 @@ export default function CreatorDashboardPage() {
               </div>
             </div>
           </div>
-          <button className="w-9 h-9 rounded-xl bg-[#161622] border border-[#2a2a3e] flex items-center justify-center relative">
+          {/* <button className="w-9 h-9 rounded-xl bg-[#161622] border border-[#2a2a3e] flex items-center justify-center relative">
             <Bell className="w-4 h-4 text-[#9ca3af]" />
             {stats.pending > 0 && (
               <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#f43f5e]" />
             )}
-          </button>
+          </button> */}
         </div>
       </div>
 
