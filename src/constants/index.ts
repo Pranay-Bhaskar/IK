@@ -1,7 +1,7 @@
 export const CATEGORIES = [
   { value: "NATURE", label: "Nature", emoji: "🌿" },
   { value: "HERITAGE", label: "Heritage", emoji: "🏛" },
-  { value: "FOOD", label: "Food", emoji: "🍛" },
+  { value: "RESTAURANT", label: "Restaurant", emoji: "🍽" }, // Added to match Schema
   { value: "TREKKING", label: "Trekking", emoji: "🥾" },
   { value: "WATERFALL", label: "Waterfall", emoji: "💧" },
   { value: "CULTURE", label: "Culture", emoji: "🎭" },

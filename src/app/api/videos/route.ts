@@ -246,8 +246,11 @@ export async function POST(req: NextRequest) {
     });
 
     return apiSuccess({ video }, "Video created", 201);
-  } catch (err) {
-    console.error("[POST /api/videos]", err);
+  } catch (err: any) {
+  console.error("[POST /api/videos] Error:", err.message); // This will show you Mongoose validation errors
+    if (err.name === 'ValidationError') {
+      return apiError("Invalid data: " + err.message, 400);
+    }
     return apiError("Failed to save video", 500);
   }
 }
