@@ -43,10 +43,19 @@ export default function ExplorePage() {
       }
       const res  = await fetch(`/api/videos?${params}`);
       const data = await res.json();
+      
+      // FIX: Ensure fetchedVideos is an array before attempting to spread/map it
       if (data.success) {
-        setVideos(prev => reset || p === 1 ? data.data.videos : [...prev, ...data.data.videos]);
-        setHasMore(data.data.hasMore);
+        const fetchedVideos = data?.data?.videos || [];
+        setVideos(prev => reset || p === 1 ? fetchedVideos : [...prev, ...fetchedVideos]);
+        setHasMore(!!data?.data?.hasMore);
+      } else {
+        if (reset || p === 1) setVideos([]);
+        setHasMore(false);
       }
+    } catch (err) {
+      if (reset || p === 1) setVideos([]);
+      setHasMore(false);
     } finally {
       setLoading(false);
       loadingMore.current = false;
@@ -130,7 +139,7 @@ export default function ExplorePage() {
         className="h-dvh overflow-y-scroll"
         style={{ scrollSnapType: "y mandatory" }}
       >
-        {videos.map((video, index) => (
+        {videos?.map((video, index) => (
           <div
             key={`${video._id}-${index}`}
             data-index={index}
@@ -162,18 +171,23 @@ export default function ExplorePage() {
       <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/75 via-black/25 to-transparent pb-10 pointer-events-none">
         <div className="pt-12 px-4 pointer-events-auto">
           <div className="flex items-center justify-between">
-            <FeedTabs active={activeTab} onChange={handleTabChange} />
-            <div className="relative">
-              <FeedFilterPanel
-                activeTab={activeTab}
-                open={filterOpen}
-                onToggle={() => setFilterOpen(o => !o)}
-                filterCategory={filterCategory}
-                onCategoryChange={setFilterCategory}
-                radius={radius}
-                onRadiusChange={setRadius}
-              />
-            </div>
+            <React.Fragment>
+               {/* Assuming FeedTabs and FeedFilterPanel are properly imported. 
+                 Render them normally 
+               */}
+               <FeedTabs active={activeTab} onChange={handleTabChange} />
+               <div className="relative">
+                 <FeedFilterPanel
+                   activeTab={activeTab}
+                   open={filterOpen}
+                   onToggle={() => setFilterOpen(o => !o)}
+                   filterCategory={filterCategory}
+                   onCategoryChange={setFilterCategory}
+                   radius={radius}
+                   onRadiusChange={setRadius}
+                 />
+               </div>
+            </React.Fragment>
           </div>
         </div>
       </div>
