@@ -19,10 +19,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refresh = async () => {
     try {
-      const res  = await fetch("/api/auth/me");
+      const res = await fetch("/api/auth/me");
+      
+      // FIX: Silently handle 401 Unauthorized (guest users)
+      if (!res.ok) {
+        setUser(null);
+        return;
+      }
+
       const data = await res.json();
-      setUser(data.success ? data.data.user : null);
-    } catch {
+      // Ensure we safely access nested data structure
+      setUser(data.success && data.data?.user ? data.data.user : null);
+    } catch (error) {
       setUser(null);
     } finally {
       setLoading(false);
