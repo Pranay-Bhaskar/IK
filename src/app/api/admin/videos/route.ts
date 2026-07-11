@@ -8,13 +8,17 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const user = await getAuthUser();
-    if (!user || user.role !== "ADMIN") return apiError("Admin only", 403);
+    if (!user) return apiError("Not authenticated", 401);
+    if (user.role !== "ADMIN") return apiError("Admins only", 403);
 
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status") || "PENDING";
+    const status = searchParams.get("status");
+    const query: Record<string, unknown> = {};
+    if (status) query.status = status;
 
-    const videos = await Video.find({ status })
-      .populate("creatorId", "fullName email profileImage district")
+    const videos = await Video.find(query)
+      .populate("uploadedBy", "fullName profileImage district isVerified")
+      .populate("placeId", "name district city state category thumbnailUrl")
       .sort({ createdAt: -1 })
       .lean();
 
