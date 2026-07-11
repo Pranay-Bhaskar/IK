@@ -1,6 +1,6 @@
-/*
-'use client';
 
+'use client';
+/*
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Play } from 'lucide-react';
@@ -80,7 +80,7 @@ export default function MediaPlayer({ type, sourceType, url, thumbnailUrl, class
 
 
 
-'use client';
+
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Play } from 'lucide-react';
