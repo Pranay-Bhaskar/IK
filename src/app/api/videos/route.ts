@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db/connect";
 import { Video } from "@/models/Video";
-import { Place } from "@/models/Place"; // Added for geo-lookups
+import { Place } from "@/models/Place";
 import { getAuthUser } from "@/lib/auth/jwt";
 import { apiError, apiSuccess } from "@/lib/utils";
 import { FEED_PAGE_SIZE } from "@/constants";
@@ -145,7 +145,6 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category");
     const placeId = searchParams.get("placeId");
     
-    // Geo params
     const radiusKm = parseFloat(searchParams.get("radius") || "0");
     const userLat = parseFloat(searchParams.get("lat") || "");
     const userLon = parseFloat(searchParams.get("lon") || "");
@@ -155,7 +154,6 @@ export async function GET(req: NextRequest) {
     if (category) query.category = category;
     if (placeId) query.placeId = placeId;
 
-    // PERFORMANCE OPTIMIZATION: If radius is set, find relevant Place IDs first
     if (radiusKm > 0 && !Number.isNaN(userLat) && !Number.isNaN(userLon)) {
       const nearbyPlaces = await Place.find({
         location: {
@@ -200,13 +198,33 @@ export async function POST(req: NextRequest) {
     const user = await getAuthUser();
     if (!user) return apiError("Not authenticated", 401);
     
-    // Ensure you match the role logic used in other routes
     if (user.role !== "CREATOR" && user.role !== "ADMIN") {
       return apiError("Only creators can upload videos", 403);
     }
 
     const body = await req.json();
-    const { title, description, category, placeId, tags, url, thumbnailUrl, publicId, type = "video" } = body;
+    let { title, description, category, placeId, tags, url, thumbnailUrl, publicId, type = "video", placeName, district, latitude, longitude } = body;
+
+    // Logic: Find or Create Place if ID is missing
+    if (!placeId && placeName && district) {
+      let place = await Place.findOne({ name: { $regex: new RegExp(`^${placeName}$`, "i") }, district });
+      
+      if (!place) {
+        // USE COORDINATES FROM BODY OR DEFAULTS
+        const coords = [
+          parseFloat(longitude) || 77.5946, 
+          parseFloat(latitude) || 12.9716
+        ];
+
+        place = await Place.create({ 
+          name: placeName, 
+          district: district, 
+          category: category || "OTHER", 
+          location: { type: "Point", coordinates: coords }
+        });
+      }
+      placeId = place._id;
+    }
 
     if (!title || !description || !category || !placeId || !url) {
       return apiError("Missing required fields", 400);
