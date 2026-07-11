@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db/connect";
-import { Video } from "@/models/Video"; // Import Video instead of Media
+import { Video } from "@/models/Video";
+import { Media } from "@/models/Media"; // Import Video instead of Media
 
 export async function GET(req: Request) {
   await connectDB();
