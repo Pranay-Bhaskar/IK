@@ -248,7 +248,7 @@ const MediaPlayer = React.memo(
             type="button"
             onClick={toggleYoutubeMute}
             aria-label={ytMuted ? 'Unmute' : 'Mute'}
-            className="absolute right-4 top-24 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 active:scale-90"
+            className="absolute right-4 top-28 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 active:scale-90"
           >
             {ytMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </button>
@@ -294,7 +294,7 @@ const MediaPlayer = React.memo(
           type="button"
           onClick={toggleVideoMute}
           aria-label={muted ? 'Unmute' : 'Mute'}
-          className="absolute right-4 top-24 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 active:scale-90"
+          className="absolute right-4 top-28 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 active:scale-90"
         >
           {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </button>
