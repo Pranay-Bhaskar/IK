@@ -35,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
 import type { Metadata, Viewport } from "next";
+import Image from "next/image";
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
@@ -48,29 +49,30 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0b3f1b",
+  themeColor: "#0d3f1b",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-dvh overflow-x-hidden text-white">
+      <body className="min-h-dvh overflow-x-hidden bg-black text-white">
         <AuthProvider>
-          <div className="app-shell mx-auto min-h-dvh w-full max-w-[430px] overflow-hidden relative">
-            <div className="app-sky" />
-            <div className="app-sky-glow" />
-            <div className="app-sun" />
-            <div className="app-cloud app-cloud-1" />
-            <div className="app-cloud app-cloud-2" />
-            <div className="app-cloud app-cloud-3" />
-            <div className="app-mist" />
-            <div className="app-hill app-hill-back" />
-            <div className="app-hill app-hill-mid" />
-            <div className="app-hill app-hill-front" />
-            <div className="app-forest-line" />
-            <div className="app-forest-line app-forest-line-2" />
-            <div className="app-foreground-sheen" />
-            <div className="app-notches" />
+          <div className="app-frame mx-auto min-h-dvh w-full max-w-[430px] relative overflow-hidden">
+            <div className="app-bg" aria-hidden="true">
+              <Image
+                src="/image.jpg"
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 430px) 100vw, 430px"
+                className="object-cover object-center"
+              />
+              <div className="app-bg-overlay" />
+              <div className="app-bg-vignette" />
+              <div className="app-bg-grain" />
+              <div className="app-top-fade" />
+              <div className="app-bottom-fade" />
+            </div>
 
             <div className="app-content relative z-10 min-h-dvh">
               {children}
