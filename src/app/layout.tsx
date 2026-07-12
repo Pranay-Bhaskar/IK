@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
 import type { Metadata, Viewport } from "next";
-import Image from "next/image";   // ✅ Correct import
+import Image from "next/image";
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
@@ -57,24 +57,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-dvh overflow-x-hidden bg-black text-white">
         <AuthProvider>
-          <div className="app-frame mx-auto min-h-dvh w-full max-w-[430px] relative overflow-hidden">
-            <div className="app-bg" aria-hidden="true">
+          <div className="relative mx-auto min-h-dvh w-full max-w-[430px] overflow-hidden">
+            <div className="absolute inset-0 z-0">
               <Image
-                src="/image.jpg"   // ✅ served from public/
+                src="/image.jpg"
                 alt=""
                 fill
                 priority
-                sizes="(max-width: 430px) 100vw, 430px"
                 className="object-cover object-center"
+                sizes="(max-width: 430px) 100vw, 430px"
               />
-              <div className="app-bg-overlay" />
-              <div className="app-bg-vignette" />
-              <div className="app-bg-grain" />
-              <div className="app-top-fade" />
-              <div className="app-bottom-fade" />
+              <div className="absolute inset-0 bg-black/10" />
             </div>
 
-            <div className="app-content relative z-10 min-h-dvh">
+            <div className="relative z-10 min-h-dvh bg-transparent">
               {children}
             </div>
           </div>
