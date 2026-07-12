@@ -216,15 +216,16 @@ export default function RoamFeed() {
 
   return (
     <div className="relative mx-auto h-[100dvh] w-full max-w-md bg-black md:max-w-lg">
-      {/* Floating glass header */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-3 p-4">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-xl shadow-lg shadow-black/20">
-          <span className="text-base font-bold tracking-tight text-white">Roam</span>
-          <span className="h-1 w-1 rounded-full bg-white/30" />
-          <span className="text-sm font-medium text-white/70">Discover Karnataka</span>
+      {/* Floating glass header — fixed height so it can never grow into
+          the media controls below it, regardless of text length/wrapping */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 overflow-hidden px-4 pt-[env(safe-area-inset-top)]">
+        <div className="pointer-events-auto flex max-w-[65%] items-center gap-2 overflow-hidden whitespace-nowrap rounded-full border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-xl shadow-lg shadow-black/20">
+          <span className="shrink-0 text-base font-bold tracking-tight text-white">Roam</span>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-white/30" />
+          <span className="truncate text-sm font-medium text-white/70">Discover Karnataka</span>
         </div>
 
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-auto flex shrink-0 items-center gap-2">
           <button
             type="button"
             aria-label="Search"
@@ -274,7 +275,7 @@ export default function RoamFeed() {
                   initial={{ opacity: 0, y: -8 }}
                   animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0.85, y: 0 }}
                   transition={{ duration: 0.4, ease: 'easeOut' }}
-                  className={`absolute left-4 top-20 z-10 flex items-center gap-1.5 rounded-full bg-gradient-to-r ${categoryStyle.gradient} px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-lg shadow-black/30`}
+                  className={`absolute left-4 top-24 z-10 flex items-center gap-1.5 rounded-full bg-gradient-to-r ${categoryStyle.gradient} px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-lg shadow-black/30`}
                 >
                   <span>{categoryStyle.emoji}</span>
                   <span>{item.category}</span>
