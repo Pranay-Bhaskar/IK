@@ -48,21 +48,34 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#296A32", // Updated to match the sky color of your new background
+  themeColor: "#0b3f1b",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* Outer wrapper: Dark framing color for desktop viewing */}
-      <body className="min-h-dvh bg-[#12141a] text-white overflow-x-hidden">
+      <body className="min-h-dvh overflow-x-hidden text-white">
         <AuthProvider>
-          
-          {/* Main App Container: Replaced bg-black with scenery-bg */}
-          <div className="mx-auto min-h-dvh w-full max-w-[430px] scenery-bg overflow-hidden relative shadow-2xl">
-            {children}
-          </div>
+          <div className="app-shell mx-auto min-h-dvh w-full max-w-[430px] overflow-hidden relative">
+            <div className="app-sky" />
+            <div className="app-sky-glow" />
+            <div className="app-sun" />
+            <div className="app-cloud app-cloud-1" />
+            <div className="app-cloud app-cloud-2" />
+            <div className="app-cloud app-cloud-3" />
+            <div className="app-mist" />
+            <div className="app-hill app-hill-back" />
+            <div className="app-hill app-hill-mid" />
+            <div className="app-hill app-hill-front" />
+            <div className="app-forest-line" />
+            <div className="app-forest-line app-forest-line-2" />
+            <div className="app-foreground-sheen" />
+            <div className="app-notches" />
 
+            <div className="app-content relative z-10 min-h-dvh">
+              {children}
+            </div>
+          </div>
         </AuthProvider>
       </body>
     </html>
