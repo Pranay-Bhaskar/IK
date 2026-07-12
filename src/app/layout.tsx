@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
 import type { Metadata, Viewport } from "next";
-import Image from "next/image";
+import Image from "next/image";   // ✅ Correct import
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="app-frame mx-auto min-h-dvh w-full max-w-[430px] relative overflow-hidden">
             <div className="app-bg" aria-hidden="true">
               <Image
-                src="/image.jpg"
+                src="/image.jpg"   // ✅ served from public/
                 alt=""
                 fill
                 priority
