@@ -299,8 +299,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── COLLECTIONS ── */}
-      <section className="mb-6">
+      {/* <section className="mb-6">
         <SectionHeader
           title="Curated collections"
           sub="Handpicked journeys"
@@ -329,7 +328,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── STORIES ── */}
       <section className="mb-6">
         <SectionHeader
           title="Stories from Karnataka"
@@ -346,7 +344,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── EXPLORER SPOTLIGHT ── */}
       <section className="mb-6 px-4">
         <SectionHeader title="Explorer Spotlight" sub="Top creator this week" />
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 relative overflow-hidden">
@@ -375,7 +372,7 @@ function HomePage() {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <BottomNav />
     </div>
