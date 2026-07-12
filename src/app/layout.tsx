@@ -36,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 import type { Metadata, Viewport } from "next";
 import Image from "next/image";
+import bgImage from "./bg.jpg";
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/AuthContext";
 
@@ -60,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="relative mx-auto min-h-dvh w-full max-w-[430px] overflow-hidden">
             <div className="absolute inset-0 z-0">
               <Image
-                src="/image.jpg"
+                src={bgImage}
                 alt=""
                 fill
                 priority
