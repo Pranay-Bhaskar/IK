@@ -1,4 +1,4 @@
-/*
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -55,8 +55,8 @@ export function MapFilterPanel({ activeCategory, onChange }: MapFilterPanelProps
     </div>
   );
 }
-*/
 
+/*
 
 "use client";
 
@@ -78,7 +78,7 @@ export function MapFilterPanel({ activeCategory, onChange }: MapFilterPanelProps
           style={{ scrollbarWidth: "none" }}
           aria-label="Filter places by category"
         >
-          {/* All chip */}
+          {/* All chip *}
           <button
             onClick={() => onChange("")}
             aria-pressed={activeCategory === ""}
@@ -122,3 +122,4 @@ export function MapFilterPanel({ activeCategory, onChange }: MapFilterPanelProps
     </div>
   );
 }
+*/
