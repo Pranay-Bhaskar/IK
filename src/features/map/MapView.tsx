@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -10,6 +11,9 @@ import {
 import { DARK_MAP_STYLES, KARNATAKA_CENTER, DEFAULT_ZOOM } from "./constants";
 import type { IPlace } from "@/types";
 import type { Coords } from "./useGeolocation";
+import { MapFilterPanel } from "./MapFilterPanel"; // Adjust path if needed
+import { GeolocationButton } from "./GeolocationButton"; // Adjust path if needed
+import { useGeolocation } from "./useGeolocation"; // Assuming you have this hook
 
 export interface MapViewHandle {
   panTo: (lat: number, lng: number, zoom?: number) => void;
