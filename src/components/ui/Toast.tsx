@@ -1,3 +1,4 @@
+/*
 "use client";
 import { CheckCircle2, XCircle, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,75 @@ export function ToastContainer({ toasts, onRemove }: { toasts: ToastItem[]; onRe
           <span className="flex-1">{t.message}</span>
           <button onClick={() => onRemove(t.id)}>
             <X className={cn("w-3.5 h-3.5 opacity-60", t.type === "success" ? "text-black" : "text-white")} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+  */
+
+
+
+"use client";
+
+import { CheckCircle2, XCircle, Info, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export interface ToastItem { 
+  id: string; 
+  message: string; 
+  type: "success" | "error" | "info"; 
+}
+
+export function ToastContainer({ toasts, onRemove }: { toasts: ToastItem[]; onRemove: (id: string) => void }) {
+  if (!toasts.length) return null;
+
+  return (
+    <div className="fixed bottom-24 left-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+      {toasts.map((t) => (
+        <div 
+          key={t.id} 
+          className={cn(
+            "pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-3xl border backdrop-blur-2xl shadow-2xl fade-up w-full max-w-[400px] mx-auto",
+            t.type === "success" && "bg-emerald-500/10 border-emerald-500/20 text-emerald-50",
+            t.type === "error"   && "bg-rose-500/10 border-rose-500/20 text-rose-50",
+            t.type === "info"    && "bg-zinc-800/40 border-white/10 text-white"
+          )}
+        >
+          {/* Icon with weight }
+          <div className={cn(
+            "p-1.5 rounded-full flex-shrink-0",
+            t.type === "success" && "bg-emerald-500/20",
+            t.type === "error"   && "bg-rose-500/20",
+            t.type === "info"    && "bg-white/10"
+          )}>
+            {t.type === "success" && <CheckCircle2 className="w-3.5 h-3.5" />}
+            {t.type === "error"   && <XCircle className="w-3.5 h-3.5" />}
+            {t.type === "info"    && <Info className="w-3.5 h-3.5" />}
+          </div> */}
+
+          <div className={cn(
+            "flex items-center gap-3 px-5 py-4 rounded-3xl border backdrop-blur-2xl shadow-2xl fade-up",
+            t.type === "success" && "bg-emerald-500/10 border-emerald-500/20 text-emerald-100",
+            t.type === "error"   && "bg-rose-500/10 border-rose-500/20 text-rose-100"
+          )}>
+            {/* Use a circular background for the icon to add "weight" */}
+            <div className="bg-white/10 p-1 rounded-full">
+              {t.type === "success" ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+            </div>
+            <span className="font-semibold text-xs tracking-wide">{t.message}</span>
+          </div>
+
+          <span className="flex-1 font-semibold text-xs tracking-wide leading-tight">
+            {t.message}
+          </span>
+          
+          <button 
+            onClick={() => onRemove(t.id)}
+            className="p-1 hover:bg-white/10 rounded-full transition-colors"
+          >
+            <X className="w-3.5 h-3.5 opacity-60" />
           </button>
         </div>
       ))}
