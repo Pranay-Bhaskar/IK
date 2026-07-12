@@ -266,8 +266,14 @@ const youtubeId =
           </div>
         )}
 
-        {/* ── TOP BAR: category badge + mute ── */}
-        <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12 z-10 pointer-events-none">
+        {/* ── TOP BAR: category badge + mute ──
+            NOTE: pushed down (pt-28 + safe-area) so this row clears a
+            parent tab bar / filter button rendered above this card.
+            If your parent header height changes, adjust pt-28 to match. */}
+        <div
+          className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 z-10 pointer-events-none"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6.5rem)' }}
+        >
           {category && (
             <span className="glass border border-white/10 rounded-full px-3 py-1 text-xs font-bold text-white pointer-events-auto">
               {category.emoji} {category.label}
