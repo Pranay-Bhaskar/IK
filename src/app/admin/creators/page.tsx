@@ -324,162 +324,169 @@ export default function AdminCreatorsPage() {
   const suspended = creators.filter(c => !c.isActive).length;
 
   return (
-    <div className="px-4 pt-5 pb-6">
+    <div className="relative min-h-dvh pb-6">
 
-      {/* Header */}
-      <div className="mb-5">
-        <h2 className="text-xl font-black text-white">Creators</h2>
-        <p className="text-xs text-zinc-400 mt-0.5">Manage and verify creators</p>
-      </div>
+      {/* Dark gradient overlay matching the Login Page */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
-      {/* Summary pills - Minimalist Glassmorphism */}
-      <div className="flex gap-2 mb-4">
-        <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2 shadow-lg">
-          <Camera className="w-3.5 h-3.5 text-white" />
-          <span className="text-xs font-bold text-white">{creators.length} total</span>
+      {/* Content wrapper sitting above the gradient overlay */}
+      <div className="relative z-10 px-4 pt-5">
+
+        {/* Header */}
+        <div className="mb-5">
+          <h2 className="text-xl font-black text-white drop-shadow-md">Creators</h2>
+          <p className="text-xs text-zinc-400 mt-0.5 drop-shadow-md">Manage and verify creators</p>
         </div>
-        <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2 shadow-lg">
-          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-          <span className="text-xs font-bold text-white">{verified} verified</span>
+
+        {/* Summary pills - Minimalist Glassmorphism */}
+        <div className="flex gap-2 mb-4">
+          <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2 shadow-xl">
+            <Camera className="w-3.5 h-3.5 text-white" />
+            <span className="text-xs font-bold text-white drop-shadow-sm">{creators.length} total</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2 shadow-xl">
+            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+            <span className="text-xs font-bold text-white drop-shadow-sm">{verified} verified</span>
+          </div>
+          {suspended > 0 && (
+            <div className="flex items-center gap-1.5 bg-white/5 backdrop-blur-md border border-white/20 rounded-xl px-3 py-2 shadow-xl">
+              <UserX className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-xs font-bold text-zinc-300 drop-shadow-sm">{suspended} suspended</span>
+            </div>
+          )}
         </div>
-        {suspended > 0 && (
-          <div className="flex items-center gap-1.5 bg-white/5 backdrop-blur-md border border-white/20 rounded-xl px-3 py-2 shadow-lg">
-            <UserX className="w-3.5 h-3.5 text-zinc-300" />
-            <span className="text-xs font-bold text-zinc-300">{suspended} suspended</span>
+
+        {/* Search */}
+        <div className="relative mb-4 shadow-xl rounded-xl">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search by name or email..."
+            className="w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-xl pl-9 pr-9 py-3 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all outline-none"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            >
+              <X className="w-4 h-4 text-zinc-400 hover:text-white transition-colors" />
+            </button>
+          )}
+        </div>
+
+        {/* List */}
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-20 skeleton rounded-2xl opacity-50" />
+            ))}
+          </div>
+        ) : creators.length === 0 ? (
+          <div className="py-16 text-center bg-black/20 backdrop-blur-md border border-white/5 rounded-2xl shadow-xl">
+            <div className="text-4xl mb-3 grayscale opacity-90">👤</div>
+            <p className="text-sm font-bold text-white drop-shadow-sm">No creators found</p>
+          </div>
+        ) : (
+          <div className="space-y-2" onClick={() => setOpenMenu(null)}>
+            {creators.map(creator => (
+              <div
+                key={creator._id}
+                className={cn(
+                  "bg-black/40 backdrop-blur-md border rounded-2xl p-4 relative shadow-xl transition-all",
+                  !creator.isActive
+                    ? "border-white/5 opacity-60"
+                    : creator.isVerified
+                      ? "border-white/20"
+                      : "border-white/10"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  {/* Avatar: Grayscale translucent */}
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center text-sm font-black text-white flex-shrink-0 drop-shadow-sm">
+                    {creator.fullName.charAt(0).toUpperCase()}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-bold text-white truncate drop-shadow-sm">{creator.fullName}</p>
+                      {creator.isVerified && (
+                        <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                          <span className="text-[7px] text-black font-black">✓</span>
+                        </div>
+                      )}
+                      {!creator.isActive && (
+                        <span className="text-[9px] bg-white/10 text-zinc-300 border border-white/20 rounded-full px-1.5 py-0.5 font-bold drop-shadow-sm">
+                          Suspended
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-zinc-400 truncate mt-0.5">{creator.email}</p>
+                    {creator.district && (
+                      <div className="flex items-center gap-1 mt-1">
+                        <MapPin className="w-2.5 h-2.5 text-zinc-500" />
+                        <span className="text-[10px] text-zinc-400">{creator.district}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action menu trigger */}
+                  <button
+                    onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === creator._id ? null : creator._id); }}
+                    disabled={actioning === creator._id}
+                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 flex items-center justify-center flex-shrink-0 transition-colors shadow-sm"
+                  >
+                    {actioning === creator._id
+                      ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+                      : <MoreVertical className="w-3.5 h-3.5 text-white" />
+                    }
+                  </button>
+                </div>
+
+                {/* Dropdown menu - Glassmorphic Monochrome */}
+                {openMenu === creator._id && (
+                  <div
+                    className="absolute right-4 top-14 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-1 z-20 shadow-2xl w-44"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {creator.isVerified ? (
+                      <ActionMenuItem
+                        icon={ShieldOff}
+                        label="Remove verification"
+                        color="text-zinc-400"
+                        onClick={() => applyAction(creator._id, "unverify")}
+                      />
+                    ) : (
+                      <ActionMenuItem
+                        icon={ShieldCheck}
+                        label="Verify creator"
+                        color="text-white"
+                        onClick={() => applyAction(creator._id, "verify")}
+                      />
+                    )}
+                    {creator.isActive ? (
+                      <ActionMenuItem
+                        icon={UserX}
+                        label="Suspend account"
+                        color="text-zinc-400"
+                        onClick={() => applyAction(creator._id, "suspend")}
+                      />
+                    ) : (
+                      <ActionMenuItem
+                        icon={UserCheck}
+                        label="Unsuspend account"
+                        color="text-white"
+                        onClick={() => applyAction(creator._id, "unsuspend")}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
-
-      {/* Search */}
-      <div className="relative mb-4 shadow-lg rounded-xl">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-        <input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name or email..."
-          className="w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-xl pl-9 pr-9 py-3 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all outline-none"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-          >
-            <X className="w-4 h-4 text-zinc-400" />
-          </button>
-        )}
-      </div>
-
-      {/* List */}
-      {loading ? (
-        <div className="space-y-3">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-20 skeleton rounded-2xl opacity-50" />
-          ))}
-        </div>
-      ) : creators.length === 0 ? (
-        <div className="py-16 text-center bg-black/20 backdrop-blur-md border border-white/5 rounded-2xl">
-          <div className="text-4xl mb-3 grayscale opacity-90">👤</div>
-          <p className="text-sm font-bold text-white">No creators found</p>
-        </div>
-      ) : (
-        <div className="space-y-2" onClick={() => setOpenMenu(null)}>
-          {creators.map(creator => (
-            <div
-              key={creator._id}
-              className={cn(
-                "bg-black/40 backdrop-blur-md border rounded-2xl p-4 relative shadow-lg transition-all",
-                !creator.isActive
-                  ? "border-white/5 opacity-60"
-                  : creator.isVerified
-                    ? "border-white/20"
-                    : "border-white/10"
-              )}
-            >
-              <div className="flex items-center gap-3">
-                {/* Avatar: Grayscale translucent */}
-                <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/5 flex items-center justify-center text-sm font-black text-white flex-shrink-0">
-                  {creator.fullName.charAt(0).toUpperCase()}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-bold text-white truncate">{creator.fullName}</p>
-                    {creator.isVerified && (
-                      <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                        <span className="text-[7px] text-black font-black">✓</span>
-                      </div>
-                    )}
-                    {!creator.isActive && (
-                      <span className="text-[9px] bg-white/10 text-zinc-300 border border-white/20 rounded-full px-1.5 py-0.5 font-bold">
-                        Suspended
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-zinc-400 truncate mt-0.5">{creator.email}</p>
-                  {creator.district && (
-                    <div className="flex items-center gap-1 mt-1">
-                      <MapPin className="w-2.5 h-2.5 text-zinc-500" />
-                      <span className="text-[10px] text-zinc-400">{creator.district}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Action menu trigger */}
-                <button
-                  onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === creator._id ? null : creator._id); }}
-                  disabled={actioning === creator._id}
-                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 flex items-center justify-center flex-shrink-0 transition-colors"
-                >
-                  {actioning === creator._id
-                    ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
-                    : <MoreVertical className="w-3.5 h-3.5 text-white" />
-                  }
-                </button>
-              </div>
-
-              {/* Dropdown menu - Glassmorphic Black/White */}
-              {openMenu === creator._id && (
-                <div
-                  className="absolute right-4 top-14 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl p-1 z-20 shadow-2xl w-44"
-                  onClick={e => e.stopPropagation()}
-                >
-                  {creator.isVerified ? (
-                    <ActionMenuItem
-                      icon={ShieldOff}
-                      label="Remove verification"
-                      color="text-zinc-300"
-                      onClick={() => applyAction(creator._id, "unverify")}
-                    />
-                  ) : (
-                    <ActionMenuItem
-                      icon={ShieldCheck}
-                      label="Verify creator"
-                      color="text-white"
-                      onClick={() => applyAction(creator._id, "verify")}
-                    />
-                  )}
-                  {creator.isActive ? (
-                    <ActionMenuItem
-                      icon={UserX}
-                      label="Suspend account"
-                      color="text-zinc-300"
-                      onClick={() => applyAction(creator._id, "suspend")}
-                    />
-                  ) : (
-                    <ActionMenuItem
-                      icon={UserCheck}
-                      label="Unsuspend account"
-                      color="text-white"
-                      onClick={() => applyAction(creator._id, "unsuspend")}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
