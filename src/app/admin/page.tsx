@@ -245,7 +245,6 @@ interface Stats {
   creators: number;
 }
 
-// Minimalist grayscale palette for charts
 const DISTRICT_DATA = [
   { name: "Kodagu",         views: 9200,  color: "#ffffff" },
   { name: "Chikkamagaluru", views: 7400,  color: "#d4d4d8" },
@@ -282,122 +281,128 @@ export default function AdminOverviewPage() {
   }, []);
 
   return (
-    <div className="px-4 pt-5 pb-6">
+    <div className="relative min-h-dvh pb-6">
+      {/* Dark gradient overlay matching the Login Page */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
-      {/* ── Page title ── */}
-      <div className="mb-5">
-        <h2 className="text-xl font-black text-white drop-shadow-md">Overview</h2>
-        <p className="text-xs text-zinc-400 mt-0.5">Platform health at a glance</p>
-      </div>
-
-      {/* ── Pending alert ── */}
-      {!loading && stats.pending > 0 && (
-        <Link href="/admin/videos">
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 mb-5 shadow-lg active:opacity-80 transition-all hover:bg-white/15">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 border border-white/10">
-              <AlertTriangle className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-black text-white drop-shadow-sm">
-                {stats.pending} video{stats.pending !== 1 ? "s" : ""} awaiting review
-              </p>
-              <p className="text-xs text-zinc-300 mt-0.5">Tap to review now</p>
-            </div>
-            <ArrowRight className="w-4 h-4 text-zinc-400" />
-          </div>
-        </Link>
-      )}
-
-      {/* ── Stats grid ── */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
-        <StatCard icon={Clock}       label="Pending"       value={stats.pending}  loading={loading} />
-        <StatCard icon={CheckCircle2} label="Published"    value={stats.approved} loading={loading} />
-        <StatCard icon={XCircle}     label="Rejected"      value={stats.rejected} loading={loading} />
-        <StatCard icon={Users}       label="Creators"      value={stats.creators} loading={loading} />
-      </div>
-
-      {/* ── Quick actions ── */}
-      <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-3 uppercase drop-shadow-sm">Quick Actions</p>
-      <div className="space-y-2 mb-6">
-        <QuickAction
-          href="/admin/videos?status=PENDING"
-          icon={Clock}
-          label="Review pending videos"
-          sub={`${stats.pending} waiting for approval`}
-          badge={stats.pending}
-        />
-        <QuickAction
-          href="/admin/creators"
-          icon={Users}
-          label="Manage creators"
-          sub={`${stats.creators} registered creators`}
-          badge={0}
-        />
-        <QuickAction
-          href="/admin/reports"
-          icon={AlertTriangle}
-          label="Trust & reports"
-          sub="Review flagged content"
-          badge={0}
-        />
-      </div>
-
-      {/* ── Trending districts ── */}
-      <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-3 uppercase drop-shadow-sm">Trending Districts</p>
-      <div className="bg-black/40 backdrop-blur-md border border-white/10 shadow-lg rounded-2xl p-4 space-y-3">
-        {DISTRICT_DATA.map((d) => (
-          <div key={d.name} className="flex items-center gap-3">
-            <span className="text-xs text-zinc-300 w-[120px] truncate flex-shrink-0">{d.name}</span>
-            <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${(d.views / MAX_VIEWS) * 100}%`,
-                  background: d.color,
-                }}
-              />
-            </div>
-            <span className="text-xs font-medium text-zinc-400 w-12 text-right flex-shrink-0">
-              {(d.views / 1000).toFixed(1)}k
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* ── Content overview ── */}
-      <div className="mt-5 bg-black/40 backdrop-blur-md border border-white/10 shadow-lg rounded-2xl p-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Video className="w-4 h-4 text-white" />
-          <p className="text-sm font-black text-white">Content overview</p>
+      {/* Content wrapper */}
+      <div className="relative z-10 px-4 pt-5">
+        
+        {/* ── Page title ── */}
+        <div className="mb-5">
+          <h2 className="text-xl font-black text-white drop-shadow-md">Overview</h2>
+          <p className="text-xs text-zinc-400 mt-0.5 drop-shadow-md">Platform health at a glance</p>
         </div>
-        <div className="space-y-3">
-          {[
-            { label: "Published",  value: stats.approved, color: "#ffffff", total: stats.total },
-            { label: "Pending",    value: stats.pending,  color: "#a1a1aa", total: stats.total },
-            { label: "Rejected",   value: stats.rejected, color: "#52525b", total: stats.total },
-          ].map(item => (
-            <div key={item.label}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-zinc-400 font-medium">{item.label}</span>
-                <span className="font-bold text-white">{item.value}</span>
+
+        {/* ── Pending alert ── */}
+        {!loading && stats.pending > 0 && (
+          <Link href="/admin/videos">
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 mb-5 shadow-xl active:opacity-80 transition-all hover:bg-white/15">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 border border-white/10">
+                <AlertTriangle className="w-5 h-5 text-white" />
               </div>
-              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+              <div className="flex-1">
+                <p className="text-sm font-black text-white drop-shadow-sm">
+                  {stats.pending} video{stats.pending !== 1 ? "s" : ""} awaiting review
+                </p>
+                <p className="text-xs text-zinc-300 mt-0.5">Tap to review now</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-zinc-400" />
+            </div>
+          </Link>
+        )}
+
+        {/* ── Stats grid ── */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          <StatCard icon={Clock}       label="Pending"       value={stats.pending}  loading={loading} />
+          <StatCard icon={CheckCircle2} label="Published"    value={stats.approved} loading={loading} />
+          <StatCard icon={XCircle}     label="Rejected"      value={stats.rejected} loading={loading} />
+          <StatCard icon={Users}       label="Creators"      value={stats.creators} loading={loading} />
+        </div>
+
+        {/* ── Quick actions ── */}
+        <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-3 uppercase drop-shadow-sm">Quick Actions</p>
+        <div className="space-y-2 mb-6">
+          <QuickAction
+            href="/admin/videos?status=PENDING"
+            icon={Clock}
+            label="Review pending videos"
+            sub={`${stats.pending} waiting for approval`}
+            badge={stats.pending}
+          />
+          <QuickAction
+            href="/admin/creators"
+            icon={Users}
+            label="Manage creators"
+            sub={`${stats.creators} registered creators`}
+            badge={0}
+          />
+          <QuickAction
+            href="/admin/reports"
+            icon={AlertTriangle}
+            label="Trust & reports"
+            sub="Review flagged content"
+            badge={0}
+          />
+        </div>
+
+        {/* ── Trending districts ── */}
+        <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-3 uppercase drop-shadow-sm">Trending Districts</p>
+        <div className="bg-black/40 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl p-4 space-y-3">
+          {DISTRICT_DATA.map((d) => (
+            <div key={d.name} className="flex items-center gap-3">
+              <span className="text-xs text-zinc-300 w-[120px] truncate flex-shrink-0">{d.name}</span>
+              <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
                 <div
-                  className="h-full rounded-full"
+                  className="h-full rounded-full transition-all duration-700"
                   style={{
-                    width: item.total > 0 ? `${(item.value / item.total) * 100}%` : "0%",
-                    background: item.color,
+                    width: `${(d.views / MAX_VIEWS) * 100}%`,
+                    background: d.color,
                   }}
                 />
               </div>
+              <span className="text-xs font-medium text-zinc-400 w-12 text-right flex-shrink-0">
+                {(d.views / 1000).toFixed(1)}k
+              </span>
             </div>
           ))}
         </div>
-        {!loading && (
-          <p className="text-[10px] text-zinc-500 mt-4 text-center font-medium">
-            {stats.total} total videos · {stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0}% approval rate
-          </p>
-        )}
+
+        {/* ── Content overview ── */}
+        <div className="mt-5 bg-black/40 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Video className="w-4 h-4 text-white" />
+            <p className="text-sm font-black text-white">Content overview</p>
+          </div>
+          <div className="space-y-3">
+            {[
+              { label: "Published",  value: stats.approved, color: "#ffffff", total: stats.total },
+              { label: "Pending",    value: stats.pending,  color: "#a1a1aa", total: stats.total },
+              { label: "Rejected",   value: stats.rejected, color: "#52525b", total: stats.total },
+            ].map(item => (
+              <div key={item.label}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-zinc-400 font-medium">{item.label}</span>
+                  <span className="font-bold text-white">{item.value}</span>
+                </div>
+                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: item.total > 0 ? `${(item.value / item.total) * 100}%` : "0%",
+                      background: item.color,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          {!loading && (
+            <p className="text-[10px] text-zinc-500 mt-4 text-center font-medium">
+              {stats.total} total videos · {stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0}% approval rate
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
