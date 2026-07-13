@@ -74,23 +74,68 @@ html, body {
 
 @import "tailwindcss";
 
-html,
-body {
+:root {
+  --brand: #ffffff;
+  --brand-mid: #333333;
+  --brand-glow: rgba(255,255,255,0.15);
+  --bg-app: #000000;
+  --bg-card: #121212;
+  --bg-surface: #1e1e1e;
+  --border: #2a2a2a;
+  --border-subtle: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  background: #000;
-  color: white;
   color-scheme: dark;
 }
 
-* {
-  box-sizing: border-box;
+.skeleton {
+  background: linear-gradient(90deg, #121212 25%, #1e1e1e 50%, #121212 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: 12px;
 }
 
-.app-content {
-  min-height: 100dvh;
-  background: transparent;
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.glass-dark { background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+.gradient-text { 
+  background: linear-gradient(135deg, #ffffff, #71717a); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent; 
+  background-clip: text; 
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); opacity: 0.5; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes userPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* --- NEW SCENERY BACKGROUND --- */
+.scenery-bg {
+  background-color: #0A180C; 
+  background-image: url('/bg.svg'); 
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
