@@ -54,7 +54,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* Outer desktop framing color */}
       <body className="min-h-dvh bg-[#12141a] text-white overflow-x-hidden">
         <AuthProvider>
           {/* Main App Container with the scenery background */}
