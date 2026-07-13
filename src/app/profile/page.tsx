@@ -1,4 +1,4 @@
-/*
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -397,7 +397,7 @@ function EmptyVideos({ tab, onUpload }: { tab: VideoTab; onUpload: () => void })
 }
 
 
-*/
+/*
 
 "use client";
 
@@ -477,17 +477,17 @@ export default function ProfilePage() {
     // 1. Changed bg-black to bg-transparent
     <div className="min-h-dvh bg-transparent pb-28 relative">
       
-      {/* 2. Added fixed dark overlay so text stays readable while image shows through */}
+      
       <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/80 to-[#0A0A0A] z-0 pointer-events-none" />
 
-      {/* 3. Wrap everything in a relative z-10 div so it sits above the overlay */}
+      
       <div className="relative z-10">
         
-        {/* ── Hero ── */}
+        
         <div className="relative px-4 pt-14 pb-0 overflow-hidden">
           <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-white/5 blur-3xl pointer-events-none" />
 
-          {/* Avatar row */}
+          
           <div className="flex items-start justify-between mb-5 relative">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -533,7 +533,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Stats bar */}
+          
           {user.role === "CREATOR" && (
             <div className="grid grid-cols-3 gap-2 mb-5">
               <StatCard value={counts.APPROVED} label="Published" color="text-white" />
@@ -551,10 +551,10 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* ── CREATOR: video list ── */}
+        
         {user.role === "CREATOR" && (
           <div className="px-4 mt-1">
-            {/* Tabs */}
+            
             <div className="flex bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-1 gap-1 mb-4 shadow-xl">
               {(["all", "APPROVED", "PENDING", "REJECTED"] as VideoTab[]).map(tab => (
                 <button
@@ -593,7 +593,7 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Upload CTA */}
+            
             <button
               onClick={() => router.push("/upload")}
               className="w-full mt-4 flex items-center justify-center gap-2 border-2 border-dashed border-white/20 rounded-2xl py-4 text-sm font-semibold text-white bg-black/20 hover:bg-black/40 backdrop-blur-md active:scale-[0.98] transition-all shadow-xl"
@@ -604,7 +604,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ── EXPLORER: menu ── */}
+        
         {user.role === "EXPLORER" && (
           <div className="px-4 mt-2 space-y-5">
             <MenuSection title="MY CONTENT">
@@ -627,7 +627,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ── CREATOR: account menu ── */}
+        
         {user.role === "CREATOR" && (
           <div className="px-4 mt-4 space-y-5">
             <MenuSection title="ACCOUNT">
@@ -802,3 +802,5 @@ function EmptyVideos({ tab, onUpload }: { tab: VideoTab; onUpload: () => void })
     </div>
   );
 }
+
+*/
