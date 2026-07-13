@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       
       {/* ── Fixed Cinematic Overlay ── */}
       {/* This ensures every admin page has the same dark, deep fade as the login page */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70 z-0 pointer-events-none" />
 
       {/* Admin top bar: Now glassmorphic */}
       <div className="relative z-30 flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0">
