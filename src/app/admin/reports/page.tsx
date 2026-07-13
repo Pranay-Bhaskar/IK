@@ -53,18 +53,18 @@ const TRUST_METRICS = [
   { label: "Location accuracy",      value: 99.1, color: "#3b82f6" },
   { label: "Creator trust rating",   value: 94.8, color: "#7c3aed" },
 ];
-
+/*
 export default function AdminReportsPage() {
   return (
     <div className="px-4 pt-5 pb-6">
 
-      {/* Header */}
+      {/* Header *}
       <div className="mb-5">
         <h2 className="text-xl font-black text-white">Reports & Trust</h2>
         <p className="text-xs text-[#475569] mt-0.5">Platform integrity centre</p>
       </div>
 
-      {/* Trust metrics */}
+      {/* Trust metrics *}
       <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-4 mb-5">
         <div className="flex items-center gap-2 mb-4">
           <Shield className="w-4 h-4 text-[#60a5fa]" />
@@ -94,7 +94,7 @@ export default function AdminReportsPage() {
         </div>
       </div>
 
-      {/* Open reports */}
+      {/* Open reports *}
       <p className="text-[10px] font-black text-[#334155] tracking-widest mb-3">
         OPEN REPORTS ({MOCK_REPORTS.length})
       </p>
@@ -138,7 +138,8 @@ export default function AdminReportsPage() {
                 </p>
               </div>
             </div>
-            {/* Action buttons */}
+            
+            {/* Action buttons *}
             <div className="flex gap-2 mt-3 pt-3 border-t border-[#1e293b]">
               <button className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-500/8 border border-emerald-500/15 text-xs font-bold text-emerald-400 active:opacity-70">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -152,7 +153,7 @@ export default function AdminReportsPage() {
         ))}
       </div>
 
-      {/* V2 note */}
+      {/* V2 note *}
       <div className="bg-blue-500/8 border border-blue-500/15 rounded-2xl p-4">
         <div className="flex items-center gap-2 mb-2">
           <Users className="w-4 h-4 text-blue-400" />
@@ -161,6 +162,64 @@ export default function AdminReportsPage() {
         <p className="text-xs text-[#475569] leading-relaxed">
           In V2, users can tap "Report" on any video directly from the feed. Reports will auto-populate here with severity scoring and creator strike tracking.
         </p>
+      </div>
+    </div>
+  );
+}
+
+*/
+
+
+
+export default function AdminReportsPage() {
+  return (
+    <div className="px-4 pt-5 pb-6">
+      <div className="mb-5">
+        <h2 className="text-xl font-black text-white">Reports & Trust</h2>
+        <p className="text-xs text-zinc-400 mt-0.5">Platform integrity centre</p>
+      </div>
+
+      {/* Trust scorecard - Glassmorphism */}
+      <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-5 shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <Shield className="w-4 h-4 text-blue-400" />
+          <p className="text-sm font-black text-white">Trust scorecard</p>
+        </div>
+        <div className="space-y-4">
+          {TRUST_METRICS.map(m => (
+            <div key={m.label}>
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-xs text-zinc-400">{m.label}</span>
+                <span className="text-sm font-black" style={{ color: m.color }}>{m.value}%</span>
+              </div>
+              <div className="h-2 bg-black/40 rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${m.value}%`, background: m.color }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Open reports */}
+      <p className="text-[10px] font-black text-zinc-500 tracking-widest mb-3 uppercase">Open reports</p>
+      <div className="space-y-2 mb-6">
+        {MOCK_REPORTS.map(r => (
+          <div key={r.id} className="bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-lg">
+            <div className="flex items-start gap-3">
+              <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/5")}>
+                <r.icon className={cn("w-4 h-4", r.severity === "high" ? "text-rose-400" : "text-amber-400")} />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-white mb-0.5">{r.title}</p>
+                <p className="text-xs text-zinc-400">{r.detail}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
+              <button className="flex-1 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold">Resolve</button>
+              <button className="flex-1 py-2 rounded-xl bg-white/5 text-zinc-400 text-xs font-bold">Review</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
