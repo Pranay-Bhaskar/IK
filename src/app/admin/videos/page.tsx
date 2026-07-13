@@ -439,226 +439,131 @@ function AdminVideosContent() {
   const STATUS_TABS: StatusFilter[] = ["PENDING", "APPROVED", "REJECTED"];
 
   return (
-    <div className="pb-6">
-      {/* Toast: Minimalist monochrome */}
-      {toast && (
-        <div className={cn(
-          "fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-2xl text-sm font-semibold shadow-xl max-w-[calc(430px-32px)] w-full text-center transition-all",
-          toast.type === "ok" 
-            ? "bg-white text-black border border-white" 
-            : "bg-zinc-900 text-white border border-white/20 backdrop-blur-md"
-        )}>
-          {toast.msg}
-        </div>
-      )}
+    <div className="relative min-h-dvh pb-6">
+      {/* Dark gradient overlay matching the Login Page */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
-      {/* Status tabs */}
-      <div className="px-4 pt-5 pb-3">
-        <h2 className="text-lg font-bold text-white mb-4">Video moderation</h2>
-        <div className="flex bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-1 gap-1 shadow-lg">
-          {STATUS_TABS.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setStatus(s); router.replace(`/admin/videos?status=${s}`); }}
-              className={cn(
-                "flex-1 py-2 rounded-xl text-xs font-semibold transition-all",
-                status === s 
-                  ? "bg-white text-black shadow-md" 
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
-              )}
-            >
-              {s.charAt(0) + s.slice(1).toLowerCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Count */}
-      {!loading && (
-        <p className="px-4 text-xs text-zinc-400 mb-3 drop-shadow-md font-medium">
-          {videos.length} video{videos.length !== 1 ? "s" : ""} · {VIDEO_STATUS[status].label}
-        </p>
-      )}
-
-      {/* List */}
-      <div className="px-4 space-y-3">
-        {loading && (
-          <>
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-36 skeleton rounded-2xl opacity-50" />
-            ))}
-          </>
-        )}
-
-        {!loading && videos.length === 0 && (
-          <div className="py-16 text-center bg-black/20 backdrop-blur-md border border-white/5 rounded-2xl">
-            <div className="text-4xl mb-3 opacity-90 grayscale">
-              {status === "PENDING" ? "☑️" : status === "APPROVED" ? "🎬" : "🗑"}
-            </div>
-            <p className="text-sm font-semibold text-white drop-shadow-md">
-              {status === "PENDING" ? "All caught up!" : `No ${status.toLowerCase()} videos`}
-            </p>
-            <p className="text-xs text-zinc-400 mt-1">
-              {status === "PENDING" ? "No videos waiting for review" : "Nothing to show here"}
-            </p>
+      <div className="relative z-10">
+        {/* Toast */}
+        {toast && (
+          <div className={cn(
+            "fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-2xl text-sm font-semibold shadow-xl max-w-[calc(430px-32px)] w-full text-center transition-all",
+            toast.type === "ok" 
+              ? "bg-white text-black border border-white" 
+              : "bg-zinc-900 text-white border border-white/20 backdrop-blur-md"
+          )}>
+            {toast.msg}
           </div>
         )}
 
-        {videos.map((video) => {
-          const isExpanded = expandedId === video._id;
-          const isActioning = actionLoading === video._id;
-          const isRejecting = rejectingId === video._id;
-          const cat = CATEGORIES.find((c) => c.value === video.category);
-          const creator = typeof video.creatorId === "object" ? video.creatorId as { fullName: string; email: string } : null;
+        {/* Status tabs */}
+        <div className="px-4 pt-5 pb-3">
+          <h2 className="text-lg font-bold text-white mb-4 drop-shadow-md">Video moderation</h2>
+          <div className="flex bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-1 gap-1 shadow-lg">
+            {STATUS_TABS.map((s) => (
+              <button
+                key={s}
+                onClick={() => { setStatus(s); router.replace(`/admin/videos?status=${s}`); }}
+                className={cn(
+                  "flex-1 py-2 rounded-xl text-xs font-semibold transition-all",
+                  status === s 
+                    ? "bg-white text-black shadow-md" 
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                {s.charAt(0) + s.slice(1).toLowerCase()}
+              </button>
+            ))}
+          </div>
+        </div>
 
-          return (
-            <div key={video._id} className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all hover:border-white/20">
-              {/* Video preview row */}
-              <div className="flex gap-3 p-3">
-                <div className="w-20 h-24 rounded-xl bg-white/5 flex-shrink-0 overflow-hidden relative border border-white/5">
-                  {video.thumbnailUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover grayscale-[20%]" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Play className="w-6 h-6 text-zinc-500" />
-                    </div>
-                  )}
-                  {cat && (
-                    <div className="absolute bottom-1 left-1 text-xs bg-black/60 backdrop-blur-md rounded px-1 border border-white/10 grayscale">
-                      {cat.emoji}
-                    </div>
-                  )}
-                </div>
+        {/* Count */}
+        {!loading && (
+          <p className="px-4 text-xs text-zinc-400 mb-3 drop-shadow-md font-medium">
+            {videos.length} video{videos.length !== 1 ? "s" : ""} · {VIDEO_STATUS[status].label}
+          </p>
+        )}
 
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white leading-snug line-clamp-2 drop-shadow-sm">{video.title}</p>
+        {/* List */}
+        <div className="px-4 space-y-3">
+          {loading && (
+            <>
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-36 skeleton rounded-2xl opacity-50" />
+              ))}
+            </>
+          )}
 
-                  <div className="flex items-center gap-1 mt-1">
-                    <User className="w-3 h-3 text-zinc-400" />
-                    <span className="text-xs text-zinc-400 truncate">{creator?.fullName || "Unknown"}</span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3 h-3 text-zinc-400" />
-                    <span className="text-xs text-zinc-400 truncate">{video.placeName}, {video.district}</span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <Calendar className="w-3 h-3 text-zinc-400" />
-                    <span className="text-xs text-zinc-400">{formatRelativeTime(video.createdAt)}</span>
-                  </div>
-                  {video.status === "REJECTED" && video.rejectionReason && (
-                    <p className="text-[10px] text-zinc-300 mt-1 line-clamp-1 font-medium">Reason: {video.rejectionReason}</p>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => setExpandedId(isExpanded ? null : video._id)}
-                  className="self-start mt-1 w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5"
-                >
-                  {isExpanded
-                    ? <ChevronUp className="w-3.5 h-3.5 text-white" />
-                    : <ChevronDown className="w-3.5 h-3.5 text-white" />
-                  }
-                </button>
+          {!loading && videos.length === 0 && (
+            <div className="py-16 text-center bg-black/20 backdrop-blur-md border border-white/5 rounded-2xl">
+              <div className="text-4xl mb-3 opacity-90 grayscale">
+                {status === "PENDING" ? "☑️" : status === "APPROVED" ? "🎬" : "🗑"}
               </div>
+              <p className="text-sm font-semibold text-white drop-shadow-md">
+                {status === "PENDING" ? "All caught up!" : `No ${status.toLowerCase()} videos`}
+              </p>
+            </div>
+          )}
 
-              {/* Expanded details */}
-              {isExpanded && (
-                <div className="border-t border-white/10 px-3 py-3 space-y-2 bg-white/5">
-                  <p className="text-xs text-zinc-300 leading-relaxed">{video.description}</p>
-                  {video.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {video.tags.map((tag) => (
-                        <span key={tag} className="text-[10px] bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/10 font-medium">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {creator && (
-                    <p className="text-[10px] text-zinc-400">Creator email: {creator.email}</p>
-                  )}
-                  <a
-                    href={video.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-white hover:text-zinc-300 transition-colors underline underline-offset-2 font-medium"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    Preview video
-                  </a>
-                </div>
-              )}
+          {videos.map((video) => {
+            const isExpanded = expandedId === video._id;
+            const isActioning = actionLoading === video._id;
+            const isRejecting = rejectingId === video._id;
+            const cat = CATEGORIES.find((c) => c.value === video.category);
+            const creator = typeof video.creatorId === "object" ? video.creatorId as { fullName: string; email: string } : null;
 
-              {/* Reject reason input */}
-              {isRejecting && (
-                <div className="border-t border-white/10 px-3 py-3 bg-white/5">
-                  <p className="text-xs font-medium text-white mb-2">Rejection reason (required)</p>
-                  <textarea
-                    value={rejectReason}
-                    onChange={(e) => setRejectReason(e.target.value)}
-                    placeholder="e.g. Video quality too low, incorrect location..."
-                    rows={2}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-500 resize-none focus:border-white transition-all outline-none"
-                  />
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={() => handleReject(video._id)}
-                      disabled={isActioning}
-                      className="flex-1 bg-white hover:bg-zinc-200 text-black text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 disabled:opacity-60 transition-colors shadow-lg"
-                    >
-                      {isActioning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
-                      Confirm reject
-                    </button>
-                    <button
-                      onClick={() => { setRejectingId(null); setRejectReason(""); }}
-                      className="px-4 bg-white/10 hover:bg-white/20 text-white border border-white/10 text-xs font-medium py-2.5 rounded-xl transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Action buttons (Minimalist Black & White) */}
-              {!isRejecting && (
-                <div className="border-t border-white/10 flex">
-                  {status === "PENDING" && (
-                    <>
-                      <button
-                        onClick={() => handleApprove(video._id)}
-                        disabled={isActioning}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-white hover:bg-white/10 transition-all disabled:opacity-60 border-r border-white/10"
-                      >
-                        {isActioning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => { setRejectingId(video._id); setExpandedId(video._id); }}
-                        disabled={isActioning}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-all disabled:opacity-60 border-r border-white/10"
-                      >
-                        <XCircle className="w-3.5 h-3.5" />
-                        Reject
-                      </button>
-                    </>
-                  )}
-                  <button
-                    onClick={() => handleDelete(video._id)}
-                    disabled={isActioning}
-                    className={cn(
-                      "flex items-center justify-center gap-1.5 py-3 text-xs font-semibold text-zinc-400 hover:bg-white/5 hover:text-white transition-all disabled:opacity-60",
-                      status === "PENDING" ? "px-5" : "flex-1"
+            return (
+              <div key={video._id} className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all hover:border-white/20">
+                <div className="flex gap-3 p-3">
+                  <div className="w-20 h-24 rounded-xl bg-white/5 flex-shrink-0 overflow-hidden relative border border-white/5">
+                    {video.thumbnailUrl ? (
+                      <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover grayscale-[20%]" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Play className="w-6 h-6 text-zinc-500" />
+                      </div>
                     )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white leading-snug line-clamp-2 drop-shadow-sm">{video.title}</p>
+                    <div className="flex items-center gap-1 mt-1"><User className="w-3 h-3 text-zinc-400" /><span className="text-xs text-zinc-400 truncate">{creator?.fullName || "Unknown"}</span></div>
+                    <div className="flex items-center gap-1 mt-0.5"><MapPin className="w-3 h-3 text-zinc-400" /><span className="text-xs text-zinc-400 truncate">{video.placeName}</span></div>
+                  </div>
+
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : video._id)}
+                    className="self-start mt-1 w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/5"
                   >
-                    {isActioning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                    {status !== "PENDING" && "Delete"}
+                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-white" /> : <ChevronDown className="w-3.5 h-3.5 text-white" />}
                   </button>
                 </div>
-              )}
-            </div>
-          );
-        })}
+
+                {isExpanded && (
+                  <div className="border-t border-white/10 px-3 py-3 space-y-2 bg-white/5">
+                    <p className="text-xs text-zinc-300 leading-relaxed">{video.description}</p>
+                    <a href={video.videoUrl} target="_blank" className="flex items-center gap-1.5 text-xs text-white underline font-medium">
+                      <Eye className="w-3.5 h-3.5" /> Preview video
+                    </a>
+                  </div>
+                )}
+
+                {/* Reject & Action logic - monochromatic */}
+                {!isRejecting && (
+                  <div className="border-t border-white/10 flex">
+                    {status === "PENDING" && (
+                      <>
+                        <button onClick={() => handleApprove(video._id)} className="flex-1 py-3 text-xs font-semibold text-white hover:bg-white/10 border-r border-white/10">Approve</button>
+                        <button onClick={() => { setRejectingId(video._id); setExpandedId(video._id); }} className="flex-1 py-3 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 border-r border-white/10">Reject</button>
+                      </>
+                    )}
+                    <button onClick={() => handleDelete(video._id)} className="flex items-center justify-center flex-1 py-3 text-xs font-semibold text-zinc-400 hover:bg-white/5 hover:text-white">Delete</button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -666,11 +571,7 @@ function AdminVideosContent() {
 
 export default function AdminVideosPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 text-white animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white animate-spin" /></div>}>
       <AdminVideosContent />
     </Suspense>
   );
