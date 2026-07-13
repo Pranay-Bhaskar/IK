@@ -35,10 +35,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     );
   }
-
+/*
   return (
     <div className="min-h-dvh bg-[#080c18] flex flex-col">
-      {/* Admin top bar */}
+      {/* Admin top bar *}
       <div className="flex items-center justify-between px-4 pt-12 pb-3 border-b border-[#0f172a] bg-[#08101f] sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-[#1e40af] flex items-center justify-center shadow-lg shadow-blue-900/40">
@@ -58,10 +58,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </button>
       </div>
 
-      {/* Page content */}
+      {/* Page content *}
       <div className="flex-1 overflow-y-auto pb-24">{children}</div>
 
-      {/* Admin bottom nav — 5 tabs, blue accent */}
+      {/* Admin bottom nav — 5 tabs, blue accent *}
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
         <div className="bg-[#08101f]/96 backdrop-blur-xl border-t border-[#0f172a]">
           <div className="flex items-stretch justify-around px-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]">
@@ -81,6 +81,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
           </div>
+        </div>
+      </nav>
+    </div>
+  );
+}
+*/
+
+
+return (
+    <div className="min-h-dvh bg-transparent flex flex-col">
+      {/* Top bar with blur */}
+      <div className="flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-30">
+        {/* ... */}
+      </div>
+
+      <div className="flex-1 overflow-y-auto pb-24">{children}</div>
+      
+      {/* Bottom Nav with blur */}
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
+        <div className="bg-black/60 backdrop-blur-2xl border-t border-white/10">
+          {/* ... */}
         </div>
       </nav>
     </div>
