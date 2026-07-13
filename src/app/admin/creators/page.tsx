@@ -1,3 +1,4 @@
+/*
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -73,13 +74,12 @@ export default function AdminCreatorsPage() {
   return (
     <div className="px-4 pt-5 pb-6">
 
-      {/* Header */}
       <div className="mb-5">
         <h2 className="text-xl font-black text-white">Creators</h2>
         <p className="text-xs text-[#475569] mt-0.5">Manage and verify creators</p>
       </div>
 
-      {/* Summary pills */}
+      
       <div className="flex gap-2 mb-4">
         <div className="flex items-center gap-1.5 bg-[#0f172a] border border-[#1e293b] rounded-xl px-3 py-2">
           <Camera className="w-3.5 h-3.5 text-blue-400" />
@@ -97,7 +97,7 @@ export default function AdminCreatorsPage() {
         )}
       </div>
 
-      {/* Search */}
+      
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#475569]" />
         <input
@@ -116,7 +116,7 @@ export default function AdminCreatorsPage() {
         )}
       </div>
 
-      {/* List */}
+      
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4].map(i => (
@@ -143,12 +143,12 @@ export default function AdminCreatorsPage() {
               )}
             >
               <div className="flex items-center gap-3">
-                {/* Avatar */}
+               
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#4c1d95] flex items-center justify-center text-sm font-black text-white flex-shrink-0">
                   {creator.fullName.charAt(0).toUpperCase()}
                 </div>
 
-                {/* Info */}
+                
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <p className="text-sm font-bold text-white truncate">{creator.fullName}</p>
@@ -172,7 +172,7 @@ export default function AdminCreatorsPage() {
                   )}
                 </div>
 
-                {/* Action menu trigger */}
+                
                 <button
                   onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === creator._id ? null : creator._id); }}
                   disabled={actioning === creator._id}
@@ -185,7 +185,7 @@ export default function AdminCreatorsPage() {
                 </button>
               </div>
 
-              {/* Dropdown menu */}
+              {/* Dropdown menu *}
               {openMenu === creator._id && (
                 <div
                   className="absolute right-4 top-14 bg-[#1e293b] border border-[#334155] rounded-xl overflow-hidden z-20 shadow-xl w-44"
@@ -241,6 +241,169 @@ function ActionMenuItem({
       onClick={onClick}
       className="w-full flex items-center gap-2.5 px-4 py-3 text-xs font-bold hover:bg-[#334155] transition-all text-left"
     >
+      <Icon className={cn("w-3.5 h-3.5", color)} />
+      <span className={color}>{label}</span>
+    </button>
+  );
+}
+
+
+*/
+
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import {
+  Search, X, ShieldCheck, ShieldOff, UserX,
+  UserCheck, MoreVertical, Loader2, MapPin,
+  Camera, CheckCircle2
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+// 1. Define the interface clearly so TypeScript is happy
+interface Creator {
+  _id: string;
+  fullName: string;
+  email: string;
+  district?: string;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+}
+
+type ActionType = "verify" | "unverify" | "suspend" | "unsuspend";
+
+export default function AdminCreatorsPage() {
+  const [creators, setCreators] = useState<Creator[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [actioning, setActioning] = useState<string | null>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const fetchCreators = useCallback(async (q = "") => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ role: "CREATOR" });
+      if (q.trim()) params.set("search", q.trim());
+      const res = await fetch(`/api/admin/creators?${params}`);
+      const data = await res.json();
+      if (data.success) setCreators(data.data.creators);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchCreators(); }, [fetchCreators]);
+
+  useEffect(() => {
+    const t = setTimeout(() => fetchCreators(search), 400);
+    return () => clearTimeout(t);
+  }, [search, fetchCreators]);
+
+  const applyAction = async (creatorId: string, action: ActionType) => {
+    setActioning(creatorId);
+    setOpenMenu(null);
+    try {
+      const res = await fetch(`/api/admin/creators/${creatorId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCreators(prev => prev.map(c =>
+          c._id === creatorId ? { ...c, ...data.data.user } : c
+        ));
+      }
+    } finally {
+      setActioning(null);
+    }
+  };
+
+  const verified = creators.filter(c => c.isVerified).length;
+  const suspended = creators.filter(c => !c.isActive).length;
+
+  return (
+    <div className="px-4 pt-5 pb-6">
+      <div className="mb-5">
+        <h2 className="text-xl font-black text-white">Creators</h2>
+        <p className="text-xs text-zinc-400 mt-0.5">Manage and verify creators</p>
+      </div>
+
+      {/* Pill summary */}
+      <div className="flex gap-2 mb-4">
+        <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2">
+          <Camera className="w-3.5 h-3.5 text-blue-400" />
+          <span className="text-xs font-bold text-white">{creators.length} total</span>
+        </div>
+        <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-xs font-bold text-white">{verified} verified</span>
+        </div>
+      </div>
+
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search by name or email..."
+          className="w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-xl pl-9 pr-9 py-3 text-sm text-white placeholder-zinc-500 focus:border-white transition-all"
+        />
+      </div>
+
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map(i => <div key={i} className="h-20 skeleton rounded-2xl" />)}
+        </div>
+      ) : creators.length === 0 ? (
+        <div className="py-16 text-center text-zinc-500 text-sm">No creators found</div>
+      ) : (
+        <div className="space-y-2" onClick={() => setOpenMenu(null)}>
+          {/* 2. Added explicit type to 'creator' here */}
+          {creators.map((creator: Creator) => (
+            <div
+              key={creator._id}
+              className={cn(
+                "bg-black/40 backdrop-blur-md border rounded-2xl p-4 relative shadow-lg",
+                !creator.isActive ? "border-rose-500/20 opacity-60" : 
+                creator.isVerified ? "border-emerald-500/30" : "border-white/10"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-sm font-black text-white">
+                  {creator.fullName.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-white truncate">{creator.fullName}</p>
+                  <p className="text-[11px] text-zinc-400 truncate">{creator.email}</p>
+                </div>
+                <button
+                  onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === creator._id ? null : creator._id); }}
+                  className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center"
+                >
+                  <MoreVertical className="w-3.5 h-3.5 text-zinc-400" />
+                </button>
+              </div>
+              
+              {/* Dropdown Menu */}
+              {openMenu === creator._id && (
+                <div className="absolute right-4 top-16 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-1 z-20 shadow-2xl w-44">
+                  <ActionMenuItem icon={creator.isVerified ? ShieldOff : ShieldCheck} label={creator.isVerified ? "Unverify" : "Verify"} color={creator.isVerified ? "text-amber-400" : "text-emerald-400"} onClick={() => applyAction(creator._id, creator.isVerified ? "unverify" : "verify")} />
+                  <ActionMenuItem icon={creator.isActive ? UserX : UserCheck} label={creator.isActive ? "Suspend" : "Unsuspend"} color={creator.isActive ? "text-rose-400" : "text-blue-400"} onClick={() => applyAction(creator._id, creator.isActive ? "suspend" : "unsuspend")} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ActionMenuItem({ icon: Icon, label, color, onClick }: any) {
+  return (
+    <button onClick={onClick} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-bold hover:bg-white/10 rounded-lg transition-all text-left">
       <Icon className={cn("w-3.5 h-3.5", color)} />
       <span className={color}>{label}</span>
     </button>
