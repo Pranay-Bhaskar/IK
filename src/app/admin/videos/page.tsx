@@ -1,3 +1,4 @@
+/*
 "use client";
 
 import { useEffect, useState, useCallback, Suspense } from "react";
@@ -103,7 +104,7 @@ function AdminVideosContent() {
 
   return (
     <div className="pb-6">
-      {/* Toast */}
+      {/* Toast *}
       {toast && (
         <div className={cn(
           "fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-2xl text-sm font-medium shadow-xl max-w-[calc(430px-32px)] w-full",
@@ -113,7 +114,7 @@ function AdminVideosContent() {
         </div>
       )}
 
-      {/* Status tabs */}
+      {/* Status tabs *}
       <div className="px-4 pt-5 pb-3">
         <h2 className="text-lg font-bold text-white mb-4">Video moderation</h2>
         <div className="flex bg-[#0f172a] rounded-2xl p-1 gap-1">
@@ -132,14 +133,14 @@ function AdminVideosContent() {
         </div>
       </div>
 
-      {/* Count */}
+      {/* Count *}
       {!loading && (
         <p className="px-4 text-xs text-[#475569] mb-3">
           {videos.length} video{videos.length !== 1 ? "s" : ""} · {VIDEO_STATUS[status].label}
         </p>
       )}
 
-      {/* List */}
+      {/* List *}
       <div className="px-4 space-y-3">
         {loading && (
           <>
@@ -172,7 +173,7 @@ function AdminVideosContent() {
 
           return (
             <div key={video._id} className="bg-[#0f172a] border border-[#1e293b] rounded-2xl overflow-hidden">
-              {/* Video preview row */}
+              {/* Video preview row /}
               <div className="flex gap-3 p-3">
                 <div className="w-20 h-24 rounded-xl bg-[#1e293b] flex-shrink-0 overflow-hidden relative">
                   {video.thumbnailUrl ? (
@@ -219,7 +220,7 @@ function AdminVideosContent() {
                 </button>
               </div>
 
-              {/* Expanded details */}
+              {/* Expanded details /}
               {isExpanded && (
                 <div className="border-t border-[#1e293b] px-3 py-3 space-y-2">
                   <p className="text-xs text-[#64748b] leading-relaxed">{video.description}</p>
@@ -247,7 +248,7 @@ function AdminVideosContent() {
                 </div>
               )}
 
-              {/* Reject reason input */}
+              {/* Reject reason input *}
               {isRejecting && (
                 <div className="border-t border-[#1e293b] px-3 py-3">
                   <p className="text-xs font-medium text-[#94a3b8] mb-2">Rejection reason (required)</p>
@@ -277,7 +278,7 @@ function AdminVideosContent() {
                 </div>
               )}
 
-              {/* Action buttons */}
+              {/* Action buttons *}
               {!isRejecting && (
                 <div className="border-t border-[#1e293b] flex">
                   {status === "PENDING" && (
@@ -331,4 +332,91 @@ export default function AdminVideosPage() {
       <AdminVideosContent />
     </Suspense>
   );
+}
+*/
+
+
+
+
+"use client";
+
+import { useEffect, useState, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { CheckCircle, XCircle, Trash2, Play, MapPin, User, Calendar, ChevronDown, ChevronUp, Loader2, Eye } from "lucide-react";
+import { IVideo } from "@/types";
+import { CATEGORIES, VIDEO_STATUS } from "@/constants";
+import { formatRelativeTime, cn } from "@/lib/utils";
+
+type StatusFilter = "PENDING" | "APPROVED" | "REJECTED";
+
+function AdminVideosContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const initialStatus = (searchParams.get("status") as StatusFilter) || "PENDING";
+  const [status, setStatus] = useState<StatusFilter>(initialStatus);
+  const [videos, setVideos] = useState<IVideo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const fetchVideos = useCallback(async (s: StatusFilter) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/videos?status=${s}`);
+      const data = await res.json();
+      if (data.success) setVideos(data.data.videos);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchVideos(status); }, [status, fetchVideos]);
+
+  return (
+    <div className="pb-6">
+      <div className="px-4 pt-5 pb-3">
+        <h2 className="text-lg font-bold text-white mb-4">Video moderation</h2>
+        <div className="flex bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-1 gap-1 shadow-lg">
+          {(["PENDING", "APPROVED", "REJECTED"] as StatusFilter[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => { setStatus(s); router.replace(`/admin/videos?status=${s}`); }}
+              className={cn("flex-1 py-2 rounded-xl text-xs font-semibold transition-all",
+                status === s ? "bg-white text-black shadow-md" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              {s.charAt(0) + s.slice(1).toLowerCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-4 space-y-3">
+        {videos.map((video) => {
+          const isExpanded = expandedId === video._id;
+          const cat = CATEGORIES.find((c) => c.value === video.category);
+          
+          return (
+            <div key={video._id} className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-lg hover:border-white/20 transition-all">
+              <div className="flex gap-3 p-3">
+                <div className="w-20 h-24 rounded-xl bg-white/5 flex-shrink-0 relative overflow-hidden">
+                   {video.thumbnailUrl ? <img src={video.thumbnailUrl} className="w-full h-full object-cover" /> : <Play className="w-6 h-6 text-zinc-500 m-auto" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">{video.title}</p>
+                  <p className="text-xs text-zinc-400 truncate mt-1">{video.placeName}</p>
+                </div>
+                <button onClick={() => setExpandedId(isExpanded ? null : video._id)} className="self-start mt-1 p-2 rounded-full bg-white/5">
+                  {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function AdminVideosPage() {
+  return <Suspense fallback={<div className="p-10 text-center"><Loader2 className="animate-spin w-6 h-6 mx-auto text-blue-400"/></div>}><AdminVideosContent /></Suspense>;
 }
