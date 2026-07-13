@@ -129,11 +129,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    // Changed bg to transparent to reveal the global background image
-    <div className="min-h-dvh bg-transparent flex flex-col">
+    // We apply your requested body styles here to ensure consistent coloring and min-height
+    <div className="min-h-dvh bg-[#12141a] text-white overflow-x-hidden flex flex-col">
       
-      {/* Admin top bar: Now glassmorphic */}
-      <div className="flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-30">
+      {/* Dark gradient overlay matching the Login Page */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+
+      {/* Admin top bar: Glassmorphic */}
+      <div className="relative z-30 flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
             <Shield className="w-[18px] h-[18px] text-white" />
@@ -153,11 +156,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Page content */}
-      <div className="flex-1 overflow-y-auto pb-24 z-0">
-        {children}
-      </div>
+      <div className="relative z-10 flex-1 overflow-y-auto pb-24">{children}</div>
 
-      {/* Admin bottom nav: Glassmorphism */}
+      {/* Admin bottom nav: Glassmorphic */}
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
         <div className="bg-black/60 backdrop-blur-2xl border-t border-white/10">
           <div className="flex items-stretch justify-around px-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]">
