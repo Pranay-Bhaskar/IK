@@ -144,7 +144,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (!data.success) { setError(data.error); return; }
       login(data.data.user);
-      // Route by role
+      
       if (data.data.user.role === "ADMIN") router.push("/admin");
       else if (data.data.user.role === "CREATOR") router.push("/creator/dashboard");
       else router.push("/");
@@ -156,24 +156,17 @@ export default function LoginPage() {
   };
 
   return (
-    // 1. Set the background image and ensure it covers the screen
-    <div 
-      className="min-h-dvh flex flex-col relative bg-black"
-      style={{
-        backgroundImage: "url('/bg.jpg')", // Assuming bg.jpg is in your public folder
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {/* 2. Add a dark gradient overlay so the form is readable */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black z-0 pointer-events-none" />
+    // Note: bg-transparent is used here so the layout's background shows through!
+    <div className="min-h-dvh bg-transparent flex flex-col relative">
+      
+      {/* Dark overlay specifically for the login page to make text readable */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
-      {/* 3. Ensure all content sits above the background overlay (z-10) */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8 z-10">
         
         {/* Logo */}
         <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-2xl shadow-black/50">
-          <MapPin className="w-8 h-8 text-black" />
+          <MapPin className="w-8 h-8 text-[#18381D]" />
         </div>
         
         <h1 className="text-2xl font-black text-white mb-1 drop-shadow-md">Welcome back</h1>
@@ -193,7 +186,7 @@ export default function LoginPage() {
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="you@example.com"
-              className="w-full bg-black/50 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all"
+              className="w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all"
               required
             />
           </div>
@@ -205,7 +198,7 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••"
-                className="w-full bg-black/50 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3.5 pr-12 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all"
+                className="w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3.5 pr-12 text-sm text-white placeholder-zinc-500 focus:border-white focus:ring-1 focus:ring-white/20 transition-all"
                 required
               />
               <button
