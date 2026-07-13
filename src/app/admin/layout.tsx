@@ -129,20 +129,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-dvh bg-transparent flex flex-col relative">
+    // Changed bg to transparent to reveal the global background image
+    <div className="min-h-dvh bg-transparent flex flex-col">
       
-      {/* ── Fixed Cinematic Overlay ── */}
-      {/* This ensures every admin page has the same dark, deep fade as the login page */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/50 z-0 pointer-events-none" />
-
       {/* Admin top bar: Now glassmorphic */}
-      <div className="relative z-30 flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0">
+      <div className="flex items-center justify-between px-4 pt-12 pb-3 border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
             <Shield className="w-[18px] h-[18px] text-white" />
           </div>
           <div>
-            <h1 className="text-sm font-black text-white leading-tight drop-shadow-sm">Admin Console</h1>
+            <h1 className="text-sm font-black text-white leading-tight">Admin Console</h1>
             <p className="text-[10px] text-zinc-500">Incredible Karnataka</p>
           </div>
         </div>
@@ -156,13 +153,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Page content */}
-      <div className="relative z-10 flex-1 overflow-y-auto pb-24">
+      <div className="flex-1 overflow-y-auto pb-24 z-0">
         {children}
       </div>
 
       {/* Admin bottom nav: Glassmorphism */}
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
-        <div className="bg-black/80 backdrop-blur-2xl border-t border-white/10">
+        <div className="bg-black/60 backdrop-blur-2xl border-t border-white/10">
           <div className="flex items-stretch justify-around px-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]">
             {ADMIN_NAV.map(({ href, icon: Icon, label }) => {
               const isActive = pathname === href;
