@@ -1,5 +1,5 @@
 "use client";
-/*
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { MapPin, Loader2 } from "lucide-react";
 import { IVideo } from "@/types";
@@ -176,7 +176,7 @@ export default function ExplorePage() {
             <React.Fragment>
                {/* Assuming FeedTabs and FeedFilterPanel are properly imported. 
                  Render them normally 
-               *}
+               */}
                <FeedTabs active={activeTab} onChange={handleTabChange} />
                <div className="relative">
                  <FeedFilterPanel
@@ -198,10 +198,10 @@ export default function ExplorePage() {
     </div>
   );
 }
-*/
 
 
 
+/*
 
 
 "use client";
@@ -399,3 +399,4 @@ export default function ExplorePage() {
     </div>
   );
 }
+  */
