@@ -48,7 +48,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#24512A", 
+  themeColor: "#000000", 
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-dvh bg-[#12141a] text-white overflow-x-hidden">
         <AuthProvider>
-          {/* Main App Container with the scenery background */}
+          {/* Main App Container with the bg.jpg background */}
           <div className="mx-auto min-h-dvh w-full max-w-[430px] scenery-bg overflow-hidden relative shadow-2xl">
             {children}
           </div>

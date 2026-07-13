@@ -157,11 +157,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-dvh bg-transparent flex flex-col relative">
+      {/* Dark gradient overlay so the form stays readable over bg.jpg */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8 z-10">
         <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-2xl shadow-black/50">
-          <MapPin className="w-8 h-8 text-[#18381D]" />
+          <MapPin className="w-8 h-8 text-black" />
         </div>
         
         <h1 className="text-2xl font-black text-white mb-1 drop-shadow-md">Welcome back</h1>

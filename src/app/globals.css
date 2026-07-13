@@ -130,12 +130,12 @@ html, body {
   100% { transform: scale(3); opacity: 0; }
 }
 
-/* --- NEW SCENERY BACKGROUND --- */
+/* --- APP BACKGROUND IMAGE --- */
 .scenery-bg {
-  background-color: #0A180C; 
+  background-color: #000000; 
   background-image: url('/bg.jpg'); 
   background-size: cover;
-  background-position: center top;
+  background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
