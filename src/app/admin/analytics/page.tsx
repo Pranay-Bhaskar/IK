@@ -194,7 +194,8 @@ export default function AdminAnalyticsPage() {
   const topBySaves = [...videos].sort((a, b) => (b.savesCount || 0) - (a.savesCount || 0)).slice(0, 5);
 
   return (
-    <div className="relative min-h-dvh pb-6">
+    <div className="min-h-dvh bg-transparent flex flex-col relative"></div>
+    //<div className="relative min-h-dvh pb-6">
       
       {/* Dark gradient overlay matching the Login Page */}
       <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
