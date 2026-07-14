@@ -307,8 +307,9 @@ export default function ExplorePage() {
   // ── Empty / Loading States ──
   if (loading && videos.length === 0) {
     return (
-      <div className="relative h-dvh flex flex-col items-center justify-center bg-black">
-        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="relative min-h-dvh scenery-bg">
+      {/* ── Cinematic Overlay ── */}
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
             <Loader2 className="w-8 h-8 text-white animate-spin" />

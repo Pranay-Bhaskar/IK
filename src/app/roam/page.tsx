@@ -23,7 +23,9 @@ export const metadata = {
 
 export default function RoamPage() {
   return (
-    <main className="relative min-h-dvh bg-black overflow-hidden">
+    <main className="relative min-h-dvh scenery-bg">
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
+
       <RoamFeed />
     </main>
   );

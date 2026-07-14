@@ -167,9 +167,10 @@ export default function CreatorProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="relative min-h-dvh bg-black">
+    <div className="relative min-h-dvh scenery-bg">
       {/* ── Cinematic Dark Background Overlay ── */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
+
 
       {/* ── Hero Content ── */}
       <div className="relative z-10 px-4 pt-16 pb-8">

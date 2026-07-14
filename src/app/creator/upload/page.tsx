@@ -368,8 +368,9 @@ export default function UploadPage() {
   
   if (step === "done") {
     return (
-      <div className="relative min-h-dvh flex flex-col items-center justify-center px-8 text-center">
-        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="relative min-h-dvh scenery-bg">
+      {/* ── Cinematic Overlay ── */}
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
         <div className="relative z-10 flex flex-col items-center w-full max-w-sm">
           <div className="w-24 h-24 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
             <CheckCircle2 className="w-12 h-12 text-white" />

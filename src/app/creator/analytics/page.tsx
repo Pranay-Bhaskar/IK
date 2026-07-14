@@ -195,9 +195,9 @@ export default function CreatorAnalyticsPage() {
   const topBySaves = [...videos].sort((a, b) => (b.savesCount || 0) - (a.savesCount || 0)).slice(0, 5);
 
   return (
-    <div className="relative min-h-dvh pb-6">
+    <div className="relative min-h-dvh scenery-bg">
       {/* Dark gradient overlay matching the Login Page */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
       {/* Content wrapper */}
       <div className="relative z-10 px-4 pt-5">

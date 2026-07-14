@@ -163,9 +163,9 @@ export default function SavedPage() {
   };
 
   return (
-    <div className="relative min-h-dvh bg-black pb-24">
-      {/* ── Cinematic Dark Background Overlay ── */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+     <div className="relative min-h-dvh scenery-bg">
+      {/* ── Cinematic Overlay ── */}
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
       {/* ── Header ── */}
       <div className="relative z-20 px-4 pt-14 pb-4 border-b border-white/10 bg-black/60 backdrop-blur-xl sticky top-0 shadow-sm">
