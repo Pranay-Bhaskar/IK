@@ -1,3 +1,4 @@
+/*
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -16,12 +17,12 @@ export default function CreatorProfilePage() {
 
   return (
     <div className="min-h-dvh bg-[#0d0d16]">
-      {/* Hero */}
+      
       <div className="bg-gradient-to-b from-[#120827] to-[#0d0d16] px-4 pt-14 pb-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-[#7c3aed]/10 blur-3xl pointer-events-none" />
 
         <div className="relative flex flex-col items-center text-center">
-          {/* Avatar */}
+          
           <div className="relative mb-4">
             <div className="w-[80px] h-[80px] rounded-3xl bg-gradient-to-br from-[#a78bfa] to-[#7c3aed] flex items-center justify-center text-3xl font-black text-white border-2 border-[#7c3aed]/30 shadow-xl shadow-purple-900/40">
               {user.fullName.charAt(0).toUpperCase()}
@@ -34,7 +35,7 @@ export default function CreatorProfilePage() {
           <h1 className="text-xl font-black text-white">{user.fullName}</h1>
           <p className="text-xs text-[#555577] mt-0.5">@{user.fullName.replace(/\s+/g,"").toLowerCase()}</p>
 
-          {/* Badges */}
+          
           <div className="flex items-center gap-2 mt-3 flex-wrap justify-center">
             <span className="flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-500/12 border border-blue-500/20 text-blue-400">
               <div className="w-3 h-3 rounded-full bg-blue-500 flex items-center justify-center">
@@ -49,7 +50,7 @@ export default function CreatorProfilePage() {
             )}
           </div>
 
-          {/* Creator badge */}
+          
           <div className="mt-4 bg-gradient-to-r from-[#7c3aed]/15 to-[#4c1d95]/15 border border-[#7c3aed]/25 rounded-2xl px-5 py-3 w-full">
             <div className="flex items-center justify-center gap-2">
               <Shield className="w-4 h-4 text-[#a78bfa]" />
@@ -62,7 +63,7 @@ export default function CreatorProfilePage() {
         </div>
       </div>
 
-      {/* Menu */}
+      
       <div className="px-4 pb-6 space-y-4">
 
         <MenuSection title="CREATOR TOOLS">
@@ -129,7 +130,7 @@ function MenuItem({
     <button onClick={onClick}
       className={cn(
         "w-full bg-[#161622] rounded-2xl border px-4 py-3.5 flex items-center gap-3 active:opacity-70 transition-all text-left",
-        danger ? "border-rose-500/15 hover:border-rose-500/30" : "border-[#2a2a3e] hover:border-[#7c3aed]/30"
+        danger ? "bor/*der-rose-500/15 hover:border-rose-500/30" : "border-[#2a2a3e] hover:border-[#7c3aed]/30"
       )}>
       <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0",
         danger ? "bg-rose-500/10" : "bg-[#1e1e2e]"
@@ -141,6 +142,152 @@ function MenuItem({
         <p className="text-[11px] text-[#555577] mt-0.5">{sub}</p>
       </div>
       {!danger && <span className="text-[#2a2a3e] text-base">›</span>}
+    </button>
+  );
+}
+*/
+
+
+
+
+"use client";
+
+import { useRouter } from "next/navigation";
+import { LogOut, MapPin, Camera, Shield, ChevronRight, Settings, BarChart3, Upload, Film } from "lucide-react";
+import { useAuth } from "@/features/auth/AuthContext";
+import { useToast } from "@/hooks/useToast";
+import { ToastContainer } from "@/components/ui/Toast";
+import { cn } from "@/lib/utils";
+
+export default function CreatorProfilePage() {
+  const router = useRouter();
+  const { user, logout } = useAuth();
+  const { toasts, removeToast, toast } = useToast();
+
+  if (!user) return null;
+
+  return (
+    <div className="relative min-h-dvh bg-black">
+      {/* ── Cinematic Dark Background Overlay ── */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+
+      {/* ── Hero Content ── */}
+      <div className="relative z-10 px-4 pt-16 pb-8">
+        <div className="flex flex-col items-center text-center">
+          {/* Avatar */}
+          <div className="relative mb-5">
+            <div className="w-20 h-20 rounded-3xl bg-white flex items-center justify-center text-2xl font-black text-black border-4 border-black shadow-2xl">
+              {user.fullName.charAt(0).toUpperCase()}
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-black border-2 border-white flex items-center justify-center">
+              <Camera className="w-3.5 h-3.5 text-white" />
+            </div>
+          </div>
+
+          <h1 className="text-xl font-black text-white drop-shadow-sm">{user.fullName}</h1>
+          <p className="text-xs font-medium text-zinc-500 mt-1">@{user.fullName.replace(/\s+/g,"").toLowerCase()}</p>
+
+          {/* Badges */}
+          <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+            <span className="flex items-center gap-1.5 text-[10px] font-black px-3 py-1.5 rounded-full bg-white text-black uppercase tracking-wider shadow-sm">
+              Verified Creator
+            </span>
+            {user.district && (
+              <span className="flex items-center gap-1.5 text-[10px] font-bold text-white bg-white/10 border border-white/10 px-3 py-1.5 rounded-full backdrop-blur-md">
+                <MapPin className="w-3 h-3" /> {user.district}
+              </span>
+            )}
+          </div>
+
+          {/* Verification Badge */}
+          <div className="mt-6 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl px-6 py-4 w-full shadow-lg">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Shield className="w-4 h-4 text-white" />
+              <p className="text-sm font-black text-white">Verified Level 2</p>
+            </div>
+            <p className="text-[10px] text-zinc-400 font-medium">Priority recommendations · Explorer Spotlight eligible</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Menu Sections ── */}
+      <div className="relative z-10 px-4 pb-12 space-y-8">
+        
+        <MenuSection title="CREATOR TOOLS">
+          <MenuItem 
+            icon={BarChart3} label="Dashboard" sub="Overview of your activity" 
+            onClick={() => router.push("/creator/dashboard")} 
+          />
+          <MenuItem 
+            icon={Upload} label="Upload story" sub="Share a new experience" 
+            onClick={() => router.push("/creator/upload")} 
+          />
+          <MenuItem 
+            icon={Film} label="My content" sub="Manage your videos" 
+            onClick={() => router.push("/creator/content")} 
+          />
+        </MenuSection>
+
+        <MenuSection title="ACCOUNT">
+          <MenuItem 
+            icon={Settings} label="Settings" sub="Preferences & notifications" 
+            onClick={() => toast.info("Coming soon in V2")} 
+          />
+          <MenuItem 
+            icon={LogOut} label="Sign out" sub="Log out of your account" 
+            onClick={logout} danger 
+          />
+        </MenuSection>
+
+        {/* Switch to Explorer CTA */}
+        <button 
+          onClick={() => router.push("/")}
+          className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-black text-white transition-all backdrop-blur-md active:scale-[0.98] shadow-lg flex items-center justify-center gap-2"
+        >
+          Switch to Explorer Mode <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+    </div>
+  );
+}
+
+// ── Components ──
+
+function MenuSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] font-black text-zinc-500 tracking-[0.2em] px-1 uppercase">{title}</p>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function MenuItem({
+  icon: Icon, label, sub, onClick, danger = false,
+}: {
+  icon: React.ElementType; label: string; sub: string; onClick: () => void; danger?: boolean;
+}) {
+  return (
+    <button onClick={onClick}
+      className={cn(
+        "w-full bg-white/5 border backdrop-blur-md rounded-2xl px-4 py-4 flex items-center gap-4 transition-all text-left shadow-sm",
+        danger 
+          ? "border-rose-500/20 hover:bg-rose-500/10 active:scale-[0.98]" 
+          : "border-white/10 hover:bg-white/10 active:scale-[0.98]"
+      )}>
+      <div className={cn(
+        "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border",
+        danger ? "bg-rose-500/10 border-rose-500/20" : "bg-black/40 border-white/10"
+      )}>
+        <Icon className={cn("w-4 h-4", danger ? "text-rose-400" : "text-white")} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className={cn("text-sm font-bold", danger ? "text-rose-400" : "text-white")}>{label}</p>
+        <p className="text-[11px] text-zinc-500 mt-0.5 font-medium">{sub}</p>
+      </div>
+      {!danger && <ChevronRight className="w-4 h-4 text-zinc-600" />}
     </button>
   );
 }
