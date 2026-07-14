@@ -323,12 +323,12 @@ export default function CreatorDashboardPage() {
   }, []);
 
   return (
-    <div className="relative min-h-dvh bg-black pb-10">
+    <div className="relative min-h-dvh scenery-bg">
       {/* ── Cinematic Overlay ── */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
       {/* ── Header ── */}
-      <div className="relative z-10 px-4 pt-14 pb-4">
+      <div className="relative z-10 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Avatar */}
