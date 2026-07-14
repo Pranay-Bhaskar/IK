@@ -802,9 +802,10 @@ export default function PlacePage() {
         </div>
       </div>
 
-      {activeVideo && (
+      {activeVideo && place && (
         <AddToItinerarySheet
           video={activeVideo}
+          place={place} // <--- Add this line
           isOpen={showItinerary}
           onClose={() => setShowItinerary(false)}
           onSuccess={msg => toast.success(msg)}
