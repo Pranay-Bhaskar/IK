@@ -70,7 +70,7 @@ html, body {
 
 */
 
-/*
+
 
 @import "tailwindcss";
 
@@ -130,7 +130,7 @@ html, body {
   100% { transform: scale(3); opacity: 0; }
 }
 
-
+/* --- APP BACKGROUND IMAGE --- */
 .scenery-bg {
   background-color: #000000; 
   background-image: url('/bg.jpg'); 
@@ -138,67 +138,4 @@ html, body {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-}
-
-*/
-
-
-@import "tailwindcss";
-
-:root {
-  /* High Contrast Monochrome Palette */
-  --bg-app: #000000;
-  --bg-card: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.1);
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #52525b;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  background-color: black;
-  color-scheme: dark;
-}
-
-/* Smoother, low-contrast skeleton */
-.skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
-  background-size: 400% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-  border-radius: 16px;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Modern Glass Utilities */
-.glass { 
-  background: rgba(255, 255, 255, 0.05); 
-  backdrop-filter: blur(12px); 
-  -webkit-backdrop-filter: blur(12px); 
-}
-
-/* Hide scrollbars globally but allow scrolling */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Animations */
-@keyframes slideUpSheet {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.fade-up {
-  animation: slideUpSheet 0.3s ease-out forwards;
 }
