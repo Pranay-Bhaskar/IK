@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { X, Plus, Check, Route, Loader2, ChevronRight } from "lucide-react";
-// FIX: Added IPlace to your imports
 import { IItinerary, IVideo, IPlace } from "@/types"; 
 import { cn, formatDate } from "@/lib/utils";
 
 interface Props {
   video: IVideo;
-  place: IPlace; // FIX: We now accept 'place' as a prop!
+  place?: IPlace; // Optional so it doesn't break VideoCard
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (msg: string) => void;
@@ -21,6 +20,10 @@ export function AddToItinerarySheet({ video, place, isOpen, onClose, onSuccess }
   const [newTitle, setNewTitle] = useState("");
   const [addingTo, setAddingTo] = useState<string | null>(null);
   const [added, setAdded] = useState<Set<string>>(new Set());
+
+  // Safe fallbacks depending on where the sheet was opened from
+  const displayPlaceName = place?.name || (video as any).placeName || "Unknown Place";
+  const displayDistrict = place?.district || (video as any).district || "Unknown District";
 
   useEffect(() => {
     if (!isOpen) return;
@@ -39,9 +42,8 @@ export function AddToItinerarySheet({ video, place, isOpen, onClose, onSuccess }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           videoId: video._id, 
-          // FIX: This now works perfectly because 'place' is passed in!
-          placeName: place.name || "Unknown Place", 
-          district: place.district || "Unknown District",
+          placeName: displayPlaceName, 
+          district: displayDistrict,
           thumbnailUrl: video.thumbnailUrl,
           notes: ""
         }),
@@ -99,8 +101,9 @@ export function AddToItinerarySheet({ video, place, isOpen, onClose, onSuccess }
           <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
             <div>
               <h3 className="text-base font-black text-white">Add to trip</h3>
-              {/* FIX: Using place for the header text here too */}
-              <p className="text-xs text-zinc-400 mt-0.5 truncate max-w-[240px] font-medium">{place.name}, {place.district}</p>
+              <p className="text-xs text-zinc-400 mt-0.5 truncate max-w-[240px] font-medium">
+                {displayPlaceName}, {displayDistrict}
+              </p>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
               <X className="w-4 h-4 text-zinc-400" />
