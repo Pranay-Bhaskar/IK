@@ -376,21 +376,8 @@ export default function PlacePage() {
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
-  ArrowLeft,
-  MapPin,
-  Share2,
-  Bookmark,
-  Play,
-  Eye,
-  Heart,
-  MessageCircle,
-  Navigation,
-  Footprints,
-  Car,
-  Bike,
-  Bus,
-  Loader2,
-  CheckCircle2,
+  ArrowLeft, MapPin, Share2, Bookmark, Play, Eye, Heart, MessageCircle,
+  Navigation, Footprints, Car, Bike, Bus, Loader2, CheckCircle2,
 } from "lucide-react";
 import { IVideo, TRAVEL_MODES, IPlace } from "@/types";
 import { CATEGORIES } from "@/constants";
@@ -400,10 +387,7 @@ import { useToast } from "@/hooks/useToast";
 import { ToastContainer } from "@/components/ui/Toast";
 
 const TRAVEL_ICONS: Record<string, React.ElementType> = {
-  walk: Footprints,
-  bike: Bike,
-  car: Car,
-  public: Bus,
+  walk: Footprints, bike: Bike, car: Car, public: Bus,
 };
 
 function resolveVideoSrc(video: IVideo | null) {
@@ -411,16 +395,10 @@ function resolveVideoSrc(video: IVideo | null) {
   return video.url || video.videoUrl || null;
 }
 
-function MediaPlayer({
-  video,
-  placeName,
-}: {
-  video: IVideo | null;
-  placeName: string;
-}) {
+function MediaPlayer({ video, placeName }: { video: IVideo | null; placeName: string; }) {
   if (!video) {
     return (
-      <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+      <div className="w-full h-full bg-black/40 flex items-center justify-center">
         <Play className="w-12 h-12 text-zinc-700" />
       </div>
     );
@@ -450,20 +428,14 @@ function MediaPlayer({
   const src = resolveVideoSrc(video);
   if (!src) {
     return (
-      <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+      <div className="w-full h-full bg-black/40 flex items-center justify-center">
         <Play className="w-12 h-12 text-zinc-700" />
       </div>
     );
   }
 
   return (
-    <video
-      src={src}
-      className="w-full h-full object-cover"
-      autoPlay
-      controls
-      playsInline
-    />
+    <video src={src} className="w-full h-full object-cover" autoPlay controls playsInline />
   );
 }
 
@@ -491,23 +463,49 @@ export default function PlacePage() {
     );
   }, []);
 
+  // SMART FETCHING: Handles both Place IDs and Video IDs
   useEffect(() => {
-    async function loadPlace() {
+    async function loadData() {
       try {
-        const res = await fetch(`/api/places/${id}`);
-        const d = await res.json();
-        if (d.success) {
+        // Attempt 1: Assume 'id' is a Place ID
+        let res = await fetch(`/api/places/${id}`);
+        let d = await res.json();
+        
+        if (d.success && d.data.place) {
           setPlace(d.data.place);
           setVideos(d.data.videos || []);
           setActiveVideo(d.data.videos?.[0] || null);
+          return;
         }
-      } catch {}
-      finally {
+
+        // Attempt 2: If Place failed, assume 'id' is a Video ID (e.g., from Itinerary)
+        const vidRes = await fetch(`/api/videos/${id}`);
+        const vidData = await vidRes.json();
+        
+        if (vidData.success && vidData.data.video) {
+          const fetchedVideo = vidData.data.video;
+          setActiveVideo(fetchedVideo);
+          
+          // Now fetch the place associated with this video
+          if (fetchedVideo.placeId) {
+            const actualPlaceId = typeof fetchedVideo.placeId === 'object' ? fetchedVideo.placeId._id : fetchedVideo.placeId;
+            const placeRes = await fetch(`/api/places/${actualPlaceId}`);
+            const placeData = await placeRes.json();
+            
+            if (placeData.success) {
+              setPlace(placeData.data.place);
+              setVideos(placeData.data.videos || [fetchedVideo]);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load place/video data", e);
+      } finally {
         setLoading(false);
       }
     }
 
-    loadPlace();
+    loadData();
   }, [id]);
 
   const handleSave = useCallback(async () => {
@@ -546,15 +544,16 @@ export default function PlacePage() {
     } catch {}
   }, [place, activeVideo, toast]);
 
+  // MAP FIX: Use standardized Google Maps Intent URL
   const openMaps = useCallback(() => {
     const loc = place?.location?.coordinates;
-    if (!loc) {
-      toast.info("Location coordinates not available for this place");
-      return;
+    if (loc && loc.length === 2) {
+      const [lng, lat] = loc;
+      window.open(`https://www.google.com/maps/search/?api=1&query=$${lat},${lng}`, "_blank");
+    } else {
+      const query = encodeURIComponent(place?.name || "Karnataka");
+      window.open(`https://www.google.com/maps/search/?api=1&query=$${query}`, "_blank");
     }
-    const [lng, lat] = loc;
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-    window.open(url, "_blank");
   }, [place, toast]);
 
   const distanceKm = (() => {
@@ -579,18 +578,20 @@ export default function PlacePage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-black flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-white animate-spin" />
+      <div className="relative min-h-dvh flex items-center justify-center">
+        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0" />
+        <Loader2 className="relative z-10 w-6 h-6 text-white animate-spin" />
       </div>
     );
   }
 
   if (!place) {
     return (
-      <div className="min-h-dvh bg-black flex flex-col items-center justify-center px-8 text-center">
-        <div className="text-5xl mb-4">😕</div>
-        <h2 className="text-lg font-bold text-white mb-2">Place not found</h2>
-        <button onClick={() => router.back()} className="text-zinc-400 text-sm font-medium mt-2">
+      <div className="relative min-h-dvh flex flex-col items-center justify-center px-8 text-center">
+        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0" />
+        <div className="relative z-10 text-5xl mb-4 grayscale">😕</div>
+        <h2 className="relative z-10 text-lg font-bold text-white mb-2">Place not found</h2>
+        <button onClick={() => router.back()} className="relative z-10 text-zinc-400 text-sm font-medium mt-2 hover:text-white transition-colors">
           Go back
         </button>
       </div>
@@ -598,201 +599,207 @@ export default function PlacePage() {
   }
 
   return (
-    <div className="min-h-dvh bg-black pb-10">
-      <div className="relative w-full aspect-[9/16] max-h-[65dvh] bg-black overflow-hidden">
-        {playing ? (
-          <MediaPlayer video={activeVideo} placeName={place.name} />
-        ) : (
-          <>
-            {activeVideo?.thumbnailUrl || place.thumbnailUrl ? (
-              <img
-                src={activeVideo?.thumbnailUrl || place.thumbnailUrl}
-                alt={place.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
-                <Play className="w-12 h-12 text-zinc-700" />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
-            <button
-              onClick={() => setPlaying(true)}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                <Play className="w-7 h-7 text-white fill-white ml-1" />
-              </div>
-            </button>
-          </>
-        )}
+    <div className="relative min-h-dvh pb-10">
+      <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
-        <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12">
-          <button
-            onClick={() => router.back()}
-            className="w-9 h-9 rounded-full glass border border-white/20 flex items-center justify-center"
-          >
-            <ArrowLeft className="w-4 h-4 text-white" />
-          </button>
-          <div className="flex gap-2">
+      <div className="relative z-10">
+        <div className="relative w-full aspect-[9/16] max-h-[65dvh] bg-black/60 overflow-hidden shadow-2xl border-b border-white/10">
+          {playing ? (
+            <MediaPlayer video={activeVideo} placeName={place.name} />
+          ) : (
+            <>
+              {activeVideo?.thumbnailUrl || place.thumbnailUrl ? (
+                <img
+                  src={activeVideo?.thumbnailUrl || place.thumbnailUrl}
+                  alt={place.name}
+                  className="w-full h-full object-cover grayscale-[10%]"
+                />
+              ) : (
+                <div className="w-full h-full bg-black/40 flex items-center justify-center">
+                  <Play className="w-12 h-12 text-white/30" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
+              <button
+                onClick={() => setPlaying(true)}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl transition-transform active:scale-95">
+                  <Play className="w-7 h-7 text-white fill-white ml-1" />
+                </div>
+              </button>
+            </>
+          )}
+
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-12">
+            <button
+              onClick={() => router.back()}
+              className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-black/60 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 text-white" />
+            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSave}
+                className={cn(
+                  "w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border flex items-center justify-center transition-all",
+                  saved ? "border-white bg-white/20" : "border-white/20 hover:bg-black/60"
+                )}
+              >
+                <Bookmark className={cn("w-4 h-4 transition-all", saved ? "text-white fill-white" : "text-white")} />
+              </button>
+              <button
+                onClick={handleShare}
+                className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-black/60 transition-colors"
+              >
+                <Share2 className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          </div>
+
+          {category && (
+            <div className="absolute bottom-4 left-4">
+              <span className="bg-black/60 backdrop-blur-md border border-white/15 rounded-full px-3 py-1.5 text-xs font-bold text-white shadow-lg">
+                {category.emoji} {category.label}
+              </span>
+            </div>
+          )}
+
+          <div className="absolute bottom-4 right-4 flex items-center gap-3">
+            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 shadow-lg">
+              <Eye className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-xs text-white font-bold">{formatCount(activeVideo?.views || 0)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-4 pt-5">
+          <h1 className="text-xl font-black text-white leading-snug mb-2 drop-shadow-md">{place.name}</h1>
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+            <span className="text-sm font-medium text-zinc-400">
+              {place.city || place.district || place.state}
+            </span>
+          </div>
+
+          {distanceKm !== null && (
+            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-4 shadow-xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Navigation className="w-4 h-4 text-white" />
+                  <span className="text-sm font-black text-white">{distanceKm} km from you</span>
+                </div>
+                {travelTime && (
+                  <span className="text-sm font-bold text-zinc-400 flex items-center gap-1.5">
+                    {selectedTravel.icon} {formatTime(travelTime)}
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {TRAVEL_MODES.map(mode => {
+                  const ModeIcon = TRAVEL_ICONS[mode.mode] || Car;
+                  const mins = Math.round((distanceKm / mode.speedKmh) * 60);
+                  const isActive = selectedTravel.mode === mode.mode;
+                  return (
+                    <button
+                      key={mode.mode}
+                      onClick={() => setSelectedTravel(mode)}
+                      className={cn(
+                        "flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-all",
+                        isActive ? "bg-white border-white text-black shadow-lg" : "bg-white/5 border-white/10 text-white hover:bg-white/10"
+                      )}
+                    >
+                      <ModeIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-white")} />
+                      <span className={cn("text-[9px] font-black uppercase tracking-wider", isActive ? "text-black" : "text-zinc-400")}>{mode.label}</span>
+                      <span className={cn("text-[9px] font-medium", isActive ? "text-zinc-700" : "text-zinc-500")}>{formatTime(mins)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-3 mb-5">
+            <button
+              onClick={() => setShowItinerary(true)}
+              className="flex-1 bg-white text-black font-black py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all shadow-xl"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              Add to trip
+            </button>
+            <button
+              onClick={openMaps}
+              className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all hover:bg-white/10 shadow-lg"
+            >
+              <Navigation className="w-4 h-4" />
+              Get directions
+            </button>
+          </div>
+
+          <div className="flex gap-3 mb-5">
+            <button
+              onClick={() => setLiked(l => !l)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all shadow-md",
+                liked ? "bg-white border-white text-black" : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+              )}
+            >
+              <Heart className={cn("w-4 h-4", liked && "fill-black")} />
+              <span className="text-sm font-bold">{formatCount((activeVideo?.likesCount || 0) + (liked ? 1 : 0))}</span>
+            </button>
             <button
               onClick={handleSave}
               className={cn(
-                "w-9 h-9 rounded-full glass border flex items-center justify-center transition-all",
-                saved ? "border-white bg-white/20" : "border-white/20"
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all shadow-md",
+                saved ? "bg-white border-white text-black" : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
               )}
             >
-              <Bookmark className={cn("w-4 h-4 transition-all", saved ? "text-white fill-white" : "text-white")} />
+              <Bookmark className={cn("w-4 h-4", saved && "fill-black")} />
+              <span className="text-sm font-bold">{formatCount((activeVideo?.savesCount || 0) + (saved ? 1 : 0))}</span>
             </button>
             <button
               onClick={handleShare}
-              className="w-9 h-9 rounded-full glass border border-white/20 flex items-center justify-center"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-white/10 transition-all shadow-md"
             >
-              <Share2 className="w-4 h-4 text-white" />
+              <Share2 className="w-4 h-4" />
+              <span className="text-sm font-bold">Share</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 shadow-md pointer-events-none">
+              <MessageCircle className="w-4 h-4" />
+              <span className="text-sm font-bold">{formatCount(activeVideo?.commentsCount || 0)}</span>
             </button>
           </div>
-        </div>
 
-        {category && (
-          <div className="absolute bottom-4 left-4">
-            <span className="glass border border-white/15 rounded-full px-3 py-1 text-xs font-semibold text-white">
-              {category.emoji} {category.label}
-            </span>
+          <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-4 shadow-xl">
+            <h2 className="text-sm font-black text-white mb-2 uppercase tracking-wide">About this place</h2>
+            <p className="text-sm text-zinc-300 leading-relaxed font-medium">{place.description}</p>
           </div>
-        )}
 
-        <div className="absolute bottom-4 right-4 flex items-center gap-3">
-          <div className="flex items-center gap-1 glass border border-white/10 rounded-full px-2.5 py-1">
-            <Eye className="w-3 h-3 text-white/60" />
-            <span className="text-[10px] text-white/80 font-medium">{formatCount(activeVideo?.views || 0)}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4 pt-5">
-        <h1 className="text-xl font-bold text-white leading-snug mb-2">{place.name}</h1>
-        <div className="flex items-center gap-2 mb-4">
-          <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
-          <span className="text-sm text-zinc-400">
-            {place.city || place.district || place.state}
-          </span>
-        </div>
-
-        {distanceKm !== null && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Navigation className="w-4 h-4 text-zinc-400" />
-                <span className="text-sm font-bold text-white">{distanceKm} km from you</span>
-              </div>
-              {travelTime && (
-                <span className="text-sm font-semibold text-zinc-400">
-                  {selectedTravel.icon} {formatTime(travelTime)}
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {TRAVEL_MODES.map(mode => {
-                const ModeIcon = TRAVEL_ICONS[mode.mode] || Car;
-                const mins = Math.round((distanceKm / mode.speedKmh) * 60);
-                const isActive = selectedTravel.mode === mode.mode;
-                return (
+          {videos.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-sm font-black text-white mb-3 uppercase tracking-wide drop-shadow-sm">Videos</h2>
+              <div className="grid gap-3">
+                {videos.map((v) => (
                   <button
-                    key={mode.mode}
-                    onClick={() => setSelectedTravel(mode)}
+                    key={v._id}
+                    onClick={() => setActiveVideo(v)}
                     className={cn(
-                      "flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-all",
-                      isActive ? "bg-white border-white text-black" : "bg-black border-zinc-800 hover:border-zinc-700 text-white"
+                      "text-left bg-black/40 backdrop-blur-md border rounded-2xl p-3 transition-all shadow-lg hover:bg-white/5",
+                      activeVideo?._id === v._id ? "border-white bg-white/5" : "border-white/10"
                     )}
                   >
-                    <ModeIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-white")} />
-                    <span className={cn("text-[9px] font-medium", isActive ? "text-black" : "text-white")}>{mode.label}</span>
-                    <span className={cn("text-[9px]", isActive ? "text-zinc-600" : "text-zinc-500")}>{formatTime(mins)}</span>
+                    <div className="font-bold text-white text-sm drop-shadow-sm">{v.title}</div>
+                    <div className="text-xs text-zinc-500 mt-1 font-medium">{formatRelativeTime(v.createdAt)}</div>
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="flex gap-3 mb-5">
-          <button
-            onClick={() => setShowItinerary(true)}
-            className="flex-1 bg-white text-black font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            Add to trip
-          </button>
-          <button
-            onClick={openMaps}
-            className="flex-1 bg-zinc-900 border border-zinc-800 text-white font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.97] transition-all hover:border-zinc-700"
-          >
-            <Navigation className="w-4 h-4 text-zinc-400" />
-            Get directions
-          </button>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 text-center mt-8">
+            Added {formatRelativeTime(activeVideo?.createdAt || place.createdAt)}
+          </p>
         </div>
-
-        <div className="flex gap-3 mb-5">
-          <button
-            onClick={() => setLiked(l => !l)}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all",
-              liked ? "bg-white border-white text-black" : "bg-zinc-900 border-zinc-800 text-zinc-400"
-            )}
-          >
-            <Heart className={cn("w-4 h-4", liked && "fill-black")} />
-            <span className="text-sm font-semibold">{formatCount((activeVideo?.likesCount || 0) + (liked ? 1 : 0))}</span>
-          </button>
-          <button
-            onClick={handleSave}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all",
-              saved ? "bg-white border-white text-black" : "bg-zinc-900 border-zinc-800 text-zinc-400"
-            )}
-          >
-            <Bookmark className={cn("w-4 h-4", saved && "fill-black")} />
-            <span className="text-sm font-semibold">{formatCount((activeVideo?.savesCount || 0) + (saved ? 1 : 0))}</span>
-          </button>
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 transition-all"
-          >
-            <Share2 className="w-4 h-4" />
-            <span className="text-sm font-semibold">Share</span>
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400">
-            <MessageCircle className="w-4 h-4" />
-            <span className="text-sm font-semibold">{formatCount(activeVideo?.commentsCount || 0)}</span>
-          </button>
-        </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4">
-          <h2 className="text-sm font-bold text-white mb-2">About this place</h2>
-          <p className="text-sm text-zinc-400 leading-relaxed">{place.description}</p>
-        </div>
-
-        {videos.length > 0 && (
-          <div className="mb-4">
-            <h2 className="text-sm font-bold text-white mb-3">Videos</h2>
-            <div className="grid gap-3">
-              {videos.map((v) => (
-                <button
-                  key={v._id}
-                  onClick={() => setActiveVideo(v)}
-                  className={cn(
-                    "text-left bg-zinc-900 border rounded-2xl p-3 transition-all",
-                    activeVideo?._id === v._id ? "border-white" : "border-zinc-800"
-                  )}
-                >
-                  <div className="font-semibold text-white text-sm">{v.title}</div>
-                  <div className="text-xs text-zinc-500 mt-1">{formatRelativeTime(v.createdAt)}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <p className="text-xs text-zinc-500 text-center">{formatRelativeTime(activeVideo?.createdAt || place.createdAt)}</p>
       </div>
 
       {activeVideo && (
