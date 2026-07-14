@@ -117,7 +117,8 @@ export default function ItinerariesPage() {
   }
 
   return (
-    <div className="relative min-h-dvh pb-28">
+    <div className="min-h-dvh bg-transparent flex flex-col relative">
+    {/*</div><div className="relative min-h-dvh pb-28">*/}
       {/* ── Fixed Cinematic Overlay ── */}
       <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
