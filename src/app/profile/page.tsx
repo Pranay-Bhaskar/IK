@@ -1,4 +1,4 @@
-
+/*
 "use client";
 
 import { useEffect, useState } from "react";
@@ -397,7 +397,7 @@ function EmptyVideos({ tab, onUpload }: { tab: VideoTab; onUpload: () => void })
 }
 
 
-/*
+*/
 
 "use client";
 
@@ -803,4 +803,4 @@ function EmptyVideos({ tab, onUpload }: { tab: VideoTab; onUpload: () => void })
   );
 }
 
-*/
+
