@@ -1,3 +1,4 @@
+/*
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
@@ -176,7 +177,7 @@ export default function ExplorePage() {
             <React.Fragment>
                {/* Assuming FeedTabs and FeedFilterPanel are properly imported. 
                  Render them normally 
-               */}
+               *}
                <FeedTabs active={activeTab} onChange={handleTabChange} />
                <div className="relative">
                  <FeedFilterPanel
@@ -199,15 +200,12 @@ export default function ExplorePage() {
   );
 }
 
-
-
-/*
-
+*/
 
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, Compass } from "lucide-react";
 import { IVideo } from "@/types";
 import { VideoCard } from "@/features/feed/VideoCard";
 import { FeedTabs, FeedTab } from "@/features/explore/FeedTabs";
@@ -215,62 +213,59 @@ import { FeedFilterPanel } from "@/features/explore/FeedFilterPanel";
 import { BottomNav } from "@/components/layout/BottomNav";
 
 export default function ExplorePage() {
-  const [videos, setVideos] = useState<IVideo[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [videos, setVideos]           = useState<IVideo[]>([]);
+  const [page, setPage]               = useState(1);
+  const [hasMore, setHasMore]         = useState(true);
+  const [loading, setLoading]         = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<FeedTab>("For you");
+  const [activeTab, setActiveTab]     = useState<FeedTab>("For you");
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterOpen, setFilterOpen]   = useState(false);
   const [filterCategory, setFilterCategory] = useState("");
-  const [radius, setRadius] = useState(50);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const loadingMore = useRef(false);
+  const [radius, setRadius]           = useState(50);
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const loadingMore   = useRef(false);
 
+  // Get GPS once
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
-      (p) => setUserLocation({ lat: p.coords.latitude, lon: p.coords.longitude }),
+      p => setUserLocation({ lat: p.coords.latitude, lon: p.coords.longitude }),
       () => {}
     );
   }, []);
 
-  const fetchVideos = useCallback(
-    async (p: number, reset = false) => {
-      if (loadingMore.current) return;
-      loadingMore.current = true;
-
-      try {
-        const params = new URLSearchParams({ page: String(p), limit: "5" });
-        if (filterCategory) params.set("category", filterCategory);
-        if (activeTab === "Nearby" && userLocation) {
-          params.set("radius", String(radius));
-          params.set("lat", String(userLocation.lat));
-          params.set("lon", String(userLocation.lon));
-        }
-
-        const res = await fetch(`/api/videos?${params}`);
-        const data = await res.json();
-
-        if (data?.success) {
-          const fetchedVideos = Array.isArray(data?.data?.videos) ? data.data.videos : [];
-          setVideos((prev) => (reset || p === 1 ? fetchedVideos : [...prev, ...fetchedVideos]));
-          setHasMore(!!data?.data?.hasMore);
-        } else {
-          if (reset || p === 1) setVideos([]);
-          setHasMore(false);
-        }
-      } catch {
+  const fetchVideos = useCallback(async (p: number, reset = false) => {
+    if (loadingMore.current) return;
+    loadingMore.current = true;
+    try {
+      const params = new URLSearchParams({ page: String(p), limit: "5" });
+      if (filterCategory) params.set("category", filterCategory);
+      if (activeTab === "Nearby" && userLocation) {
+        params.set("radius", String(radius));
+        params.set("lat", String(userLocation.lat));
+        params.set("lon", String(userLocation.lon));
+      }
+      const res  = await fetch(`/api/videos?${params}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        const fetchedVideos = data?.data?.videos || [];
+        setVideos(prev => reset || p === 1 ? fetchedVideos : [...prev, ...fetchedVideos]);
+        setHasMore(!!data?.data?.hasMore);
+      } else {
         if (reset || p === 1) setVideos([]);
         setHasMore(false);
-      } finally {
-        setLoading(false);
-        loadingMore.current = false;
       }
-    },
-    [filterCategory, activeTab, userLocation, radius]
-  );
+    } catch (err) {
+      if (reset || p === 1) setVideos([]);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+      loadingMore.current = false;
+    }
+  }, [filterCategory, activeTab, userLocation, radius]);
 
+  // Re-fetch on filter / tab change
   useEffect(() => {
     setLoading(true);
     setPage(1);
@@ -278,28 +273,25 @@ export default function ExplorePage() {
     fetchVideos(1, true);
   }, [fetchVideos]);
 
+  // IntersectionObserver — autoplay + infinite load
   useEffect(() => {
     const container = containerRef.current;
     if (!container || videos.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const idx = parseInt(entry.target.getAttribute("data-index") || "0");
-          setActiveIndex(idx);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const idx = parseInt(entry.target.getAttribute("data-index") || "0");
+        setActiveIndex(idx);
+        if (idx >= videos.length - 2 && hasMore && !loadingMore.current) {
+          const next = page + 1;
+          setPage(next);
+          fetchVideos(next);
+        }
+      });
+    }, { root: container, threshold: 0.7 });
 
-          if (idx >= videos.length - 2 && hasMore && !loadingMore.current) {
-            const next = page + 1;
-            setPage(next);
-            fetchVideos(next);
-          }
-        });
-      },
-      { root: container, threshold: 0.7 }
-    );
-
-    container.querySelectorAll("[data-index]").forEach((el) => observer.observe(el));
+    container.querySelectorAll("[data-index]").forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, [videos, hasMore, page, fetchVideos]);
 
@@ -312,14 +304,17 @@ export default function ExplorePage() {
     setFilterOpen(false);
   };
 
+  // ── Empty / Loading States ──
   if (loading && videos.length === 0) {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center bg-transparent px-6 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-4 shadow-xl shadow-white/10">
-          <MapPin className="w-7 h-7 text-black" />
+      <div className="relative h-dvh flex flex-col items-center justify-center bg-black">
+        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
+            <Loader2 className="w-8 h-8 text-white animate-spin" />
+          </div>
+          <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] animate-pulse">Loading Explorer...</p>
         </div>
-        <p className="text-sm text-zinc-200 mb-3">Loading Karnataka stories...</p>
-        <Loader2 className="w-5 h-5 text-white animate-spin" />
         <BottomNav />
       </div>
     );
@@ -327,24 +322,30 @@ export default function ExplorePage() {
 
   if (!loading && videos.length === 0) {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center bg-transparent px-8 text-center">
-        <div className="text-5xl mb-4">🌿</div>
-        <h2 className="text-lg font-black text-white mb-2">No stories found</h2>
-        <p className="text-sm text-zinc-200">
-          {activeTab === "Nearby"
-            ? "No videos within your radius. Expand it in filters."
-            : "Check back soon for new Karnataka stories."}
-        </p>
+      <div className="relative h-dvh flex flex-col items-center justify-center bg-black px-8 text-center">
+        <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
+            <Compass className="w-10 h-10 text-zinc-500" />
+          </div>
+          <h2 className="text-xl font-black text-white mb-2 drop-shadow-md">No stories found</h2>
+          <p className="text-sm font-medium text-zinc-400 max-w-[250px] leading-relaxed">
+            {activeTab === "Nearby"
+              ? "No videos within your radius. Expand it in filters."
+              : "Check back soon for new Karnataka stories."}
+          </p>
+        </div>
         <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-dvh bg-transparent overflow-hidden">
+    <div className="relative h-dvh bg-black overflow-hidden">
+      {/* ── Video Feed Container ── */}
       <div
         ref={containerRef}
-        className="h-dvh overflow-y-scroll bg-transparent"
+        className="h-dvh overflow-y-scroll hide-scrollbar"
         style={{ scrollSnapType: "y mandatory" }}
       >
         {videos?.map((video, index) => (
@@ -352,7 +353,6 @@ export default function ExplorePage() {
             key={`${video._id}-${index}`}
             data-index={index}
             style={{ scrollSnapAlign: "start", scrollSnapStop: "always", height: "100dvh" }}
-            className="bg-transparent"
           >
             <VideoCard
               video={video}
@@ -362,35 +362,42 @@ export default function ExplorePage() {
           </div>
         ))}
 
+        {/* ── End of Feed State ── */}
         {!hasMore && videos.length > 0 && (
           <div
-            className="flex items-center justify-center bg-transparent"
+            className="relative flex items-center justify-center bg-black"
             style={{ scrollSnapAlign: "start", height: "100dvh" }}
           >
-            <div className="text-center px-8">
-              <div className="text-5xl mb-4">🎬</div>
-              <p className="text-white font-black text-xl">You have roamed it all</p>
-              <p className="text-sm text-zinc-200 mt-2">New stories drop every day.</p>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
+            <div className="relative z-10 text-center px-8 flex flex-col items-center">
+              <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
+                <span className="text-4xl grayscale">🎬</span>
+              </div>
+              <p className="text-2xl font-black text-white drop-shadow-md">You've roamed it all</p>
+              <p className="text-[10px] font-black text-zinc-500 mt-3 uppercase tracking-[0.15em]">New stories drop every day</p>
             </div>
           </div>
         )}
       </div>
 
-      <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/55 via-black/20 to-transparent pb-10 pointer-events-none">
+      {/* ── Top Navigation Overlay ── */}
+      <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 via-black/40 to-transparent pb-12 pointer-events-none">
         <div className="pt-12 px-4 pointer-events-auto">
           <div className="flex items-center justify-between">
-            <FeedTabs active={activeTab} onChange={handleTabChange} />
-            <div className="relative">
-              <FeedFilterPanel
-                activeTab={activeTab}
-                open={filterOpen}
-                onToggle={() => setFilterOpen((o) => !o)}
-                filterCategory={filterCategory}
-                onCategoryChange={setFilterCategory}
-                radius={radius}
-                onRadiusChange={setRadius}
-              />
-            </div>
+            <React.Fragment>
+               <FeedTabs active={activeTab} onChange={handleTabChange} />
+               <div className="relative">
+                 <FeedFilterPanel
+                   activeTab={activeTab}
+                   open={filterOpen}
+                   onToggle={() => setFilterOpen(o => !o)}
+                   filterCategory={filterCategory}
+                   onCategoryChange={setFilterCategory}
+                   radius={radius}
+                   onRadiusChange={setRadius}
+                 />
+               </div>
+            </React.Fragment>
           </div>
         </div>
       </div>
@@ -399,4 +406,3 @@ export default function ExplorePage() {
     </div>
   );
 }
-  */
