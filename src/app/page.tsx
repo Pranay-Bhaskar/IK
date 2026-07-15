@@ -17,13 +17,13 @@ import LandingPage from "@/features/auth/LandingPage";
 import { cn } from "@/lib/utils";
 
 const MOOD_FILTERS = [
-  { label: "All",        value: "",          emoji: "✨" },
-  { label: "Nature",     value: "NATURE",    emoji: "🌿" },
-  { label: "Heritage",   value: "HERITAGE",  emoji: "🏛"  },
-  { label: "Food",       value: "FOOD",      emoji: "🍛"  },
-  { label: "Trekking",   value: "TREKKING",  emoji: "🥾"  },
-  { label: "Waterfall",  value: "WATERFALL", emoji: "💧"  },
-  { label: "Hidden Gem", value: "HIDDEN_GEM", emoji: "💎"  },
+  { label: "All",        value: "",          emoji: "" },
+  { label: "Nature",     value: "NATURE",    emoji: "" },
+  { label: "Heritage",   value: "HERITAGE",  emoji: ""  },
+  { label: "Food",       value: "FOOD",      emoji: ""  },
+  { label: "Trekking",   value: "TREKKING",  emoji: ""  },
+  { label: "Waterfall",  value: "WATERFALL", emoji: ""  },
+  { label: "Hidden Gem", value: "HIDDEN_GEM", emoji: ""  },
 ];
 
 const GREETINGS = ["Good morning", "Good afternoon", "Good evening"];
@@ -33,10 +33,10 @@ const getGreeting = () => {
 };
 
 const COLLECTIONS = [
-  { emoji: "🌧", name: "Monsoon Escapes",  cat: "NATURE",    bg: "#121212" },
-  { emoji: "🏞", name: "Hidden Waterfalls", cat: "WATERFALL", bg: "#1a1a1a" },
-  { emoji: "🍛", name: "Food Trails",      cat: "FOOD",      bg: "#222222" },
-  { emoji: "🏛", name: "Heritage Walks",   cat: "HERITAGE",  bg: "#18181b" },
+  { emoji: "", name: "Monsoon Escapes",  cat: "NATURE",    bg: "#121212" },
+  { emoji: "", name: "Hidden Waterfalls", cat: "WATERFALL", bg: "#1a1a1a" },
+  { emoji: "", name: "Food Trails",      cat: "FOOD",      bg: "#222222" },
+  { emoji: "", name: "Heritage Walks",   cat: "HERITAGE",  bg: "#18181b" },
 ];
 
 export default function RootPage() {
