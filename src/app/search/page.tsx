@@ -644,7 +644,9 @@ export default function SearchPage() {
   const resultsCount = activeTab === "videos" ? videos.length : places.length;
 
   return (
-    <div className="relative min-h-dvh bg-black pb-24">
+    <div className="relative min-h-dvh scenery-bg">
+      {/* ── Cinematic Overlay ── 
+      <div className="relative inset-0 bg-black/50 z-0 pointer-events-none" />*/}
       {/* ── Cinematic Dark Background Overlay ── */}
       <div className="fixed inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95 z-0 pointer-events-none" />
 
