@@ -146,7 +146,7 @@ function HomePage() {
   return (
     <div className="relative min-h-dvh scenery-bg">
       {/* ── Cinematic Overlay ── */}
-      <div className="absolute inset-0 bg-black/40 z-0 pointer-events-none" />
+      <div className="relative inset-0 bg-black/36 z-0 pointer-events-none" />
 
       {/* ── HERO HEADER ── */}
       <div className="relative bg-gradient-to-b from-zinc-900 via-black to-black px-4 pt-14 pb-5 overflow-hidden">
