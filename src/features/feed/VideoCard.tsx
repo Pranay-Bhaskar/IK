@@ -300,10 +300,11 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
           <RailBtn
             onClick={e => {
               e.stopPropagation();
-              if (pId) {
+              // FIX: Send coordinates FIRST so the internal map instantly knows where to zoom
+              if (video.latitude && video.longitude) {
+                router.push(`/map?lat=${video.latitude}&lng=${video.longitude}&placeId=${pId || ""}`);
+              } else if (pId) {
                 router.push(`/map?placeId=${pId}`);
-              } else if (video.latitude && video.longitude) {
-                router.push(`/map?lat=${video.latitude}&lng=${video.longitude}`);
               } else {
                 router.push(`/map`);
               }
@@ -410,10 +411,11 @@ export function VideoCard({ video, isActive, userLocation, scrollIndex = 0, tota
             <button
               onClick={e => {
                 e.stopPropagation();
-                if (pId) {
+                // FIX: Send coordinates FIRST so the internal map instantly knows where to zoom
+                if (video.latitude && video.longitude) {
+                  router.push(`/map?lat=${video.latitude}&lng=${video.longitude}&placeId=${pId || ""}`);
+                } else if (pId) {
                   router.push(`/map?placeId=${pId}`);
-                } else if (video.latitude && video.longitude) {
-                  router.push(`/map?lat=${video.latitude}&lng=${video.longitude}`);
                 } else {
                   router.push(`/map`);
                 }
