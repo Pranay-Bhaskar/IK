@@ -144,7 +144,9 @@ function HomePage() {
   const firstName = user?.fullName?.split(" ")[0] || "Explorer";
 
   return (
-    <div className="min-h-dvh bg-black pb-28">
+    <div className="relative min-h-dvh scenery-bg">
+      {/* ── Cinematic Overlay ── */}
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
       {/* ── HERO HEADER ── */}
       <div className="relative bg-gradient-to-b from-zinc-900 via-black to-black px-4 pt-14 pb-5 overflow-hidden">

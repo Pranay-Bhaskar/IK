@@ -43,6 +43,7 @@ export default function MapPage() {
           <div className="relative min-h-dvh scenery-bg">
       {/* ── Cinematic Overlay ── */}
       <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
+            
             {/* Glassmorphic Loader */}
             <div className="relative z-10 flex flex-col items-center">
               <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-2xl">
