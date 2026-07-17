@@ -346,13 +346,9 @@ export default function CreatorContentPage() {
 
   return (
     <div className="relative min-h-dvh scenery-bg">
-      {/* Dark gradient overlay matching the Login Page */}
       <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
-      {/* Content wrapper */}
       <div className="relative z-10 px-4 pt-14 pb-6">
-        
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-black text-white drop-shadow-md">My Content</h1>
@@ -366,7 +362,6 @@ export default function CreatorContentPage() {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="flex bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-1 gap-1 shadow-lg mb-6">
           {TABS.map(({ key, label }) => (
             <button key={key} onClick={() => setTab(key)}
@@ -378,7 +373,6 @@ export default function CreatorContentPage() {
           ))}
         </div>
 
-        {/* Video List */}
         {loading ? (
           <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 skeleton rounded-2xl opacity-50" />)}</div>
         ) : videos.length === 0 ? (
@@ -399,19 +393,18 @@ export default function CreatorContentPage() {
               const cat    = CATEGORIES.find(c => c.value === v.category);
               const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
               
+              // FIX: Safely extract the populated place name and district
+              const placeObj = typeof v.placeId === "object" ? v.placeId as any : null;
+              const placeName = placeObj?.name || v.placeName || "Unknown Place";
+              const district = placeObj?.district || v.district || "";
+
               return (
                 <button 
                   key={v._id} 
-                  onClick={() => {
-                    // FIX: Safely extract Place ID so we route to the Place, not the Video
-                    const targetPlaceId = typeof v.placeId === "object" ? (v.placeId as any)?._id : v.placeId;
-                    if (targetPlaceId) {
-                      router.push(`/place/${targetPlaceId}`);
-                    }
-                  }}
+                  // FIX: Route to the private Video Review Page instead of the public Place Page
+                  onClick={() => router.push(`/creator/video/${v._id}`)}
                   className="w-full flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden text-left active:opacity-70 transition-all hover:border-white/20 shadow-lg">
                   
-                  {/* Thumbnail */}
                   <div className="w-[70px] h-[88px] bg-white/5 flex-shrink-0 relative overflow-hidden border-r border-white/5">
                     {v.thumbnailUrl
                       ? <img src={v.thumbnailUrl} alt="" className="w-full h-full object-cover grayscale-[20%]" />
@@ -420,12 +413,14 @@ export default function CreatorContentPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 p-3 min-w-0">
                     <p className="text-sm font-black text-white truncate drop-shadow-sm">{v.title}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-zinc-500" />
-                      <span className="text-[11px] text-zinc-400 truncate">{v.placeName}, {v.district}</span>
+                      {/* FIX: Clean location formatting without ugly commas */}
+                      <span className="text-[11px] text-zinc-400 truncate">
+                        {placeName}{district ? `, ${district}` : ""}
+                      </span>
                     </div>
                     
                     <div className="flex items-center gap-2 mt-2">
@@ -440,9 +435,6 @@ export default function CreatorContentPage() {
                       <span className="flex items-center gap-1 text-[10px] text-zinc-400"><Bookmark style={{width:10,height:10}} />{formatCount(v.savesCount)}</span>
                       <span className="text-[10px] text-zinc-400">{formatRelativeTime(v.createdAt)}</span>
                     </div>
-                    {v.status === "REJECTED" && v.rejectionReason && (
-                      <p className="text-[10px] text-zinc-300 mt-1 line-clamp-1 italic font-medium">"{v.rejectionReason}"</p>
-                    )}
                   </div>
                 </button>
               );

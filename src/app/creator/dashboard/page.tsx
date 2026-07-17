@@ -506,7 +506,6 @@ interface Stats {
   totalSaves: number;
 }
 
-// Minimalist Monochrome Bar Chart
 function BarChart({ data }: { data: number[] }) {
   const max = Math.max(...data, 1);
   const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -519,9 +518,7 @@ function BarChart({ data }: { data: number[] }) {
               "w-full rounded-t-sm transition-all duration-500",
               i === data.length - 1 ? "bg-white shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "bg-white/20"
             )}
-            style={{
-              height: `${Math.max((v / max) * 60, 4)}px`,
-            }}
+            style={{ height: `${Math.max((v / max) * 60, 4)}px` }}
           />
           <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-wider">{days[i]}</span>
         </div>
@@ -537,7 +534,6 @@ export default function CreatorDashboardPage() {
   const [videos, setVideos] = useState<IVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fake weekly view data — in V2 this comes from analytics API
   const weeklyViews = [420, 580, 490, 720, 950, 680, 540];
 
   useEffect(() => {
@@ -563,14 +559,11 @@ export default function CreatorDashboardPage() {
 
   return (
     <div className="relative min-h-dvh scenery-bg">
-      {/* ── Cinematic Overlay ── */}
       <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
-      {/* ── Header ── */}
       <div className="relative z-10 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {/* Avatar */}
             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-xl font-black text-black shadow-lg">
               {user?.fullName?.charAt(0).toUpperCase()}
             </div>
@@ -587,8 +580,6 @@ export default function CreatorDashboardPage() {
       </div>
 
       <div className="relative z-10 px-4 pt-4 space-y-5">
-
-        {/* ── Stats 2×2 ── */}
         <div className="grid grid-cols-2 gap-3">
           {[
             { icon: Eye,       label: "Total views",    value: formatCount(stats.totalViews) },
@@ -609,7 +600,6 @@ export default function CreatorDashboardPage() {
           ))}
         </div>
 
-        {/* ── Views this week chart ── */}
         <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -617,14 +607,12 @@ export default function CreatorDashboardPage() {
               <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-0.5">Last 7 days</p>
             </div>
             <div className="flex items-center gap-1 text-xs text-white font-black bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
-              <TrendingUp className="w-3.5 h-3.5" />
-              +18%
+              <TrendingUp className="w-3.5 h-3.5" /> +18%
             </div>
           </div>
           <BarChart data={weeklyViews} />
         </div>
 
-        {/* ── Spotlight card ── */}
         <div className="bg-gradient-to-br from-white/15 to-white/5 border border-white/20 backdrop-blur-xl rounded-2xl p-5 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/10 blur-3xl pointer-events-none" />
           <div className="relative">
@@ -641,7 +629,6 @@ export default function CreatorDashboardPage() {
           </div>
         </div>
 
-        {/* ── Recent content ── */}
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
             <p className="text-sm font-black text-white uppercase tracking-wider">Recent content</p>
@@ -666,16 +653,17 @@ export default function CreatorDashboardPage() {
                 const status = VIDEO_STATUS[v.status];
                 const cat    = CATEGORIES.find(c => c.value === v.category);
                 const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
+                
+                // FIX: Extract populated place name/district
+                const placeObj = typeof v.placeId === "object" ? v.placeId as any : null;
+                const placeName = placeObj?.name || v.placeName || "Unknown Place";
+                const district = placeObj?.district || v.district || "";
+
                 return (
                   <button 
                     key={v._id} 
-                    onClick={() => {
-                      // FIX: Extract Place ID safely to prevent 404 on Video ID
-                      const targetPlaceId = typeof v.placeId === "object" ? (v.placeId as any)?._id : v.placeId;
-                      if (targetPlaceId) {
-                        router.push(`/place/${targetPlaceId}`);
-                      }
-                    }}
+                    // FIX: Route to the private Video Review Page instead of public place page
+                    onClick={() => router.push(`/creator/video/${v._id}`)}
                     className="w-full flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-left active:scale-[0.98] hover:bg-white/5 transition-all shadow-lg">
                     <div className="w-14 h-14 rounded-xl bg-white/5 flex-shrink-0 overflow-hidden border border-white/5">
                       {v.thumbnailUrl
@@ -687,7 +675,9 @@ export default function CreatorDashboardPage() {
                       <p className="text-sm font-bold text-white truncate drop-shadow-sm">{v.title}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         <MapPin className="w-3 h-3 text-zinc-400" />
-                        <span className="text-[11px] font-medium text-zinc-400 truncate">{v.placeName}, {v.district}</span>
+                        <span className="text-[11px] font-medium text-zinc-400 truncate">
+                          {placeName}{district ? `, ${district}` : ""}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
                         <div className={cn("flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border", status.bg, status.color)}>
@@ -704,8 +694,7 @@ export default function CreatorDashboardPage() {
             </div>
           )}
         </div>
-
-        {/* ── Collections row ── */}
+        
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
             <p className="text-sm font-black text-white uppercase tracking-wider">My collections</p>
