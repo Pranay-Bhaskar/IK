@@ -505,6 +505,8 @@ function AdminVideosContent() {
             </div>
           )}
 
+{/*
+
           {videos.map((video) => {
             const isExpanded = expandedId === video._id;
             const isActioning = actionLoading === video._id;
@@ -548,7 +550,7 @@ function AdminVideosContent() {
                   </div>
                 )}
 
-                {/* Reject & Action logic - monochromatic */}
+                
                 {!isRejecting && (
                   <div className="border-t border-white/10 flex">
                     {status === "PENDING" && (
@@ -563,6 +565,91 @@ function AdminVideosContent() {
               </div>
             );
           })}
+
+          */}
+          {videos.map((video) => {
+            const isExpanded = expandedId === video._id;
+            const cat = CATEGORIES.find((c) => c.value === video.category);
+            const creator = typeof video.uploadedBy === "object" ? (video.uploadedBy as any) : null;
+            
+            // FIX: Safely get place data from populated placeId
+            const place = typeof video.placeId === "object" ? (video.placeId as any) : null;
+            const placeName = place?.name || video.placeName || "Unknown Place";
+            const district = place?.district || video.district || "Unknown District";
+
+            return (
+              <div key={video._id} className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all hover:border-white/20">
+                <div className="flex gap-3 p-3">
+                  <div className="w-20 h-24 rounded-xl bg-white/5 flex-shrink-0 overflow-hidden relative border border-white/5">
+                    {video.thumbnailUrl ? (
+                      <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover grayscale-[20%]" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Play className="w-6 h-6 text-zinc-500" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white leading-snug line-clamp-2">{video.title}</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <User className="w-3 h-3 text-zinc-400" />
+                      <span className="text-xs text-zinc-400 truncate">{creator?.fullName || "Unknown Creator"}</span>
+                    </div>
+                    {/* FIXED: Now displays actual place name and district */}
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-zinc-400" />
+                      <span className="text-xs text-zinc-400 truncate">{placeName}, {district}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : video._id)}
+                    className="self-start mt-1 w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/5"
+                  >
+                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-white" /> : <ChevronDown className="w-3.5 h-3.5 text-white" />}
+                  </button>
+                </div>
+
+                {isExpanded && (
+                  <div className="border-t border-white/10 px-3 py-3 space-y-3 bg-white/5">
+                    <p className="text-xs text-zinc-300 leading-relaxed">{video.description}</p>
+                    
+                    {/* FIXED: Ensure video.url is used correctly */}
+                    {video.url ? (
+                      <a 
+                        href={video.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-xs text-white underline font-medium"
+                      >
+                        <Play className="w-3.5 h-3.5" /> Preview Video
+                      </a>
+                    ) : (
+                      <p className="text-xs text-red-400">Video source missing</p>
+                    )}
+
+                    {/* Rejection input area */}
+                    {rejectingId === video._id && (
+                      <div className="pt-2">
+                        <textarea
+                          placeholder="Reason for rejection..."
+                          className="w-full bg-black/60 border border-white/20 rounded-xl p-2 text-xs text-white"
+                          value={rejectReason}
+                          onChange={(e) => setRejectReason(e.target.value)}
+                        />
+                        <div className="flex gap-2 mt-2">
+                          <button onClick={() => handleReject(video._id)} className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg">Confirm Reject</button>
+                          <button onClick={() => setRejectingId(null)} className="px-3 py-1.5 bg-zinc-700 text-white text-xs font-bold rounded-lg">Cancel</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          
         </div>
       </div>
     </div>
