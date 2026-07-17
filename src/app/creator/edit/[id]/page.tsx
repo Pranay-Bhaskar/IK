@@ -14,7 +14,7 @@ export default function EditVideoPage() {
       </button>
       
       <h1 className="text-2xl font-black mb-6">Edit Video Details</h1>
-      <p>Editing video ID: {id}</p>
+      <p>Edit video</p>
       {/* Your form will go here later */}
     </div>
   );
