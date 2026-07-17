@@ -297,6 +297,11 @@ export default function CreatorContentPage() {
 */
 
 
+
+//  NEW
+
+
+
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -306,7 +311,7 @@ import {
   Upload, Eye, Bookmark
 } from "lucide-react";
 import { IVideo } from "@/types";
-import { VIDEO_STATUS, CATEGORIES } from "@/constants";
+import { CATEGORIES } from "@/constants";
 import { formatCount, formatRelativeTime, cn } from "@/lib/utils";
 
 type Tab = "all" | "APPROVED" | "PENDING" | "REJECTED";
@@ -389,11 +394,13 @@ export default function CreatorContentPage() {
         ) : (
           <div className="space-y-3">
             {videos.map(v => {
-              const status = VIDEO_STATUS[v.status];
-              const cat    = CATEGORIES.find(c => c.value === v.category);
-              const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
+              const cat = CATEGORIES.find(c => c.value === v.category);
               
-              // FIX: Safely extract the populated place name and district
+              // SAFE STATUS FALLBACKS
+              const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
+              const statusLabel = v.status === "APPROVED" ? "Live" : v.status === "PENDING" ? "Pending" : "Rejected";
+              const statusCls = v.status === "APPROVED" ? "bg-white text-black border-white" : v.status === "PENDING" ? "bg-black/50 text-zinc-300 border-white/20" : "bg-black/50 text-red-400 border-red-500/30";
+
               const placeObj = typeof v.placeId === "object" ? v.placeId as any : null;
               const placeName = placeObj?.name || v.placeName || "Unknown Place";
               const district = placeObj?.district || v.district || "";
@@ -401,7 +408,6 @@ export default function CreatorContentPage() {
               return (
                 <button 
                   key={v._id} 
-                  // FIX: Route to the private Video Review Page instead of the public Place Page
                   onClick={() => router.push(`/creator/video/${v._id}`)}
                   className="w-full flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden text-left active:opacity-70 transition-all hover:border-white/20 shadow-lg">
                   
@@ -417,16 +423,15 @@ export default function CreatorContentPage() {
                     <p className="text-sm font-black text-white truncate drop-shadow-sm">{v.title}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-zinc-500" />
-                      {/* FIX: Clean location formatting without ugly commas */}
                       <span className="text-[11px] text-zinc-400 truncate">
                         {placeName}{district ? `, ${district}` : ""}
                       </span>
                     </div>
                     
                     <div className="flex items-center gap-2 mt-2">
-                      <div className={cn("flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-white")}>
+                      <div className={cn("flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full border", statusCls)}>
                         <StatusIcon style={{ width:9, height:9 }} />
-                        {status.label}
+                        {statusLabel}
                       </div>
                     </div>
 

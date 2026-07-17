@@ -242,7 +242,12 @@ export default function CreatorDashboardPage() {
 
 */
 
+
+
+
 //working
+
+
 
 
 /*
@@ -483,6 +488,12 @@ export default function CreatorDashboardPage() {
 
 */
 
+
+
+// NEW
+
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -495,7 +506,7 @@ import {
 import { useAuth } from "@/features/auth/AuthContext";
 import { IVideo } from "@/types";
 import { formatCount, formatRelativeTime, cn } from "@/lib/utils";
-import { CATEGORIES, VIDEO_STATUS } from "@/constants";
+import { CATEGORIES } from "@/constants";
 
 interface Stats {
   total: number;
@@ -650,11 +661,13 @@ export default function CreatorDashboardPage() {
           ) : (
             <div className="space-y-2">
               {videos.map(v => {
-                const status = VIDEO_STATUS[v.status];
-                const cat    = CATEGORIES.find(c => c.value === v.category);
-                const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
+                const cat = CATEGORIES.find(c => c.value === v.category);
                 
-                // FIX: Extract populated place name/district
+                // SAFE STATUS FALLBACKS
+                const StatusIcon = v.status === "APPROVED" ? CheckCircle2 : v.status === "REJECTED" ? XCircle : Clock;
+                const statusLabel = v.status === "APPROVED" ? "Live" : v.status === "PENDING" ? "Pending" : "Rejected";
+                const statusCls = v.status === "APPROVED" ? "bg-white text-black border-white" : v.status === "PENDING" ? "bg-black/50 text-zinc-300 border-white/20" : "bg-black/50 text-red-400 border-red-500/30";
+
                 const placeObj = typeof v.placeId === "object" ? v.placeId as any : null;
                 const placeName = placeObj?.name || v.placeName || "Unknown Place";
                 const district = placeObj?.district || v.district || "";
@@ -662,7 +675,6 @@ export default function CreatorDashboardPage() {
                 return (
                   <button 
                     key={v._id} 
-                    // FIX: Route to the private Video Review Page instead of public place page
                     onClick={() => router.push(`/creator/video/${v._id}`)}
                     className="w-full flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-left active:scale-[0.98] hover:bg-white/5 transition-all shadow-lg">
                     <div className="w-14 h-14 rounded-xl bg-white/5 flex-shrink-0 overflow-hidden border border-white/5">
@@ -680,9 +692,9 @@ export default function CreatorDashboardPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
-                        <div className={cn("flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border", status.bg, status.color)}>
+                        <div className={cn("flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border", statusCls)}>
                           <StatusIcon style={{ width:10, height:10 }} />
-                          {status.label}
+                          {statusLabel}
                         </div>
                         <span className="text-[10px] font-bold text-zinc-500">{formatCount(v.views)} views</span>
                         <span className="text-[10px] font-bold text-zinc-500">{formatCount(v.savesCount)} saves</span>
@@ -694,21 +706,6 @@ export default function CreatorDashboardPage() {
             </div>
           )}
         </div>
-        
-        <div>
-          <div className="flex items-center justify-between mb-3 px-1">
-            <p className="text-sm font-black text-white uppercase tracking-wider">My collections</p>
-            <button className="text-xs text-zinc-400 font-bold hover:text-white transition-colors">Manage</button>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
-            {["💧 Waterfalls","🏛 Heritage","🥾 Treks","➕ New"].map(label => (
-              <div key={label} className="flex-shrink-0 flex items-center gap-1.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-full px-4 py-2.5 text-xs text-white font-bold shadow-sm hover:bg-white/10 transition-colors cursor-pointer">
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
     </div>
   );
